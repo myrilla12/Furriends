@@ -1,6 +1,6 @@
+import { Button } from '@mantine/core';
+
 export default function LoginButton() {
-    return (
-      <button type="submit" onClick={() => console.log("you clicked login")}>Login</button>
-    )
-  }
+  return <Button variant="default" color="gray" onClick={() => console.log("you clicked login")}>Sign in</Button>;
+}
   
