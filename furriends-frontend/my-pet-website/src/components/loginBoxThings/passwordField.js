@@ -5,7 +5,6 @@ export default function PasswordField() {
     <PasswordInput
       variant="filled"
       label="Password"
-      description="Input password"
       placeholder="Password"
     />
   );

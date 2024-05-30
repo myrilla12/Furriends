@@ -5,7 +5,6 @@ export default function EmailField() {
         <TextInput
           variant="filled"
           label="Email address"
-          description="Type email address"
           placeholder="Email address"
         />
     );
