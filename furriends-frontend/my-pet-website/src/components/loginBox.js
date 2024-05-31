@@ -1,51 +1,49 @@
-import EmailField from "@/components/loginBoxThings/emailField";
-import PasswordField from "@/components/loginBoxThings/passwordField";
-import { Text, Space } from '@mantine/core';
-import SignIn from "@/components/loginBoxThings/signIn";
+import { Text, Space, TextInput, PasswordInput, Button } from '@mantine/core';
 import { Container } from '@mantine/core';
 import { Box } from '@mantine/core';
 import { Group } from "@mantine/core";
-import SignupButton from "./signupThings/signupButton";
+import router from 'next/router';
 
 export default function LoginBox() {
-  const container = {
-    mt: '15%',
-    mb: '15%',
-    ml: '35%',
-    mr: '35%',
-    pb: "xl",
-    style: {border: "1px solid black"}
-  };
-
-  
   
   return (
-    <>
-      <Container {...container}>
-        <Box mb='lg'>
-          <header>
-              <h1>Sign in to Furriends</h1>
-          </header>
+      <Box style={{border: "1px solid black"}} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
+        <Box mt='lg' mb='lg'>
+          <Text size='24pt'>Sign in to Furriends</Text>
+
+          <Space h="lg" />
             
-          <EmailField />
+          <TextInput
+            variant="filled"
+            label="Email address"
+            placeholder="Email address"
+          />
+
           <Space h="lg" />
-          <PasswordField />
+          
+          <PasswordInput
+            variant="filled"
+            label="Password"
+            placeholder="Password"
+          />
+
           <Space h="lg" />
-          <SignIn />
+
+          <Button variant="default" color="gray" onClick={() => console.log("you clicked login")}>Sign in</Button>
+          
         </Box>
 
         <hr />
 
         <Group>
           <Box mt="lg">
-            <text>Don't have an account yet?</text>
+            <Text c='dimmed'>Don't have an account yet?</Text>
           </Box>
           <Box mt='lg'>
-            <SignupButton />
+            <Button variant="transparent" onClick={() => router.push("/signup")}><u>Sign up</u></Button>
           </Box>
         </Group>
   
-      </Container>
-    </>
+      </Box>
   );
 }

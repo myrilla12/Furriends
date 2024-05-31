@@ -1,8 +1,14 @@
+import LogoHeader from "@/components/logoHeader";
+import SignupBox from "@/components/signupBox";
+import { Box, Container } from "@mantine/core";
 
 export default function Signup() {
     return (
         <>
-            <text>This will be the sign up form page</text>
+            <Container>  
+                <LogoHeader />
+                <SignupBox />
+            </Container>
         </>
     );
 }
