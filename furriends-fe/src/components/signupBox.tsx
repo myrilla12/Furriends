@@ -30,7 +30,7 @@ export default function SignupBox() {
         <Box style={{ border: "1px solid black" }} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
           <Box mt='lg' mb='lg'>
             <Text size='24pt' mb='sm'>Create a new account</Text>
-            <Text size='md' c='dimmed'>Join our pet friendly community at Furriends! Help your pet make some friends and strengthen your bond with your pet!</Text>
+            <Text size='md' c='dimmed'>Join our pet-friendly community at Furriends! Help your pet make some friends and strengthen your bond with your pet!</Text>
 
             <Space h="lg" />
 
