@@ -1,4 +1,4 @@
-const { db } = require('@vercel/postgres');
+const { db } = require('@supabase/supabase-js');
 const { users } = require('./data/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
