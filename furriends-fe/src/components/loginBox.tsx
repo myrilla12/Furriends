@@ -1,7 +1,4 @@
-import { Text, Space, TextInput, PasswordInput, Button } from '@mantine/core';
-import { Container } from '@mantine/core';
-import { Box } from '@mantine/core';
-import { Group } from "@mantine/core";
+import { Text, Space, TextInput, PasswordInput, Button, Box, Group } from '@mantine/core';
 import router from 'next/router';
 import { useState } from 'react';
 import { login } from '../actions/login';
