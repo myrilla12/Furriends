@@ -5,7 +5,7 @@ const theme = createTheme({
   /** Put your mantine theme override here */
 });
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: any) {
   return (
     <MantineProvider theme={theme}>
       <Component {...pageProps} />

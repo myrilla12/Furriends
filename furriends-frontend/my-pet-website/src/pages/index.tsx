@@ -5,10 +5,9 @@ import { Container, Space } from '@mantine/core';
 export default function Home() {
     return (
         <>  
+            <LogoHeader />
             <Container>
-                <Space h='lg'/>
                 <LoginButton />
-                <LogoHeader />
             </Container>
         </>
     );

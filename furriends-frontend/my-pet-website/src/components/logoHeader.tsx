@@ -5,7 +5,7 @@ export default function LogoHeader() {
     const router = useRouter();
     return (
         <Box>
-            <Image src='logo-cropped.png' onClick={() => router.push("/")}/>   
+            <Image src='logo-icon.png' onClick={() => router.push("/")}/>   
         </Box>
     );
 }

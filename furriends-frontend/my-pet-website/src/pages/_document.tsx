@@ -1,5 +1,5 @@
 import { Head, Html, Main, NextScript } from 'next/document';
-import { ColorSchemeScript } from '@mantine/core';
+import { ColorSchemeScript, Box } from '@mantine/core';
 
 export default function Document() {
   return (
@@ -7,10 +7,10 @@ export default function Document() {
       <Head>
         <ColorSchemeScript defaultColorScheme="auto" />
       </Head>
-      <body>
+      <Box>
         <Main />
         <NextScript />
-      </body>
+      </Box>
     </Html>
   );
 }

@@ -1,4 +1,4 @@
-import { Text, Space, TextInput, PasswordInput, Button, Container, Box, Group } from '@mantine/core';
+import { Text, Space, TextInput, PasswordInput, Button, Container, Box, Group, Divider } from '@mantine/core';
 import LoginButton from './loginButton';
 
 export default function LoginBox() {
@@ -48,7 +48,7 @@ export default function LoginBox() {
           
         </Box>
 
-        <hr />
+        <Divider />
 
         <Group>
           <Box mt="lg">
