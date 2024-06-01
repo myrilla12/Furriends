@@ -1,4 +1,4 @@
-import LogoHeader from "@/components/logoHeader";
+import LogoHeader from "@/components/logoHeader/logoHeader";
 import SignupBox from "@/components/signupBox";
 import { Container, MantineProvider } from "@mantine/core";
 
