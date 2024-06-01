@@ -15,14 +15,15 @@ export default function LoginBox() {
       router.push('/error');
     }
   };
-  
+
   return (
-      <Box style={{border: "1px solid black"}} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Box style={{ border: "1px solid black" }} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
         <Box mt='lg' mb='lg'>
           <Text size='24pt'>Sign in to Furriends</Text>
 
           <Space h="lg" />
-            
+
           <TextInput
             variant="filled"
             label="Email address"
@@ -32,7 +33,7 @@ export default function LoginBox() {
           />
 
           <Space h="lg" />
-          
+
           <PasswordInput
             variant="filled"
             label="Password"
@@ -44,7 +45,7 @@ export default function LoginBox() {
           <Space h="lg" />
 
           <Button variant="default" color="gray" onClick={handleLogin}>Sign in</Button>
-          
+
         </Box>
 
         <hr />
@@ -57,7 +58,8 @@ export default function LoginBox() {
             <Button variant="transparent" onClick={() => router.push("/signup")}><u>Sign up</u></Button>
           </Box>
         </Group>
-  
+
       </Box>
+    </div>
   );
 }
