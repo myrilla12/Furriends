@@ -2,27 +2,23 @@ import { Text, Space, TextInput, PasswordInput, Button, Container, Box, Group, D
 import LoginButton from './loginButton';
 import router from 'next/router';
 import { useState } from 'react';
-import { signup } from '../actions/signup';
+//import { signup } from '../actions/signup';
+import { createClient } from '../../../furriends-backend/utils/supabase/component';
 
 export default function SignupBox() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const supabase = createClient();
 
-  const handleSignup = async () => {
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
+  async function signup() {
+    const { error } = await supabase.auth.signUp({ email, password })
+    if (error) {
+      console.error(error)
     }
-
-    try {
-      await signup(email, password);
-    } catch (error) {
-      console.error('Sign-up failed', error);
-      router.push('/error');
-    }
-  };
+    router.push('/login');
+  }
 
   return (
     <>
@@ -81,7 +77,7 @@ export default function SignupBox() {
 
             <Space h='lg' />
 
-            <Button variant="default" color="gray" onClick={handleSignup}>Sign up</Button>
+            <Button variant="default" color="gray" onClick={signup}>Sign up</Button>
 
           </Box>
 

@@ -1,14 +1,29 @@
-import { redirect } from 'next/navigation'
+import type { User } from '@supabase/supabase-js'
+import type { GetServerSidePropsContext } from 'next'
 
-import { createClient } from '../../../../furriends-backend/utils/supabase/server'
+import { createClient } from '../../../../furriends-backend/utils/supabase/server-props'
 
-export default async function PrivatePage() {
-  const supabase = createClient()
+export default function PrivatePage({ user }: { user: User }) {
+  return <h1>Hello, {user.email || 'user'}!</h1>
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const supabase = createClient(context)
 
   const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
-    redirect('/login')
+
+  if (error || !data) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
   }
 
-  return <p>Hello {data.user.email}</p>
+  return {
+    props: {
+      user: data.user,
+    },
+  }
 }
