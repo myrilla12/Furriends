@@ -1,7 +1,6 @@
 import { Text, Space, TextInput, PasswordInput, Button, Box, Group } from '@mantine/core';
 import router from 'next/router';
 import { useState } from 'react';
-//import { login } from '../actions/login';
 import { createClient } from '../../../furriends-backend/utils/supabase/component';
 
 export default function LoginBox() {
