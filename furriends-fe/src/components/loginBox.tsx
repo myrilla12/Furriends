@@ -8,13 +8,16 @@ export default function LoginBox() {
   const supabase = createClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   async function login() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      console.error(error)
+      console.error(error);
+      setError('Invalid email or password. Please try again.');
+    } else {
+      router.push('/dashboard');
     }
-    router.push('/dashboard')
   }
 
   return (
@@ -42,6 +45,13 @@ export default function LoginBox() {
             value={password}
             onChange={(event) => setPassword(event.currentTarget.value)}
           />
+
+          {error && (
+            <>
+              <Space h="lg" />
+              <Text c="red">{error}</Text>
+            </>
+          )}
 
           <Space h="lg" />
 
