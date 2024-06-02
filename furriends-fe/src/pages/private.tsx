@@ -1,7 +1,7 @@
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 
-import { createClient } from '../../../../furriends-backend/utils/supabase/server-props'
+import { createClient } from '../../../furriends-backend/utils/supabase/server-props'
 
 export default function PrivatePage({ user }: { user: User }) {
   return <h1>Hello, {user.email || 'user'}!</h1>

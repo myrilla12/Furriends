@@ -2,7 +2,6 @@ import { Text, Space, TextInput, PasswordInput, Button, Container, Box, Group, D
 import LoginButton from './loginButton';
 import router from 'next/router';
 import { useState } from 'react';
-//import { signup } from '../actions/signup';
 import { createClient } from '../../../furriends-backend/utils/supabase/component';
 
 export default function SignupBox() {
