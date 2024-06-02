@@ -26,7 +26,7 @@ export default function SignupBox() {
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
         <Box style={{ border: "1px solid black" }} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
           <Box mt='lg' mb='lg'>
             <Text size='24pt' mb='sm'>Create a new account</Text>

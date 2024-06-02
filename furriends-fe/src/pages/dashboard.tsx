@@ -1,19 +1,15 @@
 import LogoHeader from "@/components/logoHeader/logoHeader";
-import { Container, MantineProvider } from "@mantine/core";
 
 export default function DashboardPage() {
     return (
-        
-    <main className="flex min-h-screen flex-col p-6">
-      <div className="flex h-20 shrink-0 items-end rounded-lg p-4 md:h-52">
-            <LogoHeader />
-        </div>
-        <div>
 
-
-            <p>Welcome, xxx</p>
-
-        </div>
+        <main className="flex min-h-screen flex-col p-6">
+            <div className="flex h-25 shrink-0 content-center rounded-lg bg-slate-200 p-1 md:h-25">
+                <LogoHeader />
+            </div>
+            <div className="mt-4 flex grow flex-col gap-4 p-4 md:flex-row text-2xl">
+                <h1>Welcome, <strong>xxx</strong></h1>
+            </div>
         </main>
     )
 }
