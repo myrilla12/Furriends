@@ -16,6 +16,6 @@ export async function login(email: string, password: string) {
     redirect('/error');
   }
 
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
   redirect('/dashboard');
 }
