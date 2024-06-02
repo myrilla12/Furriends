@@ -1,20 +1,21 @@
 import { Text, Space, TextInput, PasswordInput, Button, Box, Group } from '@mantine/core';
 import router from 'next/router';
 import { useState } from 'react';
-import { login } from '../actions/login';
+//import { login } from '../actions/login';
+import { createClient } from '../../../furriends-backend/utils/supabase/component';
 
 export default function LoginBox() {
+  const supabase = createClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
-    try {
-      await login(email, password);
-    } catch (error) {
-      console.error('Login failed', error);
-      router.push('/error');
+  async function login() {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      console.error(error)
     }
-  };
+    router.push('/dashboard')
+  }
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
@@ -44,7 +45,7 @@ export default function LoginBox() {
 
           <Space h="lg" />
 
-          <Button variant="default" color="gray" onClick={handleLogin}>Sign in</Button>
+          <Button variant="default" color="gray" onClick={login}>Sign in</Button>
 
         </Box>
 
