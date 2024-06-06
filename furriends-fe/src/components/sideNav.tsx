@@ -11,6 +11,5 @@ export default function SideNav() {
         <SignoutButton />
       </div>
     </div>
-    
   );
 }

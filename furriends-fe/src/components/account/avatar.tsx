@@ -1,7 +1,9 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import { createClient } from '../../../../furriends-backend/utils/supabase/component'
-import Image from 'next/image'
+
+import React, { useEffect, useState } from 'react';
+import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import Image from 'next/image';
+import { Button } from '@mantine/core';
 
 export default function Avatar({
     uid,
@@ -63,34 +65,32 @@ export default function Avatar({
     }
 
     return (
-        <div>
-            {avatarUrl ? (
-                <Image
-                    width={size}
-                    height={size}
-                    src={avatarUrl}
-                    alt="Avatar"
-                    className="avatar image"
-                    style={{ height: size, width: size }}
-                />
-            ) : (
-                <div className="avatar no-image" style={{ height: size, width: size }} />
-            )}
-            <div style={{ width: size }}>
-                <label className="button primary block" htmlFor="single">
+        <div className="flex flex-col items-center">
+            <div className="rounded-full border-2 border-gray-300 flex items-center justify-center" style={{ height: size, width: size }}>
+                {avatarUrl ? (
+                    <Image
+                        width={size - 5} // reduce size to account for border
+                        height={size - 5}
+                        src={avatarUrl}
+                        alt="Avatar"
+                        className="avatar image"
+                        style={{ height: size, width: size }}
+                    />
+                ) : (
+                    <div className="avatar no-image" style={{ height: size, width: size }} />
+                )}
+            </div>
+            <div className="p-3" style={{ width: size }}>
+                <Button component="label" htmlFor="single" className="block" variant="default" color="gray" size="xs" disabled={uploading}>
                     {uploading ? 'Uploading ...' : 'Upload'}
-                </label>
-                <input
-                    style={{
-                        visibility: 'hidden',
-                        position: 'absolute',
-                    }}
-                    type="file"
-                    id="single"
-                    accept="image/*"
-                    onChange={uploadAvatar}
-                    disabled={uploading}
-                />
+                    <input
+                        style={{ display: 'none', }}
+                        type="file"
+                        id="single"
+                        accept="image/*"
+                        onChange={uploadAvatar}
+                    />
+                </Button>
             </div>
         </div>
     )
