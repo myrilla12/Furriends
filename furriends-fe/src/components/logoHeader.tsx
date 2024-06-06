@@ -7,7 +7,7 @@ export default function LogoHeader() {
         <Box className="flex items-center justify-left w-[70px] h-[70px] m-4">
             <Image
                 src='logo-icon.png'
-                onClick={() => router.push("/")}
+                onClick={() => router.push("/dashboard")}
             />   
         </Box>
     );
