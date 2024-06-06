@@ -1,5 +1,5 @@
-import LogoHeader from "@/components/logoHeader/logoHeader";
-import SignupBox from "@/components/signupBox";
+import LogoHeader from "@/components/logoHeader";
+import SignupBox from "@/components/signup/signupBox";
 import { Container, MantineProvider } from "@mantine/core";
 
 export default function Signup() {
