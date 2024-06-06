@@ -1,3 +1,10 @@
+import LogoHeader from "@/components/logoHeader";
+
 export default function FeedPage() {
-    return <p>Feed</p>
+    return (
+        <main>
+            <LogoHeader />
+            <p>Feed</p>
+        </main>
+    )
 }
