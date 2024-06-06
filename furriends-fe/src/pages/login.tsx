@@ -1,5 +1,5 @@
-import LoginBox from "@/components/loginBox";
-import LogoHeader from "@/components/logoHeader/logoHeader";
+import LoginBox from "@/components/login/loginBox";
+import LogoHeader from "@/components/logoHeader";
 import { Container, MantineProvider } from "@mantine/core";
 
 export default function Login() {

@@ -1,8 +1,8 @@
 import { Text, Space, TextInput, PasswordInput, Button, Container, Box, Group, Divider } from '@mantine/core';
-import LoginButton from './loginButton';
+import LoginButton from '../login/loginButton';
 import router from 'next/router';
 import { useState } from 'react';
-import { createClient } from '../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../../../../furriends-backend/utils/supabase/component';
 
 export default function SignupBox() {
   const [email, setEmail] = useState('');

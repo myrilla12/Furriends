@@ -1,5 +1,5 @@
-import LoginButton from '@/components/loginButton';
-import LogoHeader from '@/components/logoHeader/logoHeader';
+import LoginButton from '@/components/login/loginButton';
+import LogoHeader from '@/components/logoHeader';
 import { Container, MantineProvider, Space, Text, Title } from '@mantine/core';
 
 export default function Home() {

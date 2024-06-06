@@ -1,4 +1,4 @@
-import LogoHeader from "@/components/logoHeader/logoHeader";
+import LogoHeader from "@/components/logoHeader";
 import SideNav from '@/components/sideNav';
 
 import type { User } from '@supabase/supabase-js'
