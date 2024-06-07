@@ -64,7 +64,7 @@ export default function Avatar({ uid, url, size, onUpload, }: {
             <div className="border-2 border-gray-300 flex items-center justify-center" style={{ height: size, width: size }}>
                 {avatarUrl ? (
                     <Image
-                        width={size} // reduce size to account for border
+                        width={size}
                         height={size}
                         src={avatarUrl}
                         alt="Avatar"
