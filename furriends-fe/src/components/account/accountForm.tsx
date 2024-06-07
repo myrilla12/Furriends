@@ -74,10 +74,10 @@ export default function AccountForm({ user }: { user: User | null }) {
                     <h1 className="font-bold text-lg">Edit Account Details</h1>
                 </div>
                 <div className="space-y-4">
-                    <div className="py-2">
+                    <div className="pb-2">
                         <TextInput disabled label="Email" placeholder={user?.email} />
                     </div>
-                    <div className="py-2">
+                    <div className="pb-2">
                         <TextInput
                             variant="filled"
                             label="Username"
