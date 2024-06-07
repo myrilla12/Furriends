@@ -5,12 +5,7 @@ import { createClient } from '../../../../furriends-backend/utils/supabase/compo
 import Image from 'next/image';
 import { Button } from '@mantine/core';
 
-export default function Avatar({
-    uid,
-    url,
-    size,
-    onUpload,
-}: {
+export default function Avatar({ uid, url, size, onUpload, }: {
     uid: string | null
     url: string | null
     size: number
@@ -66,11 +61,11 @@ export default function Avatar({
 
     return (
         <div className="flex flex-col items-center">
-            <div className="rounded-full border-2 border-gray-300 flex items-center justify-center" style={{ height: size, width: size }}>
+            <div className="border-2 border-gray-300 flex items-center justify-center" style={{ height: size, width: size }}>
                 {avatarUrl ? (
                     <Image
-                        width={size - 5} // reduce size to account for border
-                        height={size - 5}
+                        width={size} // reduce size to account for border
+                        height={size}
                         src={avatarUrl}
                         alt="Avatar"
                         className="avatar image"
