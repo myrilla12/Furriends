@@ -1,3 +1,5 @@
+// from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+
 import { createServerClient,  serialize } from '@supabase/ssr'
 
 export default function createClient(req, res) {

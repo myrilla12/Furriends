@@ -1,3 +1,5 @@
+// from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 

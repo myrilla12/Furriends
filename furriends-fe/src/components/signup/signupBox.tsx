@@ -1,3 +1,5 @@
+// adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+
 import { Text, Space, TextInput, PasswordInput, Button, Container, Box, Group, Divider } from '@mantine/core';
 import LoginButton from '../login/loginButton';
 import router from 'next/router';
