@@ -8,15 +8,33 @@ export default function SignupBox() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const supabase = createClient();
 
   async function signup() {
-    const { error } = await supabase.auth.signUp({ email, password })
-    if (error) {
-      console.error(error)
+    setEmailError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match");
+      return;
     }
-    router.push('/login');
+
+    const { error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      if (error.message.includes('email')) {
+        setEmailError("Invalid email format");
+      } else if (error.message.includes('password')) {
+        setPasswordError(error.message);
+      }
+      console.error(error);
+    } else {
+      router.push('/login');
+    }
   }
 
   return (
@@ -24,28 +42,25 @@ export default function SignupBox() {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
         <Box style={{ border: "1px solid black" }} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
           <Box mt='lg' mb='lg'>
-            <Text size='24pt' mb='sm'>Create a new account</Text>
+            <Text size='22pt' mb='sm' mt='xl' fw={700}>Create a new account</Text>
             <Text size='md' c='dimmed'>Join our pet-friendly community at Furriends! Help your pet make some friends and strengthen your bond with your pet!</Text>
 
             <Space h="lg" />
 
-            {/*
-          <TextInput
-            variant="filled"
-            label="Username"
-            placeholder="Username"
-          />
-
-          <Space h="lg" />
-          */}
-
             <TextInput
               variant="filled"
-              label="Email address"
-              placeholder="Email address"
+              label="Email Address"
+              placeholder="Email Address"
               value={email}
               onChange={(event) => setEmail(event.currentTarget.value)}
             />
+
+            {emailError && (
+              <>
+                <Space h="lg" />
+                <Text c="red">{emailError}</Text>
+              </>
+            )}
 
             <Space h="lg" />
 
@@ -57,6 +72,13 @@ export default function SignupBox() {
               onChange={(event) => setPassword(event.currentTarget.value)}
             />
 
+            {passwordError && (
+              <>
+                <Space h="xs" />
+                <Text c="red">{passwordError}</Text>
+              </>
+            )}
+
             <Space h="lg" />
 
             <PasswordInput
@@ -67,10 +89,10 @@ export default function SignupBox() {
               onChange={(event) => setConfirmPassword(event.currentTarget.value)}
             />
 
-            {error && (
+            {confirmPasswordError && (
               <>
-                <Space h="lg" />
-                <Text color="red">{error}</Text>
+                <Space h="xs" />
+                <Text c="red">{confirmPasswordError}</Text>
               </>
             )}
 
@@ -90,7 +112,6 @@ export default function SignupBox() {
               <LoginButton />
             </Box>
           </Group>
-
         </Box>
       </div>
     </>
