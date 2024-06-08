@@ -23,7 +23,7 @@ export default function LoginBox() {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
       <Box style={{ border: "1px solid black" }} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
         <Box mt='lg' mb='lg'>
-          <Text size='24pt'>Sign in to Furriends</Text>
+          <Text size='21pt' mt='xl' fw={700}>Sign In</Text>
 
           <Space h="lg" />
 
