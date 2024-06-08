@@ -5,7 +5,7 @@ import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../../furriends-backend/utils/supabase/server-props'
 
-export default function DashboardPage({ user }: { user: User }, { children }: { children: React.ReactNode }) {
+export default function DashboardPage({ user, username }: { user: User, username: string }, { children }: { children: React.ReactNode }) {
     return (
         <main className="flex min-h-screen flex-col p-6">
             <div className="flex h-25 shrink-0 content-center rounded-lg bg-slate-200 p-1 md:h-25">
@@ -16,7 +16,7 @@ export default function DashboardPage({ user }: { user: User }, { children }: { 
                     <SideNav />
                 </div>
                 <div className="flex-grow p-6 md:overflow-y-auto">
-                    <h1 className="mb-8 text-2xl">Welcome, <strong>{user.email || 'user'}</strong>!</h1>
+                    <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
                     <h2 className="mb-8 text-xl md:text-xl">Dashboard</h2>
                     {children}
                 </div>
@@ -39,9 +39,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
+    const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', data.user.id)
+        .single();
+
+    if (profileError || !profileData) {
+        return {
+            props: {
+                user: data.user,
+                username: '',
+            },
+        }
+    }
+
     return {
         props: {
             user: data.user,
+            username: profileData.username,
         },
     }
 }

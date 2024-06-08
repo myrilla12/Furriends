@@ -27,11 +27,12 @@ export default function SignupBox() {
 
     const { error } = await supabase.auth.signUp({ email, password });
 
+    // if user is not redirected and no error is shown, supabase email rate limit had been exceeded, try again in an hour
     if (error) {
       if (error.message.includes('email')) {
         setEmailError("Invalid email format");
       } else if (error.message.includes('password')) {
-        setPasswordError(error.message);
+        setPasswordError("Password must have at least 6 characters.");
       }
       console.error(error);
     } else {
@@ -59,7 +60,7 @@ export default function SignupBox() {
 
             {emailError && (
               <>
-                <Space h="lg" />
+                <Space h="xs" />
                 <Text c="red">{emailError}</Text>
               </>
             )}
