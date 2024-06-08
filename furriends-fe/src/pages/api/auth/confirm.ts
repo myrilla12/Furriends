@@ -1,3 +1,5 @@
+// from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+
 import { type EmailOtpType } from '@supabase/supabase-js'
 import type { NextApiRequest, NextApiResponse } from 'next'
 

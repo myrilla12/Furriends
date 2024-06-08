@@ -1,3 +1,4 @@
+// from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
 'use client'
 
 import React, { useEffect, useState } from 'react';
