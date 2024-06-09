@@ -1,32 +1,24 @@
-import LogoHeader from "@/components/logoHeader";
-import SideNav from '@/components/sideNav';
+import Layout from '@/components/layout';
 import AccountForm from '@/components/account/accountForm'
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../../../furriends-backend/utils/supabase/server-props'
 
-export default function EditAccountPage({ user }: { user: User }) {
+export default function EditAccountPage({ user, avatarUrl }: { user: User, avatarUrl: string }) {
     return (
-        <main className="flex h-screen flex-col p-6">
-            <div className="flex h-25 shrink-0 content-center rounded-lg bg-slate-200 p-1 md:h-25">
-                <LogoHeader />
-            </div>
-            <div className="flex flex-grow flex-row mt-4 gap-4">
-                <div className="flex-none w-64">
-                    <SideNav />
-                </div>
-                <div className="flex flex-grow items-center justify-center md:overflow-y-auto">
-                    <AccountForm user={user} />
-                </div>
-            </div>
-        </main>
+        <Layout avatarUrl={avatarUrl}>
+            <main className="flex flex-grow items-center justify-center h-full flex-col p-6">
+                <AccountForm user={user} />
+            </main>
+        </Layout >
     )
 }
 
+// fetch user data (profile photo) by getting server props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
 
-    const { data, error } = await supabase.auth.getUser();
+    const { data, error } = await supabase.auth.getUser()
 
     if (error || !data) {
         return {
@@ -37,9 +29,29 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
+    const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', data.user.id)
+        .single();
+
+    // generate signed url linking to correct item is supabase storage bucket
+    let signedAvatarUrl = '';
+
+    if (profileData && profileData.avatar_url) {
+        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+            .from('avatars')
+            .createSignedUrl(profileData.avatar_url, 600);
+
+        if (!signedUrlError && signedUrlData) {
+            signedAvatarUrl = signedUrlData.signedUrl;
+        }
+    }
+
     return {
         props: {
             user: data.user,
+            avatarUrl: signedAvatarUrl,
         },
     }
 }
