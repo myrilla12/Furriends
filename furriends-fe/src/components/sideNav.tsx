@@ -8,7 +8,6 @@ export default function SideNav() {
       <div className="flex grow flex-col justify-start space-y-2">
         <NavLinks />
         <div className="flex-grow bg-slate-100 rounded-md"></div>
-        <SignoutButton />
       </div>
     </div>
   );

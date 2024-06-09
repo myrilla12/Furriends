@@ -69,10 +69,10 @@ export default function AccountForm({ user }: { user: User | null }) {
     }
 
     return (
-        <div className="flex items-center justify-center max-h-screen">
+        <div className="flex items-center justify-center">
             <div className="form-widget grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-6 items-center">
                 <div className="col-span-1 md:col-span-2 flex justify-left">
-                    <h1 className="font-bold text-lg">Edit Account Details</h1>
+                    <h1 className="font-bold text-lg">Edit Profile</h1>
                 </div>
                 <div className="space-y-4">
                     <div className="pb-2">
