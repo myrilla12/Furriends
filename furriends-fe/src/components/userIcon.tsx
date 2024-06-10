@@ -48,6 +48,18 @@ export default function UserIcon({ avatarUrl }: UserIconProps) {
                             <span>Edit Profile</span>
                         </div>
                     </MenuItem>
+                    <MenuItem onClick={() => router.push('/account/pets')}>
+                        <div className="flex items-center">
+                            <Image
+                                src='/paw-icon.png' // use default avatar if no avatar set
+                                alt="paw icon"
+                                width='18'
+                                height='18'
+                                className='mr-1.5'
+                            />
+                            <span>My Pets</span>
+                        </div>
+                    </MenuItem>
                     <MenuItem onClick={signout}>
                         <div className="flex items-center">
                             <PowerIcon className="w-4 h-4 mr-2" />

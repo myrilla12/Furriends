@@ -39,9 +39,7 @@ export default function AccountForm({ user }: { user: User | null }) {
         }
     }, [user, supabase])
 
-    useEffect(() => {
-        getProfile()
-    }, [user, getProfile])
+    useEffect(() => { getProfile() }, [user, getProfile])
 
     async function updateProfile({
         username,
