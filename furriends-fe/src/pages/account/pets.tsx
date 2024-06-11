@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout';
 import { Button } from '@mantine/core';
+import type { User } from '@supabase/supabase-js'
 import { createClient } from '../../../../furriends-backend/utils/supabase/server-props'
 import PetForm from '@/components/account/petForm';
 import PetCard from '@/components/account/petCard';
@@ -10,9 +11,10 @@ const supabase = createClient();
 
 type MyPetsPageProps = {
     avatarUrl: string;
+    user: User;
 };
 
-export default function MyPetsPage({ avatarUrl }: MyPetsPageProps) {
+export default function MyPetsPage({ avatarUrl, user }: MyPetsPageProps) {
     const [pets, setPets] = useState([]);
     const [photos, setPhotos] = useState<{ [key: string]: { photo_url: string }[] }>({});
     const [modalOpened, setModalOpened] = useState(false);
@@ -59,8 +61,9 @@ export default function MyPetsPage({ avatarUrl }: MyPetsPageProps) {
                     <PetCard key={pet.id} pet={pet} photos={photos[pet.id] || []} />
                 ))}
             </div>
-
-            <PetForm modalOpened={modalOpened} setModalOpened={setModalOpened} onPetAdded={handlePetAdded} />
+            <div className="flex flex-grow">
+                <PetForm modalOpened={modalOpened} setModalOpened={setModalOpened} user={user} />
+            </div>
         </Layout>
     );
 }
