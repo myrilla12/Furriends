@@ -1,137 +1,139 @@
+// modal that pops up when "add a pet" button is clicked in profile page
+// allows user to create and add a new pet profile
+'use client'
+
 import { useState } from 'react';
-import { Button, Modal, TextInput, Textarea, MultiSelect, FileInput } from '@mantine/core';
-import { createClient } from '../../../../furriends-backend/utils/supabase/component'
+import { Button, Modal, TextInput } from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
+import FileUpload from './fileUpload';
+import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { type User } from '@supabase/supabase-js';
+import '@mantine/dates/styles.css'
 
 type PetFormProps = {
     modalOpened: boolean;
     setModalOpened: (open: boolean) => void;
-    onPetAdded: (pet: any) => void;
+    user: User | null;
 }
 
-export default function PetForm({ modalOpened, setModalOpened, onPetAdded }: PetFormProps) {
+export default function PetForm({ modalOpened, setModalOpened, user }: PetFormProps) {
     const supabase = createClient();
+    const [loading, setLoading] = useState(false);
+    const [name, setName] = useState<string | null>(null);
+    const [breed, setBreed] = useState<string | null>(null);
+    const [birthday, setBirthday] = useState<Date | null>(null);
+    const [description, setDescription] = useState<string | null>(null);
+    const [likes, setLikes] = useState<string | null>(null);
+    const [photo_urls, setPhotoUrls] = useState<string[] | null>(null);
 
-    const [newPet, setNewPet] = useState({
-        name: '',
-        age: '',
-        breed: '',
-        description: '',
-        characterTags: [],
-        hobbies: [],
-    });
-    const [pictures, setPictures] = useState<File[]>([]);
+    // add getProfile using useCallBack here when implementing "edit" button, to allow code reusability
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setNewPet({ ...newPet, [name]: value });
-    };
-
-    const handleFileChange = (files: File[]) => {
-        setPictures(files);
-    };
-
-    const handleMultiSelectChange = (name: string, values: string[]) => {
-        setNewPet({ ...newPet, [name]: values });
-    };
-
-    const handleSubmit = async () => {
-        const { data: petData, error: petError } = await supabase.from('pets').insert([
-            { ...newPet, owner_id: supabase.auth.getUser()?.id,},
-        ]);
-
-        if (petError) {
-            console.error(petError);
-            return;
-        }
-
-        const petId = petData[0].id;
-
-        for (const picture of pictures) {
-            const { data, error } = await supabase.storage
-                .from('pet_pictures')
-                .upload(`public/${petId}/${picture.name}`, picture);
-
-            if (error) {
-                console.error(error);
-                return;
+    async function addPetProfile({ name, breed, birthday, description, likes, photo_urls }: {
+        name: string | null
+        breed: string | null
+        birthday: Date | null
+        description: string | null
+        likes: string | null
+        photo_urls: string[] | null
+    }) {
+        // update relations in supabase with info, else throw error
+        try {
+            setLoading(true)
+            let birthdayString = new Date().toISOString();
+            if (birthday) {
+                birthdayString = birthday.toISOString();
             }
 
-            const pictureUrl = supabase.storage
-                .from('pet_pictures')
-                .getPublicUrl(data.path)
-                .publicURL;
+            // insert into `pets` relation
+            const { data, error: dataError } = await supabase
+                .from('pets')
+                .insert({ owner_id: user?.id as string, name: name, breed: breed, birthday: birthdayString, description: description, likes: likes, created_at: new Date().toISOString() })
+                .select('id') // select the pet_id for insertion into pet_photos
+                .single(); // expecting a single row
+            if (dataError) throw dataError;
 
-            const { error: photoError } = await supabase.from('pet_photos').insert([
-                {
-                    pet_id: petId,
-                    photo_url: pictureUrl,
-                },
-            ]);
+            const pet_id = data.id;
+            // insert into `pet_photos` relation - each url creates a new row
+            if (photo_urls && photo_urls.length > 0) {
+                const photoInserts = photo_urls.map(photo_url => ({ pet_id, photo_url }))
 
-            if (photoError) {
-                console.error(photoError);
+                const { error: photoError } = await supabase
+                    .from('pet_photos')
+                    .insert(photoInserts);
+                if (photoError) throw photoError;
             }
+
+            alert('Pet added!')
+        } catch (error) {
+            alert('Unable to add pet!')
+        } finally {
+            setLoading(false)
         }
+    }
 
-        onPetAdded(petData[0]);
-        setModalOpened(false);
-        setNewPet({
-            name: '',
-            age: '',
-            breed: '',
-            description: '',
-            characterTags: [],
-            hobbies: [],
-        });
-        setPictures([]);
-    };
-
+    // modal contains name, breed, age, description, likes, photo upload fields
+    // name, breed, age are mandatory fields
     return (
-        <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title="Add a Pet">
+        <Modal
+            opened={modalOpened} onClose={() => {
+                setModalOpened(false)
+                setName(null);
+                setBreed(null);
+                setBirthday(null);
+                setDescription(null);
+                setLikes(null);
+                setPhotoUrls(null);
+            }}
+            title="Add a pet"
+        >
             <div className="space-y-4">
                 <TextInput
                     label="Name"
                     name="name"
-                    value={newPet.name}
-                    onChange={handleInputChange}
-                />
-                <TextInput
-                    label="Age"
-                    name="age"
-                    value={newPet.age}
-                    onChange={handleInputChange}
+                    value={name || ''}
+                    onChange={(e) => setName(e.target.value)}
+                    required
                 />
                 <TextInput
                     label="Breed"
                     name="breed"
-                    value={newPet.breed}
-                    onChange={handleInputChange}
+                    value={breed || ''}
+                    onChange={(e) => setBreed(e.target.value)}
+                    required
                 />
-                <FileInput
-                    label="Pictures"
-                    multiple
-                    onChange={(files) => handleFileChange(Array.from(files))}
-                    accept="image/*"
+                <DatePickerInput
+                    label="Birthday"
+                    name="birthday"
+                    value={birthday}
+                    onChange={(e) => setBirthday(e)}
+                    required
                 />
-                <Textarea
+                <TextInput
                     label="Description"
                     name="description"
-                    value={newPet.description}
-                    onChange={handleInputChange}
+                    value={description || ''}
+                    onChange={(e) => setDescription(e.target.value)}
                 />
-                <MultiSelect
-                    label="Character Tags"
-                    data={['Friendly', 'Playful', 'Loyal']}
-                    value={newPet.characterTags}
-                    onChange={(values) => handleMultiSelectChange('characterTags', values)}
+                <TextInput
+                    label="Likes"
+                    name="likes"
+                    value={likes || ''}
+                    onChange={(e) => setLikes(e.target.value)}
                 />
-                <MultiSelect
-                    label="Hobbies"
-                    data={['Running', 'Swimming', 'Sleeping']}
-                    value={newPet.hobbies}
-                    onChange={(values) => handleMultiSelectChange('hobbies', values)}
+                <FileUpload
+                    uid={user?.id ?? null}
+                    urls={photo_urls}
+                    onUpload={(urls: string[]) => {
+                        setPhotoUrls(urls)
+                        addPetProfile({ name, breed, birthday, description, likes, photo_urls: urls })
+                    }}
                 />
-                <Button onClick={handleSubmit}>Create</Button>
+                <Button variant="default" color="gray"
+                    onClick={() => addPetProfile({ name, breed, birthday, description, likes, photo_urls })}
+                    disabled={loading}
+                >
+                    {loading ? 'Loading...' : 'Add'}
+                </Button>
             </div>
         </Modal>
     );

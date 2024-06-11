@@ -16,6 +16,7 @@ export default function Avatar({ uid, url, size, onUpload, }: {
     const [avatarUrl, setAvatarUrl] = useState<string | null>(url)
     const [uploading, setUploading] = useState(false)
 
+    // download exisiting profile photo in database, if any
     useEffect(() => {
         async function downloadImage(path: string) {
             try {
@@ -34,6 +35,7 @@ export default function Avatar({ uid, url, size, onUpload, }: {
         if (url) downloadImage(url)
     }, [url, supabase])
 
+    // selected file will be uploaded to supabase storage and generate a unique url
     const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
         try {
             setUploading(true)
