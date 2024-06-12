@@ -36,6 +36,7 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
         likes: string | null
         photo_urls: string[] | null
     }) {
+
         // update relations in supabase with info, else throw error
         try {
             setLoading(true)
@@ -71,6 +72,15 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
         }
     }
 
+    // form validation to ensure all required fields are filled
+    const validateForm = () => {
+        if (!name || !breed || !birthday) {
+            alert('Please fill in all required fields: Name, Breed, and Birthday.');
+            return false;
+        }
+        return true;
+    };
+
     // modal contains name, breed, age, description, likes, photo upload fields
     // name, breed, age are mandatory fields
     return (
@@ -84,7 +94,7 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                 setLikes(null);
                 setPhotoUrls(null);
             }}
-            title="Add a pet"
+            title="Create pet profile"
         >
             <div className="space-y-4">
                 <TextInput
@@ -129,8 +139,20 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     }}
                 />
                 <Button variant="default" color="gray"
-                    onClick={() => addPetProfile({ name, breed, birthday, description, likes, photo_urls })}
-                    disabled={loading}
+                    onClick={async () => {
+                        if (validateForm()) {
+                            await addPetProfile({ name, breed, birthday, description, likes, photo_urls });
+                            setModalOpened(false); // close modal upon successful addition of pet
+                            // reset all fields to prepare modal for next addition
+                            setName(null);
+                            setBreed(null);
+                            setBirthday(null);
+                            setDescription(null);
+                            setLikes(null);
+                            setPhotoUrls(null);
+                        }
+                    }}
+                    disabled={loading} // button shows loading while data is uploaded
                 >
                     {loading ? 'Loading...' : 'Add'}
                 </Button>
