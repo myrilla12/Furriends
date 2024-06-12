@@ -6,7 +6,6 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '../../../../furriends-backend/utils/supabase/component'
 import { FileInput } from '@mantine/core';
-import Image from 'next/image';
 //import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 
 export default function FileUpload({ uid, urls, onUpload, }: {
@@ -40,7 +39,7 @@ export default function FileUpload({ uid, urls, onUpload, }: {
     }, [urls, supabase])
 
     // selected files will be uploaded to supabase storage and generate unique urls
-    const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
+    const uploadPhoto: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
         try {
             setUploading(true)
 
@@ -81,9 +80,11 @@ export default function FileUpload({ uid, urls, onUpload, }: {
                 onChange={(files) => handleFileChange(Array.from(files))}
                 accept="image/*"
             />
-            {photo_urls.map((url, index) => (
+            {/* This chunk displays the exisiting photos after the fileinput field
+            photo_urls.map((url, index) => (
                 <img key={index} src={url} alt="pet photo" />
-            ))}
+            ))
+            */}
         </div>
     );
 
@@ -91,6 +92,6 @@ export default function FileUpload({ uid, urls, onUpload, }: {
         const event = {
             target: { files: files as any }
         } as React.ChangeEvent<HTMLInputElement>;
-        uploadAvatar(event);
+        uploadPhoto(event);
     }
 }
