@@ -1,13 +1,21 @@
 import LogoHeader from "@/components/logoHeader";
-import { Text } from "@mantine/core";
+import Filters from "@/components/pet-matching/filters";
+import PetCarousel from "@/components/pet-matching/petCarousel";
+import { Group, Title } from "@mantine/core";
 
+// This page includes the horizontal filter bar followed by carousel of pet profile cards
 export default function Matching() {
     return ( 
         <>
+            <Group>
             <LogoHeader />
-            <Text>
-                This will be the pet matching page. Search bar and filters will be top center. Below that will be the pet cards display with carousel scrolling. Pet cards displayed based on filter criteria. 
-            </Text>
+            <Title order={1}>
+                Find your pet some furriends
+            </Title>
+            </Group>
+            
+            <Filters />
+            <PetCarousel />
         </>
     );
 }
