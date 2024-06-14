@@ -3,6 +3,7 @@ import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../../furriends-backend/utils/supabase/server-props'
+import DashboardMatch from '@/components/pet-matching/dashboardMatch';
 
 // define prop types
 type DashboardProps = {
@@ -19,6 +20,7 @@ export default function DashboardPage({ user, username, avatarUrl, children }: D
                     <div className="flex-grow p-6 md:overflow-y-auto">
                         <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
                         <h2 className="mb-8 text-xl md:text-xl">Dashboard</h2>
+                        <DashboardMatch />
                         {children}
                     </div>
             </main>
