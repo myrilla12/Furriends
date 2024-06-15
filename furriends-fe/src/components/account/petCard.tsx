@@ -22,7 +22,7 @@ export default function PetCard({ pet }: PetCardProps) {
             style={{ backgroundImage: `url(${pet.photos[0]})` }}
             onClick={() => setModalOpened(true)}
         >
-            <div className="absolute bottom-0 left-0 text-white pl-5 pb-4">
+            <div className="absolute bottom-0 left-0 pl-5 pb-4 text-white mix-blend-difference">
                 <h2 className="text-2xl font-bold">{pet.name}</h2>
                 <p>{pet.breed}</p>
                 <p className="text-sm">
