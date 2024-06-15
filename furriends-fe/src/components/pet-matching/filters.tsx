@@ -1,4 +1,4 @@
-import { Text, Box, Select, Group, ComboboxItem, OptionsFilter, Image } from "@mantine/core";
+import { Text, Box, Select, Group, ComboboxItem, OptionsFilter, NumberInput, Space } from "@mantine/core";
 
 const optionsFilter: OptionsFilter = ({ options, search }) => {
     const splittedSearch = search.toLowerCase().trim().split(' ');
@@ -27,43 +27,65 @@ export default function Filters() {
     return(
         <Box m='lg'>
                 <Text size='xl' fw={500}>Filters</Text>
+                <div style={{ display: 'flex' }}>
+                    <Group>
+                        <Select
+                            w={150}
+                            placeholder="Pet type"
+                            data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea pig', 'Chincilla', 'Pig']}
+                            filter={optionsFilter}
+                            searchable
+                        />
 
-                <Group>
-                    <Select
-                        placeholder="Pet type"
-                        data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird']}
-                        filter={optionsFilter}
-                        searchable
-                    />
+                        <Space w='xs'/>
 
-                    <Select
-                        placeholder="Age"
-                        data={['< 1 year old'].concat(age)}
-                        filter={optionsFilter}
-                        searchable
-                    />
+                        <Text size='sm'>Age:</Text>
 
-                    <Select
-                        placeholder="Size"
-                        data={['< 1 kg'].concat(size)}
-                        filter={optionsFilter}
-                        searchable
-                    />
+                        <NumberInput
+                                w={160}
+                                placeholder="From ~ years old"
+                        />
 
-                    <Select
-                        placeholder="Energy level"
-                        data={['Very low', 'Low', 'Medium', 'High', 'Very High']}
-                        filter={optionsFilter}
-                        searchable
-                    />
+                        <NumberInput
+                                w={160}
+                                placeholder="To ~ years old"
+                        />      
 
-                    <Select
-                        placeholder="Location"
-                        data={['East', 'West', 'Central', 'North', 'South']}
-                        filter={optionsFilter}
-                        searchable
-                    />
-                </Group>
+                        <Space w='xs'/>
+
+                        <Text size='sm'>Size:</Text>
+
+                        <NumberInput
+                                w={110}
+                                placeholder="From ~ kg"
+                        />
+
+                        <NumberInput
+                                w={110}
+                                placeholder="To ~ kg"
+                        />
+
+                        <Space w='xs'/>
+
+                        <Select
+                            w={130}
+                            placeholder="Energy level"
+                            data={['Very low', 'Low', 'Medium', 'High', 'Very High']}
+                            filter={optionsFilter}
+                            searchable
+                        />
+
+                        <Space w='xs'/>
+
+                        <Select
+                            w={110}
+                            placeholder="Location"
+                            data={['East', 'West', 'Central', 'North', 'South']}
+                            filter={optionsFilter}
+                            searchable
+                        />
+                    </Group>
+                </div>
             </Box>
     );
 }

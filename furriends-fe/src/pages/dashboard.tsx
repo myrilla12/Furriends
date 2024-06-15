@@ -21,9 +21,7 @@ export default function DashboardPage({ user, username, avatarUrl, children }: D
             <main className="flex min-h-screen flex-col p-2">
                     <div className="flex-grow p-6 md:overflow-y-auto">
                         <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
-                        <Title order={3} m='lg'>
-                            Find your pet some furriends
-                        </Title>
+                        <h1 className="mb-8 text-2xl font-bold">Find your pet some furriends</h1>
             
                         <Filters />
                         <PetCarousel />
