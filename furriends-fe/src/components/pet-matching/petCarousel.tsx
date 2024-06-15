@@ -52,7 +52,7 @@ export default function PetCarousel({ petData }: PetCarouselProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const slides = data.map((item) => (
-    <Carousel.Slide key={item.title}>
+    <Carousel.Slide>
       {petData.map((pet) => <PetCard pet={pet} />)}
     </Carousel.Slide>
   ));

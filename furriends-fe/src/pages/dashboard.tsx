@@ -43,7 +43,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const { data, error } = await supabase.auth.getUser()
 
-    // get pet data of pet that do not belong to current user
+    // get pet data of pets that do not belong to current user
     const petResponse: any = await supabase
                                     .from('pets')
                                     .select("*")
