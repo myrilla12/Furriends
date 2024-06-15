@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import Layout from '@/components/layout';
 import { Button } from '@mantine/core';
 import type { User } from '@supabase/supabase-js'
@@ -7,45 +7,23 @@ import PetForm from '@/components/account/petForm';
 import PetCard from '@/components/account/petCard';
 import type { GetServerSidePropsContext } from 'next'
 
-const supabase = createClient();
-
 type MyPetsPageProps = {
     avatarUrl: string;
-    user: User;
+    user: User,
+    pets: {
+        id: string;
+        name: string;
+        breed: string;
+        birthday: string;
+        description: string;
+        likes: string;
+        photos: string[];
+    }[];
 };
 
-export default function MyPetsPage({ avatarUrl, user }: MyPetsPageProps) {
-    const [pets, setPets] = useState([]);
-    const [photos, setPhotos] = useState<{ [key: string]: { photo_url: string }[] }>({});
+export default function MyPetsPage({ avatarUrl, pets, user }: MyPetsPageProps) {
+    const [petList, setPetList] = useState(pets);
     const [modalOpened, setModalOpened] = useState(false);
-
-    useEffect(() => {
-        fetchPets();
-    }, []);
-
-    const fetchPets = async () => {
-        const { data, error } = await supabase.from('pets').select('*').eq('owner_id', supabase.auth.user()?.id);
-        if (error) {
-            console.error(error);
-        } else {
-            setPets(data);
-            data.forEach(pet => fetchPhotos(pet.id));
-        }
-    };
-
-    const fetchPhotos = async (petId: string) => {
-        const { data, error } = await supabase.from('pet_photos').select('*').eq('pet_id', petId);
-        if (error) {
-            console.error(error);
-        } else {
-            setPhotos(prevPhotos => ({ ...prevPhotos, [petId]: data }));
-        }
-    };
-
-    const handlePetAdded = (pet: any) => {
-        setPets([...pets, pet]);
-        fetchPhotos(pet.id); // Fetch photos for the newly added pet
-    };
 
     return (
         <Layout avatarUrl={avatarUrl}>
@@ -53,12 +31,9 @@ export default function MyPetsPage({ avatarUrl, user }: MyPetsPageProps) {
                 <h1 className="mb-8 text-2xl font-bold">My Pets</h1>
                 <Button variant='default' color="gray" onClick={() => setModalOpened(true)}>Add a pet</Button>
             </div>
-            <div className="flex-grow px-6">
-                <p>Here are my pets</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {pets.map((pet) => (
-                    <PetCard key={pet.id} pet={pet} photos={photos[pet.id] || []} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6 px-6">
+                {petList.map((pet) => (
+                    <PetCard key={pet.id} pet={pet} />
                 ))}
             </div>
             <div className="flex flex-grow">
@@ -68,12 +43,14 @@ export default function MyPetsPage({ avatarUrl, user }: MyPetsPageProps) {
     );
 }
 
-// fetch user data (profile photo) by getting server props
+
+// fetch user profile photo & pet profile by getting server props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
 
     const { data, error } = await supabase.auth.getUser()
 
+    // redirect unauthenticated users to home page
     if (error || !data) {
         return {
             redirect: {
@@ -83,27 +60,66 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
+    // get user profile photo
     const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('avatar_url')
+        .select('id, avatar_url')
         .eq('id', data.user.id)
         .single();
 
-    // generate signed url linking to correct item is supabase storage bucket
+    // generate signed url linking to profile photo
     let signedAvatarUrl = '';
 
     if (profileData && profileData.avatar_url) {
         const { data: signedUrlData, error: signedUrlError } = await supabase.storage
             .from('avatars')
-            .createSignedUrl(profileData.avatar_url, 600);
+            .createSignedUrl(profileData.avatar_url, 3600);
 
         if (!signedUrlError && signedUrlData) {
             signedAvatarUrl = signedUrlData.signedUrl;
         }
     }
 
+    // select all pets & photos linked to the user's id
+    const { data: petData, error: petError } = await supabase
+        .from('pets')
+        .select('id, name, breed, birthday, description, likes, pet_photos (photo_url)')
+        .eq('owner_id', data.user.id);
+
+    // if error, there are no pets
+    if (petError) {
+        return {
+            props: {
+                pets: [],
+                user: data.user,
+                avatarUrl: signedAvatarUrl,
+            },
+        };
+    }
+
+    // replace photo url with signed link to correct item in supabase storage
+    const petsWithPhotoUrls = await Promise.all(petData.map(async pet => {
+        const signedPhotos = await Promise.all(pet.pet_photos.map(async photo => {
+            const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+                .from('pet_photos')
+                .createSignedUrl(photo.photo_url, 3600);
+
+            if (signedUrlError || !signedUrlData) {
+                return null;
+            }
+
+            return signedUrlData.signedUrl;
+        }));
+
+        return {
+            ...pet,
+            photos: signedPhotos.filter(url => url !== null), // Filter out any null values
+        };
+    }));
+
     return {
         props: {
+            pets: petsWithPhotoUrls,
             user: data.user,
             avatarUrl: signedAvatarUrl,
         },

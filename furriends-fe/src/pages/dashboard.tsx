@@ -34,6 +34,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const { data, error } = await supabase.auth.getUser()
 
+    // redirect unauthenticated users to home page
     if (error || !data) {
         return {
             redirect: {
@@ -43,19 +44,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
+    // select tuple corresponding to user, expecting a single result
     const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('username, avatar_url')
         .eq('id', data.user.id)
         .single();
 
-    // generate signed url linking to correct item is supabase storage bucket
+    // generate signed url linking to correct item in supabase storage bucket
     let signedAvatarUrl = '';
 
     if (profileData && profileData.avatar_url) {
         const { data: signedUrlData, error: signedUrlError } = await supabase.storage
             .from('avatars')
-            .createSignedUrl(profileData.avatar_url, 600);
+            .createSignedUrl(profileData.avatar_url, 3600);
 
         if (!signedUrlError && signedUrlData) {
             signedAvatarUrl = signedUrlData.signedUrl;
