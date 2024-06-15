@@ -24,20 +24,20 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
     const [breed, setBreed] = useState<string | null>(null);
     const [weight, setWeight] = useState<number | null>(null);
     const [birthday, setBirthday] = useState<Date | null>(null);
-    const [energy, setEnergy] = useState<string | null>(null);
+    const [energy_level, setEnergy] = useState<string | null>(null);
     const [description, setDescription] = useState<string | null>(null);
     const [likes, setLikes] = useState<string | null>(null);
     const [photo_urls, setPhotoUrls] = useState<string[] | null>(null);
 
     // add getProfile using useCallBack here when implementing "edit" button, to allow code reusability
 
-    async function addPetProfile({ name, type, breed, weight, birthday, energy, description, likes, photo_urls }: {
+    async function addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls }: {
         name: string | null
         type: string | null
         breed: string | null
         weight: number | null
         birthday: Date | null
-        energy: string | null
+        energy_level: string | null
         description: string | null
         likes: string | null
         photo_urls: string[] | null
@@ -61,7 +61,7 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     breed: breed,
                     weight: weight,
                     birthday: birthdayString,
-                    energy_level: energy,
+                    energy_level: energy_level,
                     description: description,
                     likes: likes,
                     created_at: new Date().toISOString()
@@ -170,7 +170,7 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     label="Energy Level"
                     name="energy"
                     placeholder="Pick energy level"
-                    value={energy || ''}
+                    value={energy_level || ''}
                     data={['Very Low', 'Low', 'Medium', 'High', 'Very High']}
                     onChange={setEnergy}
                     checkIconPosition="right"
@@ -199,8 +199,8 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                 <Button variant="default" color="gray"
                     onClick={async () => {
                         if (validateForm()) {
-                            await addPetProfile({ name, type, breed, weight, birthday, energy, description, likes, photo_urls });
-                            setModalOpened(false); // close modal upon successful addition of pet
+                            await addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
+                            setModalOpened(false); // close modal upon addition of pet
                             // reset all fields to prepare modal for next addition
                             setName(null);
                             setType(null);
