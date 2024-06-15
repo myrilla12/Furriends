@@ -13,10 +13,13 @@ type MyPetsPageProps = {
     pets: {
         id: string;
         name: string;
+        type: string;
         breed: string;
+        weight: number;
         birthday: string;
+        energy_level: string;
         description: string;
-        likes: string;
+        likes: string
         photos: string[];
     }[];
 };
@@ -83,7 +86,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // select all pets & photos linked to the user's id
     const { data: petData, error: petError } = await supabase
         .from('pets')
-        .select('id, name, breed, birthday, description, likes, pet_photos (photo_url)')
+        .select('id, name, type, breed, weight, birthday, energy_level, description, likes, pet_photos (photo_url)')
         .eq('owner_id', data.user.id);
 
     // if error, there are no pets

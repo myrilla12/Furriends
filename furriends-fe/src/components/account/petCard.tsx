@@ -5,10 +5,13 @@ import PetDetailsModal from '@/components/account/petDetailsModal';
 type PetCardProps = {
     pet: {
         name: string;
+        type: string;
         breed: string;
-        birthday: string
+        weight: number;
+        birthday: string;
+        energy_level: string;
         description: string;
-        likes: string,
+        likes: string
         photos: string[];
     };
 };
@@ -24,7 +27,7 @@ export default function PetCard({ pet }: PetCardProps) {
         >
             <div className="absolute bottom-0 left-0 pl-5 pb-4 text-white mix-blend-difference">
                 <h2 className="text-2xl font-bold">{pet.name}</h2>
-                <p>{pet.breed}</p>
+                <p>{pet.type},{" "}{pet.breed}</p>
                 <p className="text-sm">
                     {/* calculate age from birthday */}
                     {(new Date().getFullYear() - new Date(pet.birthday).getFullYear()).toString()}
