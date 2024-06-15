@@ -38,7 +38,7 @@ export default function PetDetailsModal({ pet, modalOpened, setModalOpened }: Pe
                 <Text><strong>Type:</strong> {pet.type}</Text>
                 <Text><strong>Breed:</strong> {pet.breed}</Text>
                 <Text><strong>Birthday:</strong> {pet.birthday}</Text>
-                <Text><strong>Weight:</strong> {pet.weight}{" "}kg</Text>
+                <Text><strong>Weight:</strong> {pet.weight}{pet.weight ? " kg" : ""}</Text>
                 <Text><strong>Age:</strong>{" "}
                     {/* calculate age from birthday */}
                     {(new Date().getFullYear() - new Date(pet.birthday).getFullYear()).toString()}
