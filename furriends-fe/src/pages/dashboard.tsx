@@ -6,6 +6,7 @@ import { createClient } from '../../../furriends-backend/utils/supabase/server-p
 import { Title } from '@mantine/core';
 import Filters from '@/components/pet-matching/filters';
 import PetCarousel from '@/components/pet-matching/petCarousel';
+import { Pet } from '@/util/definitions';
 
 // define prop types
 type DashboardProps = {
@@ -13,9 +14,13 @@ type DashboardProps = {
     avatarUrl: string;
     username: string;
     children: React.ReactNode;
+    petData: Pet[]
 };
 
-export default function DashboardPage({ user, username, avatarUrl, children }: DashboardProps) {
+export default function DashboardPage({ user, username, avatarUrl, petData, children }: DashboardProps) {
+    
+    console.log("petdtaa", petData)
+
     return (
         <Layout avatarUrl={avatarUrl}>
             <main className="flex min-h-screen flex-col p-2">
@@ -24,7 +29,7 @@ export default function DashboardPage({ user, username, avatarUrl, children }: D
                         <h1 className="mb-8 text-2xl font-bold">Find your pet some furriends</h1>
             
                         <Filters />
-                        <PetCarousel />
+                        <PetCarousel petData={petData} />
                         {children}
                     </div>
             </main>
@@ -38,6 +43,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const { data, error } = await supabase.auth.getUser()
 
+    // get pet data of pet that do not belong to current user
+    const petResponse: any = await supabase
+                                    .from('pets')
+                                    .select("*")
+                                    .neq("owner_id", data?.user?.id)
+                              
     // redirect unauthenticated users to home page
     if (error || !data) {
         return {
@@ -73,6 +84,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             user: data.user,
             username: profileData?.username || '',
             avatarUrl: signedAvatarUrl,
+            petData: petResponse.data ? petResponse.data : []
         },
     }
 }

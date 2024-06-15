@@ -1,6 +1,8 @@
 import { Carousel } from '@mantine/carousel';
 import { useMediaQuery } from '@mantine/hooks';
 import { Button, Paper, Title, useMantineTheme, Text } from '@mantine/core';
+import { Pet } from '@/util/definitions';
+import PetCard from '../account/petCard';
 
 // Pet profile carousel. NOTE: Cards are just temp demos, to be replaced with pet profile cards
 const data = [
@@ -42,42 +44,16 @@ const data = [
   },
 ];
 
-interface CardProps {
-  image: string;
-  title: string;
-  category: string;
+interface PetCarouselProps {
+  petData: Pet[];
 }
 
-function Card({ image, title, category }: CardProps) {
-  return (
-    <Paper
-      m='lg'
-      shadow="md"
-      p="xl"
-      radius="md"
-      style={{ backgroundImage: `url(${image})` }}
-    >
-      <div>
-        <Text size="xs">
-          {category}
-        </Text>
-        <Title order={3}>
-          {title}
-        </Title>
-      </div>
-      <Button variant="white" color="dark">
-        Read article
-      </Button>
-    </Paper>
-  );
-}
-
-export default function PetCarousel() {
+export default function PetCarousel({ petData }: PetCarouselProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const slides = data.map((item) => (
     <Carousel.Slide key={item.title}>
-      <Card {...item} />
+      {petData.map((pet) => <PetCard pet={pet} />)}
     </Carousel.Slide>
   ));
 

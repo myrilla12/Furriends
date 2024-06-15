@@ -10,18 +10,6 @@ const optionsFilter: OptionsFilter = ({ options, search }) => {
         }
     );
 };
-
-// Creating array for filter's age options
-const age = Array(20)
-  .fill(1)
-  .map((_, index) => `${index + 1} years old`)
-  .concat(['> 20 years old']);
-
-// Creating array for filter's size options
-const size = Array(30)
-  .fill(1)
-  .map((_, index) => `${index + 1} kg`)
-  .concat(['> 30 kg']);
   
 export default function Filters() {
     return(
@@ -44,11 +32,17 @@ export default function Filters() {
                         <NumberInput
                                 w={160}
                                 placeholder="From ~ years old"
+                                allowDecimal={false}
+                                allowLeadingZeros={false}
+                                allowNegative={false}
                         />
 
                         <NumberInput
                                 w={160}
                                 placeholder="To ~ years old"
+                                allowDecimal={false}
+                                allowLeadingZeros={false}
+                                allowNegative={false}
                         />      
 
                         <Space w='xs'/>
@@ -58,11 +52,17 @@ export default function Filters() {
                         <NumberInput
                                 w={110}
                                 placeholder="From ~ kg"
+                                allowDecimal={false}
+                                allowLeadingZeros={false}
+                                allowNegative={false}
                         />
 
                         <NumberInput
                                 w={110}
                                 placeholder="To ~ kg"
+                                allowDecimal={false}
+                                allowLeadingZeros={false}
+                                allowNegative={false}
                         />
 
                         <Space w='xs'/>

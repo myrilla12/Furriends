@@ -23,7 +23,7 @@ export default function PetDetailsModal({ pet, modalOpened, setModalOpened }: Pe
         <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title={pet.name} scrollAreaComponent={ScrollArea.Autosize}>
             <div className="space-y-4">
                 <div className="flex space-x-3">
-                    {pet.photos.map((url, index) => (
+                    {pet.photos && pet.photos.map((url, index) => (
                         <div key={index} className="relative w-32 h-32">
                             <Image
                                 src={url}
