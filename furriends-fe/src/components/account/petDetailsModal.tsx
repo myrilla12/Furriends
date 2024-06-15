@@ -7,8 +7,11 @@ type PetDetailsModalProps = {
     setModalOpened: (open: boolean) => void;
     pet: {
         name: string;
+        type: string;
         breed: string;
-        birthday: string
+        weight: number;
+        birthday: string;
+        energy_level: string;
         description: string;
         likes: string,
         photos: string[];
@@ -32,13 +35,16 @@ export default function PetDetailsModal({ pet, modalOpened, setModalOpened }: Pe
                         </div>
                     ))}
                 </div>
+                <Text><strong>Type:</strong> {pet.type}</Text>
                 <Text><strong>Breed:</strong> {pet.breed}</Text>
                 <Text><strong>Birthday:</strong> {pet.birthday}</Text>
+                <Text><strong>Weight:</strong> {pet.weight}{pet.weight ? " kg" : ""}</Text>
                 <Text><strong>Age:</strong>{" "}
                     {/* calculate age from birthday */}
                     {(new Date().getFullYear() - new Date(pet.birthday).getFullYear()).toString()}
                     {" "}years old
                 </Text>
+                <Text><strong>Energy Level:</strong> {pet.energy_level}</Text>
                 <Text><strong>Description:</strong> {pet.description}</Text>
                 <Text><strong>Likes:</strong> {pet.likes}</Text>
             </div>

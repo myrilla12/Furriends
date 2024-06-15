@@ -38,7 +38,7 @@ export default function FileUpload({ uid, urls, onUpload, }: {
             urls.forEach(url => downloadImage(url));
         }
     }, [urls, supabase])
-*/
+    */
 
     // selected files will be uploaded to supabase storage and generate unique urls
     const uploadPhoto: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
