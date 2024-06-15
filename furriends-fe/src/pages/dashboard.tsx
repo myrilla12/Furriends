@@ -3,7 +3,9 @@ import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../../furriends-backend/utils/supabase/server-props'
-import DashboardMatch from '@/components/pet-matching/dashboardMatch';
+import { Title } from '@mantine/core';
+import Filters from '@/components/pet-matching/filters';
+import PetCarousel from '@/components/pet-matching/petCarousel';
 
 // define prop types
 type DashboardProps = {
@@ -19,8 +21,12 @@ export default function DashboardPage({ user, username, avatarUrl, children }: D
             <main className="flex min-h-screen flex-col p-2">
                     <div className="flex-grow p-6 md:overflow-y-auto">
                         <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
-                        <h2 className="mb-8 text-xl md:text-xl">Dashboard</h2>
-                        <DashboardMatch />
+                        <Title order={3} m='lg'>
+                            Find your pet some furriends
+                        </Title>
+            
+                        <Filters />
+                        <PetCarousel />
                         {children}
                     </div>
             </main>

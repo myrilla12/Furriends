@@ -26,7 +26,7 @@ const size = Array(30)
 export default function Filters() {
     return(
         <Box m='lg'>
-                <Text size='xl' fw={700}>Filters</Text>
+                <Text size='xl' fw={500}>Filters</Text>
 
                 <Group>
                     <Select

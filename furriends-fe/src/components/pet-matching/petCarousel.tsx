@@ -51,6 +51,7 @@ interface CardProps {
 function Card({ image, title, category }: CardProps) {
   return (
     <Paper
+      m='lg'
       shadow="md"
       p="xl"
       radius="md"
