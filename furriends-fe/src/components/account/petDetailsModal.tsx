@@ -3,8 +3,8 @@ import { Modal, Text, ScrollArea } from '@mantine/core';
 import Image from 'next/image'
 
 type PetDetailsModalProps = {
-    modalOpened: boolean;
-    setModalOpened: (open: boolean) => void;
+    opened: boolean;
+    onClose: () => void;
     pet: {
         name: string;
         type: string;
@@ -18,9 +18,9 @@ type PetDetailsModalProps = {
     };
 }
 
-export default function PetDetailsModal({ pet, modalOpened, setModalOpened }: PetDetailsModalProps) {
+export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModalProps) {
     return (
-        <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title={pet.name} scrollAreaComponent={ScrollArea.Autosize}>
+        <Modal opened={opened} onClose={onClose} title={pet.name} scrollAreaComponent={ScrollArea.Autosize}>
             <div className="space-y-4">
                 <div className="flex space-x-3">
                     {pet.photos && pet.photos.map((url, index) => (
