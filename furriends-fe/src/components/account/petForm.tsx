@@ -137,7 +137,6 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     urls={photo_urls}
                     onUpload={(urls: string[]) => {
                         setPhotoUrls(urls)
-                        addPetProfile({ name, breed, birthday, description, likes, photo_urls: urls })
                     }}
                 />
                 <Button variant="default" color="gray"

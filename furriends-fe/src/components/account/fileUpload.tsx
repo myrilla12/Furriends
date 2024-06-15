@@ -17,6 +17,7 @@ export default function FileUpload({ uid, urls, onUpload, }: {
     const [photo_urls, setPhotoUrls] = useState<string[]>(urls || []);
     const [uploading, setUploading] = useState(false); // can be used later on to modify state of buttons etc.
 
+    /*
     // download existing images in database, if any
     useEffect(() => {
         async function downloadImage(path: string) {
@@ -37,6 +38,7 @@ export default function FileUpload({ uid, urls, onUpload, }: {
             urls.forEach(url => downloadImage(url));
         }
     }, [urls, supabase])
+*/
 
     // selected files will be uploaded to supabase storage and generate unique urls
     const uploadPhoto: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
