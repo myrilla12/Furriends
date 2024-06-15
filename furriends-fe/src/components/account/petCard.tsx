@@ -1,54 +1,39 @@
 // card component showing pet photo (scrollable), overlayed with name, breed, age in the bottom left
-import { useState } from 'react';
-import Image from 'next/image';
-import PetDetailsModal from './petDetailsModal';
+import React, { useState } from 'react';
+import PetDetailsModal from '@/components/account/petDetailsModal';
 
 type PetCardProps = {
     pet: {
-        id: string;
         name: string;
         breed: string;
-        age: number;
+        birthday: string
         description: string;
-        likes: string;
+        likes: string,
+        photos: string[];
     };
-    photos: { photo_url: string }[];
-}
+};
 
-export default function PetCard({ pet, photos }: PetCardProps) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    // when the card is clicked, the pet details modal opens
-    const handleCardClick = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleModalClose = () => {
-        setIsModalOpen(false);
-    };
+export default function PetCard({ pet }: PetCardProps) {
+    const [modalOpened, setModalOpened] = useState(false);
 
     return (
-        <div>
-            <div
-                key={pet.id}
-                className="relative h-48 w-full bg-gray-200 rounded-lg overflow-hidden cursor-pointer"
-                onClick={handleCardClick}
-            >
-                <div className="flex overflow-x-scroll h-full">
-                    {photos.map((photo) => (
-                        <div key={photo.photo_url} className="relative h-full w-full flex-shrink-0">
-                            <Image src={photo.photo_url} alt={pet.name} layout="fill" objectFit="cover" />
-                        </div>
-                    ))}
-                </div>
-                <div className="absolute bottom-0 left-0 p-4 bg-gradient-to-t from-black via-transparent to-transparent text-white">
-                    <h2 className="text-lg font-bold">{pet.name}</h2>
-                    <p>{pet.age} years old</p>
-                    <p>{pet.breed}</p>
-                </div>
+        <div
+            className="relative bg-cover bg-center h-64 w-full rounded-lg overflow-hidden shadow-lg cursor-pointer"
+            style={{ backgroundImage: `url(${pet.photos[0]})` }}
+            onClick={() => setModalOpened(true)}
+        >
+            <div className="absolute bottom-0 left-0 text-white pl-5 pb-4">
+                <h2 className="text-2xl font-bold">{pet.name}</h2>
+                <p>{pet.breed}</p>
+                <p className="text-sm">
+                    {/* calculate age from birthday */}
+                    {(new Date().getFullYear() - new Date(pet.birthday).getFullYear()).toString()}
+                    {" "}years old
+                </p>
             </div>
-
-            <PetDetailsModal pet={pet} photos={photos} isOpen={isModalOpen} onClose={handleModalClose} />
+            <div className="flex flex-grow">
+                <PetDetailsModal modalOpened={modalOpened} setModalOpened={setModalOpened} pet={pet} />
+            </div>
         </div>
     );
-}
+};

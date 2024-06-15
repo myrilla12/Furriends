@@ -1,32 +1,46 @@
 // modal that opens on click to show stored pet details
-import { Modal, Text, Image } from '@mantine/core';
+import { Modal, Text, ScrollArea } from '@mantine/core';
+import Image from 'next/image'
 
 type PetDetailsModalProps = {
+    modalOpened: boolean;
+    setModalOpened: (open: boolean) => void;
     pet: {
         name: string;
         breed: string;
-        age: number;
+        birthday: string
         description: string;
         likes: string,
+        photos: string[];
     };
-    photos: { photo_url: string }[];
-    isOpen: boolean;
-    onClose: () => void;
 }
 
-export default function PetDetailsModal({ pet, photos, isOpen, onClose }: PetDetailsModalProps) {
+export default function PetDetailsModal({ pet, modalOpened, setModalOpened }: PetDetailsModalProps) {
     return (
-        <Modal opened={isOpen} onClose={onClose} title={pet.name}>
+        <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title={pet.name} scrollAreaComponent={ScrollArea.Autosize}>
             <div className="space-y-4">
                 <div className="flex space-x-4">
-                    {photos.map((photo) => ( // display all the photos of this pet
-                        <Image key={photo.photo_url} src={photo.photo_url} alt={pet.name} width={100} height={100} />
+                    {pet.photos.map((url, index) => (
+                        <div key={index} className="relative w-32 h-32">
+                            <Image
+                                src={url}
+                                alt={pet.name}
+                                layout="fill"
+                                objectFit="cover"
+                                className="rounded"
+                            />
+                        </div>
                     ))}
                 </div>
-                <Text><strong>Age:</strong> {pet.age} years old</Text>
                 <Text><strong>Breed:</strong> {pet.breed}</Text>
+                <Text><strong>Birthday:</strong> {pet.birthday}</Text>
+                <Text><strong>Age:</strong>{" "}
+                    {/* calculate age from birthday */}
+                    {(new Date().getFullYear() - new Date(pet.birthday).getFullYear()).toString()}
+                    {" "}years old
+                </Text>
                 <Text><strong>Description:</strong> {pet.description}</Text>
-                <Text><strong>Hobbies:</strong> {pet.likes}</Text>
+                <Text><strong>Likes:</strong> {pet.likes}</Text>
             </div>
         </Modal>
     );

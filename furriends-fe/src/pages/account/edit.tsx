@@ -41,7 +41,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (profileData && profileData.avatar_url) {
         const { data: signedUrlData, error: signedUrlError } = await supabase.storage
             .from('avatars')
-            .createSignedUrl(profileData.avatar_url, 600);
+            .createSignedUrl(profileData.avatar_url, 3600);
 
         if (!signedUrlError && signedUrlData) {
             signedAvatarUrl = signedUrlData.signedUrl;

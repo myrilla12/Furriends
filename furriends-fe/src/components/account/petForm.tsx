@@ -46,12 +46,12 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
             }
 
             // insert into `pets` relation
-            const { data, error: dataError } = await supabase
+            const { data, error } = await supabase
                 .from('pets')
                 .insert({ owner_id: user?.id as string, name: name, breed: breed, birthday: birthdayString, description: description, likes: likes, created_at: new Date().toISOString() })
                 .select('id') // select the pet_id for insertion into pet_photos
                 .single(); // expecting a single row
-            if (dataError) throw dataError;
+            if (error) throw error;
 
             const pet_id = data.id;
             // insert into `pet_photos` relation - each url creates a new row
@@ -73,6 +73,7 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
     }
 
     // form validation to ensure all required fields are filled
+    // can be further refined to show error message below relevant fields instead of using alert
     const validateForm = () => {
         if (!name || !breed || !birthday) {
             alert('Please fill in all required fields: Name, Breed, and Birthday.');
@@ -85,7 +86,8 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
     // name, breed, age are mandatory fields
     return (
         <Modal
-            opened={modalOpened} onClose={() => {
+            opened={modalOpened}
+            onClose={() => {
                 setModalOpened(false)
                 setName(null);
                 setBreed(null);

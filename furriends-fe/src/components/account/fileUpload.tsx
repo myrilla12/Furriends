@@ -17,7 +17,7 @@ export default function FileUpload({ uid, urls, onUpload, }: {
     const [photo_urls, setPhotoUrls] = useState<string[]>(urls || []);
     const [uploading, setUploading] = useState(false); // can be used later on to modify state of buttons etc.
 
-    // download exisiting images in database, if any
+    // download existing images in database, if any
     useEffect(() => {
         async function downloadImage(path: string) {
             try {
