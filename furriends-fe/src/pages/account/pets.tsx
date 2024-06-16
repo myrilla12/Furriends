@@ -6,21 +6,11 @@ import { createClient } from '../../../../furriends-backend/utils/supabase/serve
 import PetForm from '@/components/account/petForm';
 import PetCard from '@/components/account/petCard';
 import type { GetServerSidePropsContext } from 'next'
+import { Pet } from '@/util/definitions';
 
 type MyPetsPageProps = {
     user: User,
-    pets: {
-        id: string;
-        name: string;
-        type: string;
-        breed: string;
-        weight: number;
-        birthday: string;
-        energy_level: string;
-        description: string;
-        likes: string
-        photos: string[];
-    }[];
+    pets: Pet[];
 };
 
 export default function MyPetsPage({ pets, user }: MyPetsPageProps) {

@@ -16,6 +16,7 @@
     "@mantine/hooks": "^7.10.2",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.4",
+    "dayjs": "^1.11.11",
     "embla-carousel-react": "^7.1.0",
     "next": "^14.2.3",
     "react": "^18",

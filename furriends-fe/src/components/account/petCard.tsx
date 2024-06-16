@@ -4,19 +4,10 @@ import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
 import { PencilIcon } from '@heroicons/react/24/outline';
+import { Pet } from '@/util/definitions';
 
 type PetCardProps = {
-    pet: {
-        name: string;
-        type: string;
-        breed: string;
-        weight: number;
-        birthday: string;
-        energy_level: string;
-        description: string;
-        likes: string
-        photos: string[];
-    };
+    pet: Pet;
 };
 
 export default function PetCard({ pet }: PetCardProps) {
@@ -26,7 +17,7 @@ export default function PetCard({ pet }: PetCardProps) {
         <>
             <div
                 className="relative bg-cover bg-center h-64 w-full rounded-lg overflow-hidden shadow-lg cursor-pointer"
-                style={{ backgroundImage: `url(${pet.photos[0]})` }}
+                style={{ backgroundImage: `url(${pet.photos && pet.photos[0]})` }}
                 onClick={open}
             >
                 <div className="absolute bottom-0 left-0 pl-5 pb-4 text-white mix-blend-difference">

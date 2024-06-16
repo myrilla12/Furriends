@@ -26,7 +26,7 @@ export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModa
             <div className="space-y-4">
 
                 <div className="flex space-x-3">
-                    {pet.photos.map((url, index) => (
+                    {pet.photos && pet.photos.map((url, index) => (
                         <div key={index} className="relative w-32 h-32">
                             <Image
                                 src={url}
