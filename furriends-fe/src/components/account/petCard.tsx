@@ -1,10 +1,11 @@
-// card component showing pet photo (scrollable), overlayed with name, breed, age in the bottom left
+// card component showing pet photo (scrollable), overlayed with name, type, breed, age in the bottom left
+// pencil button in top right allows users to edit their pet profile
 import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { Pet } from '@/util/definitions';
+import { Pet } from '@/utils/definitions';
 
 type PetCardProps = {
     pet: Pet;

@@ -1,7 +1,7 @@
 import { Carousel } from '@mantine/carousel';
 import { useMediaQuery } from '@mantine/hooks';
 import { Button, Paper, Title, useMantineTheme, Text } from '@mantine/core';
-import { Pet } from '@/util/definitions';
+import { Pet } from '@/utils/definitions';
 import PetCard from '../account/petCard';
 
 // Pet profile carousel. NOTE: Cards are just temp demos, to be replaced with pet profile cards

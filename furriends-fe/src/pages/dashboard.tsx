@@ -6,7 +6,7 @@ import { createClient } from '../../../furriends-backend/utils/supabase/server-p
 import { Title } from '@mantine/core';
 import Filters from '@/components/pet-matching/filters';
 import PetCarousel from '@/components/pet-matching/petCarousel';
-import { Pet } from '@/util/definitions';
+import { Pet } from '@/utils/definitions';
 
 // define prop types
 type DashboardProps = {

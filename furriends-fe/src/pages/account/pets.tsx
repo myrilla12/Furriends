@@ -6,7 +6,7 @@ import { createClient } from '../../../../furriends-backend/utils/supabase/serve
 import PetForm from '@/components/account/petForm';
 import PetCard from '@/components/account/petCard';
 import type { GetServerSidePropsContext } from 'next'
-import { Pet } from '@/util/definitions';
+import { Pet } from '@/utils/definitions';
 
 type MyPetsPageProps = {
     user: User,
@@ -55,7 +55,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // select all pets & photos linked to the user's id
     const { data: petData, error: petError } = await supabase
         .from('pets')
-        .select('id, name, type, breed, weight, birthday, energy_level, description, likes, pet_photos (photo_url)')
+        .select('id, owner_id, name, type, breed, weight, birthday, energy_level, description, likes, created_at, pet_photos (photo_url)')
         .eq('owner_id', data.user.id);
 
     // if error, there are no pets
