@@ -1,15 +1,19 @@
+import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Menu, MenuItem } from '@mantine/core';
 import { useRouter } from 'next/router';
+import { type User } from '@supabase/supabase-js';
 import { createClient } from '../../../furriends-backend/utils/supabase/component';
 import { PowerIcon, UserIcon as PersonIcon } from '@heroicons/react/24/outline';
 
 type UserIconProps = {
-    avatarUrl: string;
+    user: User | null;
 };
 
-export default function UserIcon({ avatarUrl }: UserIconProps) {
+export default function UserIcon({ user }: UserIconProps) {
     const router = useRouter();
+    const [loading, setLoading] = useState(true)
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
     const supabase = createClient();
 
     // signout logic to redirect to home page after sign out
@@ -21,6 +25,49 @@ export default function UserIcon({ avatarUrl }: UserIconProps) {
             router.push('/');
         }
     }
+
+    // create a memoized getAvatar; only recreated if dependencies change
+    // gets user profile photo
+    const getAvatar = useCallback(async () => {
+        try {
+            setLoading(true)
+
+            const { data, error, status } = await supabase
+                .from('profiles')
+                .select(`avatar_url`)
+                .eq('id', user?.id)
+                .single()
+
+            if (error && status !== 406) {
+                console.log(error)
+                throw error
+            }
+
+            if (data) {
+                await downloadImage(data.avatar_url)
+            }
+        } catch (error) {
+            alert('Error loading profile photo!')
+        } finally {
+            setLoading(false)
+        }
+
+        async function downloadImage(path: string) {
+            try {
+                const { data, error } = await supabase.storage.from('avatars').createSignedUrl(path, 3600)
+                if (error) {
+                    throw error
+                }
+
+                const url = data.signedUrl
+                setAvatarUrl(url)
+            } catch (error) {
+                console.log('Error downloading image: ', error)
+            }
+        }
+    }, [avatarUrl, supabase])
+
+    useEffect(() => { getAvatar() }, [avatarUrl, getAvatar])
 
     return (
         <div className="relative">
