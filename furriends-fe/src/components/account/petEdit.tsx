@@ -1,28 +1,24 @@
-import { useState } from 'react';
+// pet edit form allowing users to edit their pet details; autofilled with exisitng profile data
+'use client'
+
+import { useCallback, useEffect, useState } from 'react';
 import { Modal, ScrollArea, Button, TextInput, Select, NumberInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
 import { type User } from '@supabase/supabase-js';
+import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { Pet } from '@/utils/definitions';
 import '@mantine/dates/styles.css';
 
 type PetEditProps = {
     modalOpened: boolean;
     setModalOpened: (open: boolean) => void;
     user: User | null;
-    pet: {
-        name: string;
-        type: string;
-        breed: string;
-        weight: number;
-        birthday: string;
-        energy_level: string;
-        description: string;
-        likes: string,
-        photos: string[];
-    };
+    pet: Pet
 }
 
 export default function PetEdit({ modalOpened, setModalOpened, user, pet }: PetEditProps) {
+    const supabase = createClient()
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState<string | null>(null);
     const [type, setType] = useState<string | null>(null);
@@ -33,6 +29,70 @@ export default function PetEdit({ modalOpened, setModalOpened, user, pet }: PetE
     const [description, setDescription] = useState<string | null>(null);
     const [likes, setLikes] = useState<string | null>(null);
     const [photo_urls, setPhotoUrls] = useState<string[] | null>(null);
+
+    // create a memoized getProfile; only recreated if dependencies change
+    const getProfile = useCallback(async () => {
+        try {
+            setLoading(true)
+
+            const { data, error, status } = await supabase
+                .from('pets')
+                .select(`username, avatar_url`)
+                .eq('id', user?.id)
+                .single()
+
+            if (error && status !== 406) {
+                console.log(error)
+                throw error
+            }
+
+            if (data) {
+                setUsername(data.username)
+                setAvatarUrl(data.avatar_url)
+            }
+        } catch (error) {
+            alert('Error loading user data!')
+        } finally {
+            setLoading(false)
+        }
+    }, [user, supabase])
+
+    useEffect(() => { getProfile() }, [user, getProfile])
+
+    async function updateProfile({
+        username,
+        avatar_url,
+    }: {
+        username: string | null
+        avatar_url: string | null
+    }) {
+        try {
+            setLoading(true)
+
+            const { error } = await supabase.from('profiles').upsert({
+                id: user?.id as string,
+                username,
+                avatar_url,
+                updated_at: new Date().toISOString(),
+            })
+            if (error) throw error
+            alert('Profile updated!')
+        } catch (error) {
+            alert('Error updating the data!')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    // form validation to ensure all required fields are filled
+    // can be further refined to show error message below relevant fields instead of using alert
+    const validateForm = () => {
+        if (!name || !type || !breed || !birthday) {
+            alert('Please fill in all required fields: Name, Type, Breed, and Birthday.');
+            return false;
+        }
+        return true;
+    };
 
     return (
         <Modal
@@ -132,7 +192,7 @@ export default function PetEdit({ modalOpened, setModalOpened, user, pet }: PetE
                 <Button variant="default" color="gray"
                     onClick={async () => {
                         if (validateForm()) {
-                            await addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
+                            await updatePetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
                             setModalOpened(false); // close modal upon addition of pet
                         }
                     }}

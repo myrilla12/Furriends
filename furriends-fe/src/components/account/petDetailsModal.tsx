@@ -1,33 +1,23 @@
 // modal that opens on click to show stored pet details
-// pencil button in bottom right allows users to edit their pet profile
 import { Modal, Text, ScrollArea } from '@mantine/core';
 import Image from 'next/image';
+import { Pet } from '@/utils/definitions';
 
 
 type PetDetailsModalProps = {
     opened: boolean;
     onClose: () => void;
-    pet: {
-        name: string;
-        type: string;
-        breed: string;
-        weight: number;
-        birthday: string;
-        energy_level: string;
-        description: string;
-        likes: string,
-        photos: string[];
-    };
+    pet: Pet;
 }
 
 export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModalProps) {
     return (
-        <Modal opened={opened} onClose={onClose} title={pet.name} scrollAreaComponent={ScrollArea.Autosize}>
+        <Modal opened={opened} onClose={onClose} title={pet.name} scrollAreaComponent={ScrollArea.Autosize} size='lg'>
             <div className="space-y-4">
 
-                <div className="flex space-x-3">
+                <div className="flex space-x-4">
                     {pet.photos && pet.photos.map((url, index) => (
-                        <div key={index} className="relative w-32 h-32">
+                        <div key={index} className="relative w-44 h-44">
                             <Image
                                 src={url}
                                 alt={pet.name}
