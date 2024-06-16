@@ -4,9 +4,9 @@ import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../../../furriends-backend/utils/supabase/server-props'
 
-export default function EditAccountPage({ user, avatarUrl }: { user: User, avatarUrl: string }) {
+export default function EditAccountPage({ user }: { user: User }) {
     return (
-        <Layout avatarUrl={avatarUrl}>
+        <Layout user={user}>
             <main className="flex flex-grow items-center justify-center h-full flex-col p-6">
                 <AccountForm user={user} />
             </main>
@@ -29,29 +29,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
-    const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('avatar_url')
-        .eq('id', data.user.id)
-        .single();
-
-    // generate signed url linking to correct item is supabase storage bucket
-    let signedAvatarUrl = '';
-
-    if (profileData && profileData.avatar_url) {
-        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-            .from('avatars')
-            .createSignedUrl(profileData.avatar_url, 3600);
-
-        if (!signedUrlError && signedUrlData) {
-            signedAvatarUrl = signedUrlData.signedUrl;
-        }
-    }
-
     return {
         props: {
             user: data.user,
-            avatarUrl: signedAvatarUrl,
         },
     }
 }

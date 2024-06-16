@@ -2,15 +2,16 @@ import { useState } from 'react';
 import UserIcon from './userIcon';
 import LogoHeader from './logoHeader';
 import SideNav from './sideNav';
+import { type User } from '@supabase/supabase-js';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
 // define prop types
 type LayoutProps = {
     children: React.ReactNode;
-    avatarUrl: string;
+    user: User;
 };
 
-export default function Layout({ children, avatarUrl }: LayoutProps) {
+export default function Layout({ children, user }: LayoutProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // used to change state of side bar
@@ -47,7 +48,7 @@ export default function Layout({ children, avatarUrl }: LayoutProps) {
                         <LogoHeader />
                     </div>
                     {/* profile photo icon with dropdown on the right */}
-                    <UserIcon avatarUrl={avatarUrl} />
+                    <UserIcon user={user} />
                 </header>
                 <main className="flex-grow overflow-auto">{children}</main>
             </div>

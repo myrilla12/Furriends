@@ -9,19 +9,18 @@ import type { GetServerSidePropsContext } from 'next'
 import { Pet } from '@/util/definitions';
 
 type MyPetsPageProps = {
-    avatarUrl: string;
     user: User,
     pets: Pet[];
 };
 
-export default function MyPetsPage({ avatarUrl, pets, user }: MyPetsPageProps) {
+export default function MyPetsPage({ pets, user }: MyPetsPageProps) {
     const [petList, setPetList] = useState(pets);
     const [modalOpened, setModalOpened] = useState(false);
-
+    
     return (
-        <Layout avatarUrl={avatarUrl}>
+        <Layout user={user}>
             <div className="flex-grow p-6">
-                <h1 className="mb-8 text-2xl font-bold">My Pets</h1>
+                <h1 className="mb-7 text-2xl font-bold">My Pets</h1>
                 <Button variant='default' color="gray" onClick={() => setModalOpened(true)}>Add a pet</Button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6 px-6">
@@ -53,26 +52,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
-    // get user profile photo
-    const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id, avatar_url')
-        .eq('id', data.user.id)
-        .single();
-
-    // generate signed url linking to profile photo
-    let signedAvatarUrl = '';
-
-    if (profileData && profileData.avatar_url) {
-        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-            .from('avatars')
-            .createSignedUrl(profileData.avatar_url, 3600);
-
-        if (!signedUrlError && signedUrlData) {
-            signedAvatarUrl = signedUrlData.signedUrl;
-        }
-    }
-
     // select all pets & photos linked to the user's id
     const { data: petData, error: petError } = await supabase
         .from('pets')
@@ -85,7 +64,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             props: {
                 pets: [],
                 user: data.user,
-                avatarUrl: signedAvatarUrl,
             },
         };
     }
@@ -114,7 +92,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         props: {
             pets: petsWithPhotoUrls,
             user: data.user,
-            avatarUrl: signedAvatarUrl,
         },
     }
 }

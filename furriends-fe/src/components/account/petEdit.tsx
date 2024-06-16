@@ -1,23 +1,28 @@
-// modal that pops up when "add a pet" button is clicked in profile page
-// allows user to create and add a new pet profile
-'use client'
-
 import { useState } from 'react';
-import { Button, Modal, TextInput, NumberInput, Select, ScrollArea } from '@mantine/core';
+import { Modal, ScrollArea, Button, TextInput, Select, NumberInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
-import { createClient } from '../../../../furriends-backend/utils/supabase/component';
 import { type User } from '@supabase/supabase-js';
-import '@mantine/dates/styles.css'
+import '@mantine/dates/styles.css';
 
-type PetFormProps = {
+type PetEditProps = {
     modalOpened: boolean;
     setModalOpened: (open: boolean) => void;
     user: User | null;
+    pet: {
+        name: string;
+        type: string;
+        breed: string;
+        weight: number;
+        birthday: string;
+        energy_level: string;
+        description: string;
+        likes: string,
+        photos: string[];
+    };
 }
 
-export default function PetForm({ modalOpened, setModalOpened, user }: PetFormProps) {
-    const supabase = createClient();
+export default function PetEdit({ modalOpened, setModalOpened, user, pet }: PetEditProps) {
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState<string | null>(null);
     const [type, setType] = useState<string | null>(null);
@@ -29,78 +34,6 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
     const [likes, setLikes] = useState<string | null>(null);
     const [photo_urls, setPhotoUrls] = useState<string[] | null>(null);
 
-    // add getProfile using useCallBack here when implementing "edit" button, to allow code reusability
-
-    async function addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls }: {
-        name: string | null
-        type: string | null
-        breed: string | null
-        weight: number | null
-        birthday: Date | null
-        energy_level: string | null
-        description: string | null
-        likes: string | null
-        photo_urls: string[] | null
-    }) {
-
-        // update relations in supabase with info, else throw error
-        try {
-            setLoading(true)
-            let birthdayString = new Date().toISOString();
-            if (birthday) {
-                birthdayString = birthday.toISOString();
-            }
-
-            // insert into `pets` relation
-            const { data, error } = await supabase
-                .from('pets')
-                .insert({
-                    owner_id: user?.id as string,
-                    name: name,
-                    type: type,
-                    breed: breed,
-                    weight: weight,
-                    birthday: birthdayString,
-                    energy_level: energy_level,
-                    description: description,
-                    likes: likes,
-                    created_at: new Date().toISOString()
-                })
-                .select('id') // select the pet_id for insertion into pet_photos
-                .single(); // expecting a single row
-            if (error) throw error;
-
-            const pet_id = data.id;
-            // insert into `pet_photos` relation - each url creates a new row
-            if (photo_urls && photo_urls.length > 0) {
-                const photoInserts = photo_urls.map(photo_url => ({ pet_id, photo_url }))
-
-                const { error: photoError } = await supabase
-                    .from('pet_photos')
-                    .insert(photoInserts);
-                if (photoError) throw photoError;
-            }
-
-            alert('Pet added!')
-        } catch (error) {
-            alert('Unable to add pet!')
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    // form validation to ensure all required fields are filled
-    // can be further refined to show error message below relevant fields instead of using alert
-    const validateForm = () => {
-        if (!name || !type || !breed || !birthday) {
-            alert('Please fill in all required fields: Name, Type, Breed, and Birthday.');
-            return false;
-        }
-        return true;
-    };
-
-    // modal contains name, type, breed, weight, bday, energy level, description, likes, photo upload fields
-    // name, type, breed, age are mandatory fields
     return (
         <Modal
             opened={modalOpened}
@@ -201,22 +134,10 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                         if (validateForm()) {
                             await addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
                             setModalOpened(false); // close modal upon addition of pet
-                            // reset all fields to prepare modal for next addition
-                            setName(null);
-                            setType(null);
-                            setBreed(null);
-                            setWeight(null);
-                            setBirthday(null);
-                            setEnergy(null);
-                            setDescription(null);
-                            setLikes(null);
-                            setPhotoUrls(null);
                         }
                     }}
                     disabled={loading} // button shows loading while data is uploaded
-                >
-                    {loading ? 'Loading...' : 'Add'}
-                </Button>
+                ></Button>
             </div>
         </Modal>
     );

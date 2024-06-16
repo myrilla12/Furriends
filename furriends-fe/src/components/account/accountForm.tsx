@@ -13,6 +13,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     const [username, setUsername] = useState<string | null>(null)
     const [avatar_url, setAvatarUrl] = useState<string | null>(null)
 
+    // create a memoized getProfile; only recreated if dependencies change
     const getProfile = useCallback(async () => {
         try {
             setLoading(true)

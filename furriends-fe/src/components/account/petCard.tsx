@@ -1,7 +1,9 @@
 // card component showing pet photo (scrollable), overlayed with name, breed, age in the bottom left
 import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
+import { Button } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
+import { PencilIcon } from '@heroicons/react/24/outline';
 import { Pet } from '@/util/definitions';
 
 type PetCardProps = {
@@ -26,6 +28,12 @@ export default function PetCard({ pet }: PetCardProps) {
                         {(new Date().getFullYear() - new Date(pet.birthday).getFullYear()).toString()}
                         {" "}years old
                     </p>
+                </div>
+                <div className="absolute top-0 right-0 pr-2 pt-2 mix-blend-difference">
+                    <Button variant="subtle" size="compact-xs"
+                        onClick={(e) => {e.stopPropagation()}}> {/*onClick={() => setModalOpened(true)}*/}
+                        <PencilIcon className="h-5 w-5" />
+                    </Button>
                 </div>
             </div>
             <PetDetailsModal opened={opened} onClose={close} pet={pet} />
