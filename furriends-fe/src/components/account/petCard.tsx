@@ -1,5 +1,5 @@
 // card component showing pet photo (scrollable), overlayed with name, type, breed, age in the bottom left
-// pencil button in top right allows users to edit their pet profile
+// pencil button in top right allows users to edit their pet profile when prop editable is set as true
 import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
