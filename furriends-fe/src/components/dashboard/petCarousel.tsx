@@ -9,7 +9,6 @@ interface PetCarouselProps {
 }
 
 export default function PetCarousel({ petData }: PetCarouselProps) {
-  console.log('Carou page', petData);
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const slides = petData.map((pet) => (
