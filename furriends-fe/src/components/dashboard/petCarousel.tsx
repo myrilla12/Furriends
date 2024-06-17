@@ -5,13 +5,13 @@ import { Pet } from '@/utils/definitions';
 import PetCard from '../account/petCard';
 
 interface PetCarouselProps {
-  petData: Pet[];
+  pets: Pet[];
 }
 
-export default function PetCarousel({ petData }: PetCarouselProps) {
+export default function PetCarousel({ pets }: PetCarouselProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const slides = petData.map((pet) => (
+  const slides = pets.map((pet) => (
     <Carousel.Slide>
       {<PetCard pet={pet} editable={false} />}
     </Carousel.Slide>

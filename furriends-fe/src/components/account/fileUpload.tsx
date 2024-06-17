@@ -1,5 +1,5 @@
 // file upload field for pet profile creation form
-// allows users to uplaod multiple files at once
+// allows users to upload multiple files at once
 // files will be fetched and uploaded from supabase storage bucket `pet_photos`
 // partially adapted from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
 

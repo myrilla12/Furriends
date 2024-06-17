@@ -12,21 +12,21 @@ type DashboardProps = {
     user: User;
     username: string;
     children: React.ReactNode;
-    petData: Pet[]
+    pets: Pet[]
 };
 
-export default function DashboardPage({ user, username, petData, children }: DashboardProps) {
+export default function DashboardPage({ user, username, pets, children }: DashboardProps) {
     return (
         <Layout user={user}>
             <main className="flex min-h-screen flex-col p-2">
-                    <div className="flex-grow p-6 md:overflow-y-auto">
-                        <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
-                        <h1 className="mb-8 text-2xl font-bold">Find your pet some furriends</h1>
-            
-                        <Filters />
-                        <PetCarousel petData={petData} />
-                        {children}
-                    </div>
+                <div className="flex-grow p-6 md:overflow-y-auto">
+                    <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
+                    <h1 className="mb-8 text-2xl font-bold">Find your pet some furriends</h1>
+
+                    <Filters />
+                    <PetCarousel pets={pets} />
+                    {children}
+                </div>
             </main>
         </Layout>
     );
@@ -38,12 +38,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const { data, error } = await supabase.auth.getUser()
 
-    // get pet data of pets that do not belong to current user
-    const petResponse: any = await supabase
-                                    .from('pets')
-                                    .select('id, name, type, breed, weight, birthday, energy_level, description, likes, pet_photos (photo_url)')
-                                    .neq('owner_id', data?.user?.id)
-                              
     // redirect unauthenticated users to home page
     if (error || !data) {
         return {
@@ -61,11 +55,39 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         .eq('id', data.user.id)
         .single();
 
+    // get pet data of pets that do not belong to current user
+    const { data: petData, error: petError } = await supabase
+        .from('pets')
+        .select('id, owner_id, name, type, breed, weight, birthday, energy_level, description, likes, created_at, pet_photos (photo_url)')
+        .neq('owner_id', data?.user?.id)
+
+    // if error, there are no other pets
+    if (petError) {
+        return {
+            props: {
+                pets: [],
+                user: data.user,
+                username: profileData?.username || '',
+            },
+        };
+    }
+
+    // ensure photos attribute is a string[] (array of urls)
+    // by default after query it is an array of photo containing photo_url
+    const petsWithPhotoUrlArray = petData.map(pet => {
+        const photoUrls = pet.pet_photos.map(photo => photo.photo_url);
+
+        return {
+            ...pet,
+            photos: photoUrls, // reassign the list of photo URLs
+        };
+    });
+
     return {
         props: {
             user: data.user,
             username: profileData?.username || '',
-            petData: petResponse.data ? petResponse.data : []
+            pets: petsWithPhotoUrlArray,
         },
-    }
+    };
 }
