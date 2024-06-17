@@ -60,13 +60,8 @@ export default function FileUpload({ uid, urls, onUpload, }: {
                 if (uploadError) {
                     throw uploadError;
                 }
-                
-                const { data, error } = await supabase
-                    .storage
-                    .from('pet_photos')
-                    .createSignedUrl(filePath, 999999);
 
-                uploadedPhotos.push(data?.signedUrl ? data.signedUrl : 'not found');
+                uploadedPhotos.push(filePath);
             }
 
             setPhotoUrls(prevUrls => [...prevUrls, ...uploadedPhotos]);
