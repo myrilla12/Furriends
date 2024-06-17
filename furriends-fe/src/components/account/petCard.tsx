@@ -21,9 +21,10 @@ export default function PetCard({ pet, editable }: PetCardProps) {
         <>
             <div
                 className="relative bg-cover bg-center h-64 w-full rounded-lg overflow-hidden shadow-lg cursor-pointer"
-                style={{ backgroundImage: `url(${pet.photos && pet.photos[0]})` }}
+                style={{ backgroundImage: `url(${pet.pet_photos[0]?.photo_url && pet.pet_photos[0]?.photo_url})` }}
                 onClick={openDetails}
             >
+
                 <div className="absolute bottom-0 left-0 pl-5 pb-4 text-white mix-blend-difference">
                     <h2 className="text-2xl font-bold">{pet.name}</h2>
                     <p>{pet.type},{" "}{pet.breed}</p>

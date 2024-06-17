@@ -10,5 +10,6 @@ export type Pet = {
     description: string;
     likes: string;
     created_at: string;
-    photos: string[];
+    pet_photos: any;
+    // will narrow down type of pet_photos after debugging
 }
