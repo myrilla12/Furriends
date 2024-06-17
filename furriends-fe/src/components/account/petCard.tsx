@@ -1,6 +1,7 @@
 // card component showing pet photo (scrollable), overlayed with name, type, breed, age in the bottom left
-// pencil button in top right allows users to edit their pet profile when prop editable is set as true
-import React from 'react';
+// pencil button in top right allows users to edit their pet profile
+import { useCallback, useEffect, useState } from 'react';
+import { createClient } from '../../../../furriends-backend/utils/supabase/component';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
