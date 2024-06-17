@@ -3,9 +3,8 @@ import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../../furriends-backend/utils/supabase/server-props'
-import { Title } from '@mantine/core';
-import Filters from '@/components/pet-matching/filters';
-import PetCarousel from '@/components/pet-matching/petCarousel';
+import Filters from '@/components/dashboard/filters';
+import PetCarousel from '@/components/dashboard/petCarousel';
 import { Pet } from '@/utils/definitions';
 
 // define prop types
@@ -42,8 +41,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // get pet data of pets that do not belong to current user
     const petResponse: any = await supabase
                                     .from('pets')
-                                    .select("*")
-                                    .neq("owner_id", data?.user?.id)
+                                    .select('id, name, type, breed, weight, birthday, energy_level, description, likes, pet_photos (photo_url)')
+                                    .neq('owner_id', data?.user?.id)
                               
     // redirect unauthenticated users to home page
     if (error || !data) {

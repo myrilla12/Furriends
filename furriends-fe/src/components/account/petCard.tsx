@@ -1,5 +1,5 @@
 // card component showing pet photo (scrollable), overlayed with name, type, breed, age in the bottom left
-// pencil button in top right allows users to edit their pet profile
+// pencil button in top right allows users to edit their pet profile when prop editable is set as true
 import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
@@ -10,9 +10,10 @@ import { Pet } from '@/utils/definitions';
 
 type PetCardProps = {
     pet: Pet;
+    editable: boolean;
 };
 
-export default function PetCard({ pet }: PetCardProps) {
+export default function PetCard({ pet, editable }: PetCardProps) {
     const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false); // controls opening/closing of petDetailsModal
     const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false); // controls opening/closing of petEdit modal
 
@@ -32,20 +33,24 @@ export default function PetCard({ pet }: PetCardProps) {
                         {" "}years old
                     </p>
                 </div>
-                <div className="absolute top-0 right-0 pr-2 pt-2 mix-blend-difference">
-                    <Button variant="subtle" size="compact-xs"
-                        onClick={(e) => {
+
+                {editable && (
+                    <div className="absolute top-0 right-0 pr-2 pt-2 mix-blend-difference">
+                        <Button variant="subtle" size="compact-xs"
+                          onClick={(e) => {
                             e.stopPropagation();
                             openEdit();
-                        }}>
-                        <PencilIcon className="h-5 w-5" />
-                    </Button>
-                    <Button variant="subtle" size="compact-xs"
-                        onClick={(e) => {
-                            e.stopPropagation() }}>
-                        <TrashIcon className="h-5 w-5" />
-                    </Button>
-                </div>
+                          }}>
+                          <PencilIcon className="h-5 w-5" />
+                        </Button>
+                        <Button variant="subtle" size="compact-xs"
+                            onClick={(e) => {
+                                e.stopPropagation() }}>
+                            <TrashIcon className="h-5 w-5" />
+                        </Button>
+                    </div>
+                )}
+                
             </div>
             <PetDetailsModal opened={detailsOpened} onClose={closeDetails} pet={pet} />
             <PetEdit opened={editOpened} onClose={closeEdit} pet={pet} />

@@ -19,8 +19,8 @@ export default function Filters() {
                     <Group>
                         <Select
                             w={150}
-                            placeholder="Pet type"
-                            data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea pig', 'Chincilla', 'Pig']}
+                            placeholder='Pet type'
+                            data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea pig', 'Chincilla', 'Others']}
                             filter={optionsFilter}
                             searchable
                         />
@@ -31,7 +31,7 @@ export default function Filters() {
 
                         <NumberInput
                                 w={160}
-                                placeholder="From ~ years old"
+                                placeholder='From ~ years old'
                                 allowDecimal={false}
                                 allowLeadingZeros={false}
                                 allowNegative={false}
@@ -39,7 +39,7 @@ export default function Filters() {
 
                         <NumberInput
                                 w={160}
-                                placeholder="To ~ years old"
+                                placeholder='To ~ years old'
                                 allowDecimal={false}
                                 allowLeadingZeros={false}
                                 allowNegative={false}
@@ -51,7 +51,7 @@ export default function Filters() {
 
                         <NumberInput
                                 w={110}
-                                placeholder="From ~ kg"
+                                placeholder='From ~ kg'
                                 allowDecimal={false}
                                 allowLeadingZeros={false}
                                 allowNegative={false}
@@ -59,7 +59,7 @@ export default function Filters() {
 
                         <NumberInput
                                 w={110}
-                                placeholder="To ~ kg"
+                                placeholder='To ~ kg'
                                 allowDecimal={false}
                                 allowLeadingZeros={false}
                                 allowNegative={false}
@@ -69,7 +69,7 @@ export default function Filters() {
 
                         <Select
                             w={130}
-                            placeholder="Energy level"
+                            placeholder='Energy level'
                             data={['Very low', 'Low', 'Medium', 'High', 'Very High']}
                             filter={optionsFilter}
                             searchable
@@ -79,7 +79,7 @@ export default function Filters() {
 
                         <Select
                             w={110}
-                            placeholder="Location"
+                            placeholder='Location'
                             data={['East', 'West', 'Central', 'North', 'South']}
                             filter={optionsFilter}
                             searchable
