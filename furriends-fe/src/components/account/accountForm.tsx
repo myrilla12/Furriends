@@ -56,7 +56,6 @@ export default function AccountForm({ user }: { user: User | null }) {
                 id: user?.id as string,
                 username,
                 avatar_url,
-                updated_at: new Date().toISOString(),
             })
             if (error) throw error
             alert('Profile updated!')
