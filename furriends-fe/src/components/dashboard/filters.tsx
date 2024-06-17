@@ -14,11 +14,12 @@ const optionsFilter: OptionsFilter = ({ options, search }) => {
 export default function Filters() {
     return(
         <Box m='lg'>
-                <Text size='xl' fw={500}>Filters</Text>
+                <Text size='xl' fw={700}>Filters</Text>
                 <div style={{ display: 'flex' }}>
                     <Group>
                         <Select
                             w={150}
+                            label='Pet type'
                             placeholder='Pet type'
                             data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea pig', 'Chincilla', 'Others']}
                             filter={optionsFilter}
@@ -27,48 +28,57 @@ export default function Filters() {
 
                         <Space w='xs'/>
 
-                        <Text size='sm'>Age:</Text>
-
                         <NumberInput
-                                w={160}
-                                placeholder='From ~ years old'
+                                w={100}
+                                label='Age'
+                                placeholder='From ~'
                                 allowDecimal={false}
                                 allowLeadingZeros={false}
                                 allowNegative={false}
                         />
 
+                        <Text size='sm' mt='lg' fw={700}>-</Text>
+
                         <NumberInput
-                                w={160}
-                                placeholder='To ~ years old'
+                                w={100}
+                                label=' '
+                                placeholder='To ~'
                                 allowDecimal={false}
                                 allowLeadingZeros={false}
                                 allowNegative={false}
                         />      
 
+                        <Text size='sm' mt='lg'>years old</Text>
+
                         <Space w='xs'/>
 
-                        <Text size='sm'>Size:</Text>
-
                         <NumberInput
-                                w={110}
-                                placeholder='From ~ kg'
+                                w={100}
+                                label='Size'
+                                placeholder='From ~'
                                 allowDecimal={false}
                                 allowLeadingZeros={false}
                                 allowNegative={false}
                         />
 
+                        <Text size='sm' mt='lg' fw={700}>-</Text>
+
                         <NumberInput
-                                w={110}
-                                placeholder='To ~ kg'
+                                w={100}
+                                label=' '
+                                placeholder='To ~'
                                 allowDecimal={false}
                                 allowLeadingZeros={false}
                                 allowNegative={false}
-                        />
+                        />   
+
+                        <Text size='sm' mt='lg'>kg</Text>   
 
                         <Space w='xs'/>
 
                         <Select
                             w={130}
+                            label='Energy level'
                             placeholder='Energy level'
                             data={['Very low', 'Low', 'Medium', 'High', 'Very High']}
                             filter={optionsFilter}
@@ -79,6 +89,7 @@ export default function Filters() {
 
                         <Select
                             w={110}
+                            label='Location'
                             placeholder='Location'
                             data={['East', 'West', 'Central', 'North', 'South']}
                             filter={optionsFilter}
