@@ -5,82 +5,65 @@ import { useCallback, useEffect, useState } from 'react';
 import { Modal, ScrollArea, Button, TextInput, Select, NumberInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
-import { type User } from '@supabase/supabase-js';
 import { createClient } from '../../../../furriends-backend/utils/supabase/component';
 import { Pet } from '@/utils/definitions';
 import '@mantine/dates/styles.css';
 
 type PetEditProps = {
-    modalOpened: boolean;
-    setModalOpened: (open: boolean) => void;
-    user: User | null;
+    opened: boolean;
+    onClose: () => void;
     pet: Pet
 }
 
-export default function PetEdit({ modalOpened, setModalOpened, user, pet }: PetEditProps) {
+export default function PetEdit({ opened, onClose, pet }: PetEditProps) {
     const supabase = createClient()
     const [loading, setLoading] = useState(false);
-    const [name, setName] = useState<string | null>(null);
-    const [type, setType] = useState<string | null>(null);
-    const [breed, setBreed] = useState<string | null>(null);
-    const [weight, setWeight] = useState<number | null>(null);
-    const [birthday, setBirthday] = useState<Date | null>(null);
-    const [energy_level, setEnergy] = useState<string | null>(null);
-    const [description, setDescription] = useState<string | null>(null);
-    const [likes, setLikes] = useState<string | null>(null);
-    const [photo_urls, setPhotoUrls] = useState<string[] | null>(null);
+    const [name, setName] = useState<string | null>(pet.name);
+    const [type, setType] = useState<string | null>(pet.type);
+    const [breed, setBreed] = useState<string | null>(pet.breed);
+    const [weight, setWeight] = useState<number | null>(pet.weight);
+    const [birthday, setBirthday] = useState<Date | null>(new Date(pet.birthday));
+    const [energy_level, setEnergy] = useState<string | null>(pet.energy_level);
+    const [description, setDescription] = useState<string | null>(pet.description);
+    const [likes, setLikes] = useState<string | null>(pet.likes);
+    const [photo_urls, setPhotoUrls] = useState<string[] | null>(pet.photos);
 
-    // create a memoized getProfile; only recreated if dependencies change
-    const getProfile = useCallback(async () => {
-        try {
-            setLoading(true)
-
-            const { data, error, status } = await supabase
-                .from('pets')
-                .select(`username, avatar_url`)
-                .eq('id', user?.id)
-                .single()
-
-            if (error && status !== 406) {
-                console.log(error)
-                throw error
-            }
-
-            if (data) {
-                setUsername(data.username)
-                setAvatarUrl(data.avatar_url)
-            }
-        } catch (error) {
-            alert('Error loading user data!')
-        } finally {
-            setLoading(false)
-        }
-    }, [user, supabase])
-
-    useEffect(() => { getProfile() }, [user, getProfile])
-
-    async function updateProfile({
-        username,
-        avatar_url,
-    }: {
-        username: string | null
-        avatar_url: string | null
+    async function updatePetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls }: {
+        name: string | null
+        type: string | null
+        breed: string | null
+        weight: number | null
+        birthday: Date | null
+        energy_level: string | null
+        description: string | null
+        likes: string | null
+        photo_urls: string[] | null
     }) {
+        // update relations in supabase with info, else throw error
         try {
-            setLoading(true)
+            setLoading(true);
+            let birthdayString = birthday ? birthday.toISOString() : new Date().toISOString();
 
-            const { error } = await supabase.from('profiles').upsert({
-                id: user?.id as string,
-                username,
-                avatar_url,
-                updated_at: new Date().toISOString(),
-            })
-            if (error) throw error
-            alert('Profile updated!')
+            // merge existing pet data with new values
+            const updatedPet = {
+                ...pet,
+                name,
+                type,
+                breed,
+                weight,
+                birthday: birthdayString,
+                energy_level,
+                description,
+                likes
+            };
+
+            const { error } = await supabase.from('pets').upsert(updatedPet);
+            if (error) throw error;
+            alert('Pet profile updated!');
         } catch (error) {
-            alert('Error updating the data!')
+            alert('Error updating the data!');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
@@ -96,20 +79,9 @@ export default function PetEdit({ modalOpened, setModalOpened, user, pet }: PetE
 
     return (
         <Modal
-            opened={modalOpened}
-            onClose={() => {
-                setModalOpened(false)
-                setName(null);
-                setType(null);
-                setBreed(null);
-                setWeight(null);
-                setBirthday(null);
-                setEnergy(null);
-                setDescription(null);
-                setLikes(null);
-                setPhotoUrls(null);
-            }}
-            title="Create pet profile"
+            opened={opened}
+            onClose={onClose}
+            title={`Edit ${pet.name}'s pet profile`}
             scrollAreaComponent={ScrollArea.Autosize}
         >
             <div className="space-y-4">
@@ -126,7 +98,7 @@ export default function PetEdit({ modalOpened, setModalOpened, user, pet }: PetE
                     name="type"
                     placeholder="Select type"
                     value={type || ''}
-                    data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Guinea Pig', 'Chinchilla', 'Other']}
+                    data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea Pig', 'Chinchilla', 'Other']}
                     onChange={setType}
                     allowDeselect={false}
                     checkIconPosition="right"
@@ -183,7 +155,7 @@ export default function PetEdit({ modalOpened, setModalOpened, user, pet }: PetE
                     onChange={(e) => setLikes(e.target.value)}
                 />
                 <FileUpload
-                    uid={user?.id ?? null}
+                    uid={pet.owner_id}
                     urls={photo_urls}
                     onUpload={(urls: string[]) => {
                         setPhotoUrls(urls)
@@ -193,11 +165,13 @@ export default function PetEdit({ modalOpened, setModalOpened, user, pet }: PetE
                     onClick={async () => {
                         if (validateForm()) {
                             await updatePetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
-                            setModalOpened(false); // close modal upon addition of pet
+                            onClose(); // close modal upon update of pet details
                         }
                     }}
                     disabled={loading} // button shows loading while data is uploaded
-                ></Button>
+                >
+                    {loading ? 'Loading ...' : 'Update'}
+                </Button>
             </div>
         </Modal>
     );

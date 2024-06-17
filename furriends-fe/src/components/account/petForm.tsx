@@ -45,11 +45,8 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
 
         // update relations in supabase with info, else throw error
         try {
-            setLoading(true)
-            let birthdayString = new Date().toISOString();
-            if (birthday) {
-                birthdayString = birthday.toISOString();
-            }
+            setLoading(true);
+            let birthdayString = birthday ? birthday.toISOString() : new Date().toISOString();
 
             // insert into `pets` relation
             const { data, error } = await supabase
@@ -64,7 +61,6 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     energy_level: energy_level,
                     description: description,
                     likes: likes,
-                    created_at: new Date().toISOString()
                 })
                 .select('id') // select the pet_id for insertion into pet_photos
                 .single(); // expecting a single row
@@ -133,7 +129,7 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     name="type"
                     placeholder="Select type"
                     value={type || ''}
-                    data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Guinea Pig', 'Chinchilla', 'Other']}
+                    data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea Pig', 'Chinchilla', 'Other']}
                     onChange={setType}
                     allowDeselect={false}
                     checkIconPosition="right"

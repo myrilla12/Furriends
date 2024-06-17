@@ -64,7 +64,6 @@ export default function FileUpload({ uid, urls, onUpload, }: {
                 uploadedPhotos.push(filePath);
             }
 
-
             setPhotoUrls(prevUrls => [...prevUrls, ...uploadedPhotos]);
             onUpload(uploadedPhotos)
         } catch (error) {
