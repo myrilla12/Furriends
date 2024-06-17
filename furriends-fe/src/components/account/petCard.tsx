@@ -9,9 +9,10 @@ import { Pet } from '@/utils/definitions';
 
 type PetCardProps = {
     pet: Pet;
+    editable: boolean;
 };
 
-export default function PetCard({ pet }: PetCardProps) {
+export default function PetCard({ pet, editable }: PetCardProps) {
     const [opened, { open, close }] = useDisclosure(false);
 
     return (
@@ -30,12 +31,15 @@ export default function PetCard({ pet }: PetCardProps) {
                         {" "}years old
                     </p>
                 </div>
-                <div className="absolute top-0 right-0 pr-2 pt-2 mix-blend-difference">
-                    <Button variant="subtle" size="compact-xs"
-                        onClick={(e) => {e.stopPropagation()}}> {/*onClick={() => setModalOpened(true)}*/}
-                        <PencilIcon className="h-5 w-5" />
-                    </Button>
-                </div>
+                {editable && (
+                    <div className="absolute top-0 right-0 pr-2 pt-2 mix-blend-difference">
+                        <Button variant="subtle" size="compact-xs"
+                            onClick={(e) => {e.stopPropagation()}}> {/*onClick={() => setModalOpened(true)}*/}
+                            <PencilIcon className="h-5 w-5" />
+                        </Button>
+                    </div>
+                )}
+                
             </div>
             <PetDetailsModal opened={opened} onClose={close} pet={pet} />
         </>
