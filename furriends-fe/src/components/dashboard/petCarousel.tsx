@@ -19,8 +19,9 @@ export default function PetCarousel({ pets }: PetCarouselProps) {
 
   return (
     <Carousel
-      slideSize={{ base: '100%', sm: '50%' }}
-      slideGap={{ base: 'xl', sm: 2 }}
+      mt='xl'
+      slideSize={{ base: '100%', sm: '33.33%' }}
+      slideGap={{ base: 'xl', sm: 10 }}
       align='start'
       slidesToScroll={mobile ? 1 : 2}
     >
