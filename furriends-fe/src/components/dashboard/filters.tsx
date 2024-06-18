@@ -1,5 +1,7 @@
+import { calculateAge } from "@/utils/calculateAge";
+import { Pet } from "@/utils/definitions";
 import { Text, Box, Select, Group, ComboboxItem, OptionsFilter, NumberInput, Space } from "@mantine/core";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const optionsFilter: OptionsFilter = ({ options, search }) => {
     const splittedSearch = search.toLowerCase().trim().split(' ');
@@ -11,8 +13,13 @@ const optionsFilter: OptionsFilter = ({ options, search }) => {
         }
     );
 };
+
+type FiltersProps = {
+    pets: Pet[];
+    setFilteredPets: Dispatch<SetStateAction<Pet[]>>;
+};
   
-export default function Filters() {
+export default function Filters({ pets, setFilteredPets }: FiltersProps ) {
     const [type, setType] = useState<string | null>(null);
     const [fromAge, setFromAge] = useState<string | number>('');
     const [toAge, setToAge] = useState<string | number>('');
@@ -20,6 +27,51 @@ export default function Filters() {
     const [toWeight, setToWeight] = useState<string | number>('');
     const [energy_level, setEnergy] = useState<string | null>(null);
 
+    // call on filterPets if there are any changes to the above states
+    useEffect(() => {
+        filterPets();
+    }, [type, fromAge, toAge, fromWeight, toWeight, energy_level])
+
+    // loop through pets and filter out the ones user wants, use setFilterPets to set to the new pet list
+    const filterPets = () => {
+        const filtered = () => 
+            
+            pets.filter(pet => {
+                // Type filter
+                if (type && pet.type !== type) {
+                    return false;
+                }
+        
+                // Age filters
+                const petAge = calculateAge(pet);
+                if (fromAge && petAge < Number(fromAge)) {
+                    return false;
+                }
+                if (toAge && petAge > Number(toAge)) {
+                    return false;
+                }
+        
+                // Weight filters
+                const petWeight = pet.weight;
+                if (fromWeight && petWeight < Number(fromWeight)) {
+                    return false;
+                }
+                if (toWeight && petWeight > Number(toWeight)) {
+                    return false;
+                }
+        
+                // Energy level filter
+                if (energy_level && pet.energy_level !== energy_level) {
+                    return false;
+                }
+        
+                return true;
+            });
+
+        setFilteredPets(filtered);
+    }
+
+    // checking current states
     console.log('type:', type);
     console.log('fromAge:', fromAge);
     console.log('toAge:', toAge);
@@ -27,6 +79,7 @@ export default function Filters() {
     console.log('toWeight:', toWeight);
     console.log('energy level:', energy_level);
 
+    // filter input fields
     return(
         <Box m='lg'>
                 <Text size='xl' fw={700}>Filters</Text>
@@ -72,26 +125,26 @@ export default function Filters() {
                         <Space w='xs'/>
 
                         <NumberInput
-                                w={100}
-                                label='Size'
-                                placeholder='From ~'
-                                allowDecimal={false}
-                                allowLeadingZeros={false}
-                                allowNegative={false}
-                                onChange={setFromWeight}
+                            w={100}
+                            label='Size'
+                            placeholder='From ~'
+                            allowDecimal={false}
+                            allowLeadingZeros={false}
+                            allowNegative={false}
+                            onChange={setFromWeight}
                         />
 
                         <Text size='sm' mt='lg' fw={700}>-</Text>
 
                         <NumberInput
-                                w={100}
-                                label=' '
-                                placeholder='To ~'
-                                allowDecimal={false}
-                                allowLeadingZeros={false}
-                                allowNegative={false}
-                                min={Number(fromWeight)}
-                                onChange={setToWeight}
+                            w={100}
+                            label=' '
+                            placeholder='To ~'
+                            allowDecimal={false}
+                            allowLeadingZeros={false}
+                            allowNegative={false}
+                            min={Number(fromWeight)}
+                            onChange={setToWeight}
                         />   
 
                         <Text size='sm' mt='lg'>kg</Text>   

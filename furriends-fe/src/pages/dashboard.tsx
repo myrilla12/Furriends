@@ -6,6 +6,7 @@ import { createClient } from '../../../furriends-backend/utils/supabase/server-p
 import Filters from '@/components/dashboard/filters';
 import PetCarousel from '@/components/dashboard/petCarousel';
 import { Pet } from '@/utils/definitions';
+import { useState } from 'react';
 
 // define prop types
 type DashboardProps = {
@@ -16,6 +17,9 @@ type DashboardProps = {
 };
 
 export default function DashboardPage({ user, username, pets, children }: DashboardProps) {
+
+    const [filteredPets, setFilteredPets] = useState<Pet[]>(pets);
+
     return (
         <Layout user={user}>
             <main className="flex min-h-screen flex-col p-2">
@@ -23,8 +27,8 @@ export default function DashboardPage({ user, username, pets, children }: Dashbo
                     <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
                     <h1 className="mb-8 text-2xl font-bold">Find your pet some furriends</h1>
 
-                    <Filters />
-                    <PetCarousel pets={pets} />
+                    <Filters pets={pets} setFilteredPets={setFilteredPets}/>
+                    <PetCarousel pets={filteredPets} />
                     {children}
                 </div>
             </main>
