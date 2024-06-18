@@ -166,6 +166,15 @@ export default function PetEdit({ opened, onClose, pet }: PetEditProps) {
                         if (validateForm()) {
                             await updatePetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
                             onClose(); // close modal upon update of pet details
+                            setName(pet.name);
+                            setType(pet.type);
+                            setBreed(pet.breed);
+                            setWeight(pet.weight);
+                            setBirthday(new Date(pet.birthday));
+                            setEnergy(pet.energy_level);
+                            setDescription(pet.description);
+                            setLikes(pet.likes);
+                            setPhotoUrls(pet.photos);
                         }
                     }}
                     disabled={loading} // button shows loading while data is uploaded
