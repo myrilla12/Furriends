@@ -2,6 +2,7 @@
 import { Modal, Text, ScrollArea } from '@mantine/core';
 import Image from 'next/image';
 import { Pet } from '@/utils/definitions';
+import { calculateAge } from '@/utils/calculateAge';
 
 
 type PetDetailsModalProps = {
@@ -11,6 +12,8 @@ type PetDetailsModalProps = {
 }
 
 export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModalProps) {
+    const age = calculateAge(pet);
+
     return (
         <Modal opened={opened} onClose={onClose} title={pet.name} scrollAreaComponent={ScrollArea.Autosize} size='lg'>
             <div className="space-y-4">
@@ -33,11 +36,7 @@ export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModa
                 <Text><strong>Breed:</strong> {pet.breed}</Text>
                 <Text><strong>Birthday:</strong> {pet.birthday}</Text>
                 <Text><strong>Weight:</strong> {pet.weight}{pet.weight ? " kg" : ""}</Text>
-                <Text><strong>Age:</strong>{" "}
-                    {/* calculate age from birthday */}
-                    {(new Date().getFullYear() - new Date(pet.birthday).getFullYear()).toString()}
-                    {" "}years old
-                </Text>
+                <Text><strong>Age:</strong> {age} {age == 1 ? "year old" : "years old"}</Text>
                 <Text><strong>Energy Level:</strong> {pet.energy_level}</Text>
                 <Text><strong>Description:</strong> {pet.description}</Text>
                 <Text><strong>Likes:</strong> {pet.likes}</Text>

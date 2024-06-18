@@ -8,6 +8,7 @@ import PetDetailsModal from '@/components/account/petDetailsModal';
 import PetEdit from '@/components/account/petEdit';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Pet } from '@/utils/definitions';
+import { calculateAge } from '@/utils/calculateAge';
 
 type PetCardProps = {
     pet: Pet;
@@ -16,6 +17,7 @@ type PetCardProps = {
 
 export default function PetCard({ pet, editable }: PetCardProps) {
     const supabase = createClient();
+    const age = calculateAge(pet);
     const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false); // controls opening/closing of petDetailsModal
     const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false); // controls opening/closing of petEdit modal
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -57,11 +59,7 @@ export default function PetCard({ pet, editable }: PetCardProps) {
                 <div className="absolute bottom-0 left-0 pl-5 pb-4 text-white mix-blend-difference">
                     <h2 className="text-2xl font-bold">{pet.name}</h2>
                     <p>{pet.type},{" "}{pet.breed}</p>
-                    <p className="text-sm">
-                        {/* calculate age from birthday */}
-                        {(new Date().getFullYear() - new Date(pet.birthday).getFullYear()).toString()}
-                        {" "}years old
-                    </p>
+                    <p className="text-sm">{age} {age == 1 ? "year old" : "years old"}</p>
                 </div>
 
                 {editable && (
