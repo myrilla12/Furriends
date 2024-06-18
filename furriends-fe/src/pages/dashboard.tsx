@@ -7,6 +7,7 @@ import Filters from '@/components/dashboard/filters';
 import PetCarousel from '@/components/dashboard/petCarousel';
 import { Pet } from '@/utils/definitions';
 import { useState } from 'react';
+import NoPetsFound from '@/components/dashboard/noPetsFound';
 
 // define prop types
 type DashboardProps = {
@@ -19,7 +20,7 @@ type DashboardProps = {
 export default function DashboardPage({ user, username, pets, children }: DashboardProps) {
 
     const [filteredPets, setFilteredPets] = useState<Pet[]>(pets);
-
+    
     return (
         <Layout user={user}>
             <main className="flex min-h-screen flex-col p-2">
@@ -28,7 +29,7 @@ export default function DashboardPage({ user, username, pets, children }: Dashbo
                     <h1 className="mb-8 text-2xl font-bold">Find your pet some furriends</h1>
 
                     <Filters pets={pets} setFilteredPets={setFilteredPets}/>
-                    <PetCarousel pets={filteredPets} />
+                    {filteredPets.length > 0 ? (<PetCarousel pets={filteredPets} />) : (<NoPetsFound />)}
                     {children}
                 </div>
             </main>
