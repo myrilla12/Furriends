@@ -13,7 +13,7 @@ export default function PetCarousel({ pets }: PetCarouselProps) {
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const slides = pets.map((pet) => (
     <Carousel.Slide>
-      {<PetCard pet={pet} editable={false} />}
+      {<PetCard pet={pet} editable={false} chattable={true} />}
     </Carousel.Slide>
   ));
 

@@ -3,19 +3,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '../../../../furriends-backend/utils/supabase/component';
 import { useDisclosure } from '@mantine/hooks';
-import { Button } from '@mantine/core';
+import { ActionIcon, Button, Text } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
 import PetEdit from '@/components/account/petEdit';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import { Pet } from '@/utils/definitions';
 import { calculateAge } from '@/utils/calculateAge';
+
 
 type PetCardProps = {
     pet: Pet;
     editable: boolean;
+    chattable: boolean;
 };
 
-export default function PetCard({ pet, editable }: PetCardProps) {
+export default function PetCard({ pet, editable, chattable }: PetCardProps) {
     const supabase = createClient();
     const age = calculateAge(pet);
     const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false); // controls opening/closing of petDetailsModal
@@ -78,6 +80,17 @@ export default function PetCard({ pet, editable }: PetCardProps) {
                             <TrashIcon className="h-5 w-5" />
                         </Button>
                     </div>
+                )}
+
+                {chattable && (
+                    <Button variant="light" color="rgba(0, 0, 0, 1)" size="sm" m='md'
+                        onClick={() => console.log("Go to chat feature")}
+                    >   
+                        <Text size='lg' fw={700}>Chat</Text>
+                        <ActionIcon variant="transparent" color="rgba(0, 0, 0, 1)" size="lg" aria-label="Settings">
+                            <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
+                        </ActionIcon>
+                    </Button>
                 )}
 
             </div>
