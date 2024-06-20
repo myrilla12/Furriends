@@ -4,7 +4,7 @@ import { Menu, MenuItem } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { type User } from '@supabase/supabase-js';
 import { createClient } from '../../../furriends-backend/utils/supabase/component';
-import { PowerIcon, UserIcon as PersonIcon } from '@heroicons/react/24/outline';
+import { PowerIcon, UserIcon as PersonIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 
 type UserIconProps = {
     user: User | null;
@@ -101,6 +101,12 @@ export default function UserIcon({ user }: UserIconProps) {
                                 className='mr-1.5'
                             />
                             <span>My Pets</span>
+                        </div>
+                    </MenuItem>
+                    <MenuItem onClick={() => router.push('/chat/mainChat')}>
+                        <div className="flex items-center">
+                            <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4 mr-2" />
+                            <span>Chat</span>
                         </div>
                     </MenuItem>
                     <MenuItem onClick={signout}>
