@@ -75,7 +75,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     
         return {
             ...pet,
-            photos: photoUrls, // reassign the list of photo URLs
+            photos: photoUrls.filter(url => url !== null), // reassign the list of photo URLs, filtering away nulls
         };
     });
     

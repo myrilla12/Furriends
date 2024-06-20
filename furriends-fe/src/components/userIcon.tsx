@@ -13,7 +13,7 @@ type UserIconProps = {
 export default function UserIcon({ user }: UserIconProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(true)
-    const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+    const [avatarUrl, setAvatarUrl] = useState<string>('/default-avatar.jpg')
     const supabase = createClient();
 
     // signout logic to redirect to home page after sign out
@@ -34,7 +34,7 @@ export default function UserIcon({ user }: UserIconProps) {
 
             const { data, error, status } = await supabase
                 .from('profiles')
-                .select(`avatar_url`)
+                .select('avatar_url')
                 .eq('id', user?.id)
                 .single()
 
@@ -43,9 +43,9 @@ export default function UserIcon({ user }: UserIconProps) {
                 throw error
             }
 
-            if (data) {
+            if (data && data.avatar_url) {
                 await downloadImage(data.avatar_url)
-            }
+            } 
         } catch (error) {
             alert('Error loading profile photo!')
         } finally {
@@ -54,20 +54,16 @@ export default function UserIcon({ user }: UserIconProps) {
 
         async function downloadImage(path: string) {
             try {
-                const { data, error } = await supabase.storage.from('avatars').createSignedUrl(path, 3600)
-                if (error) {
-                    throw error
-                }
-
-                const url = data.signedUrl
+                const { data } = await supabase.storage.from('avatars').getPublicUrl(path)
+                const url = data.publicUrl
                 setAvatarUrl(url)
             } catch (error) {
                 console.log('Error downloading image: ', error)
             }
         }
-    }, [avatarUrl, supabase])
+    }, [user, supabase])
 
-    useEffect(() => { getAvatar() }, [avatarUrl, getAvatar])
+    useEffect(() => { getAvatar() }, [getAvatar])
 
     return (
         <div className="relative">
@@ -77,7 +73,7 @@ export default function UserIcon({ user }: UserIconProps) {
                     <button className="focus:outline-none">
                         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-300 mr-8">
                             <Image
-                                src={avatarUrl || '/default-avatar.jpg'} // use default avatar if no avatar set
+                                src={avatarUrl} // use default avatar if no avatar set
                                 alt="profile picture"
                                 width={48}
                                 height={48}

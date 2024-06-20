@@ -20,19 +20,19 @@ type DashboardProps = {
 export default function DashboardPage({ user, username, pets, children }: DashboardProps) {
 
     const [filteredPets, setFilteredPets] = useState<Pet[]>(pets);
-    
+
     return (
         <Layout user={user}>
-            <main className="flex min-h-screen flex-col p-2">
-                <div className="flex-grow p-6 md:overflow-y-auto">
-                    <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
-                    <h1 className="mb-8 text-2xl font-bold">Find your pet some furriends</h1>
+            <div className="flex-grow p-6 md:overflow-y-auto">
+                <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
+                <h1 className="mb-8 text-2xl font-bold">
+                    Find your pet some <span style={{ color: '#6d543e' }}>furriends</span>!
+                </h1>
 
-                    <Filters pets={pets} setFilteredPets={setFilteredPets}/>
-                    {filteredPets.length > 0 ? (<PetCarousel pets={filteredPets} />) : (<NoPetsFound />)}
-                    {children}
-                </div>
-            </main>
+                <Filters pets={pets} setFilteredPets={setFilteredPets} />
+                {filteredPets.length > 0 ? (<PetCarousel pets={filteredPets} />) : (<NoPetsFound />)}
+                {children}
+            </div>
         </Layout>
     );
 }
