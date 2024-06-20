@@ -23,7 +23,7 @@ export default function PetCard({ pet, editable }: PetCardProps) {
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // create a memoized getProfile; only recreated if dependencies change
+    // create a memoized getCardPhoto; only recreated if dependencies change
     // get the first pet photo in the array to act as pet card photo
     const getCardPhoto = useCallback(async () => {
         if (pet.photos && pet.photos.length > 0) {
@@ -32,22 +32,19 @@ export default function PetCard({ pet, editable }: PetCardProps) {
 
         async function downloadImage(path: string) {
             try {
-                const { data, error } = await supabase.storage
+                const { data } = await supabase.storage
                     .from('pet_photos')
-                    .createSignedUrl(path, 3600);
-                if (error) {
-                    throw error;
-                }
-                setPhotoUrl(data.signedUrl);
+                    .getPublicUrl(path);
+                setPhotoUrl(data.publicUrl);
             } catch (error) {
-                console.log('Error downloading image: ', error)
+                console.log('Error downloading image: ', error);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
         }
-    }, [pet.photos, supabase])
+    }, [pet.photos, supabase]);
 
-    useEffect(() => { getCardPhoto() }, [pet.photos, getCardPhoto])
+    useEffect(() => { getCardPhoto() }, [pet.photos, getCardPhoto]);
 
     return (
         <>

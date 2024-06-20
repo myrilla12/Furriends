@@ -3,7 +3,7 @@
 'use client'
 
 import { useState } from 'react';
-import { Button, Modal, TextInput, NumberInput, Select, ScrollArea } from '@mantine/core';
+import { Button, Modal, TextInput, Textarea, NumberInput, Select, ScrollArea } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
 import { createClient } from '../../../../furriends-backend/utils/supabase/component';
@@ -171,14 +171,14 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     onChange={setEnergy}
                     checkIconPosition="right"
                 />
-                <TextInput
+                <Textarea
                     label="Description"
                     name="description"
                     placeholder="Describe your pet"
                     value={description || ''}
                     onChange={(e) => setDescription(e.target.value)}
                 />
-                <TextInput
+                <Textarea
                     label="Likes"
                     name="likes"
                     placeholder="Add your pet's favourite items/activities!"
