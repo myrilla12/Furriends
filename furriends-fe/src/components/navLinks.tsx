@@ -1,6 +1,6 @@
 'use client';
 
-import { HomeIcon, QueueListIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, QueueListIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -8,7 +8,8 @@ import clsx from 'clsx';
 // Map of links to display in the side navigation.
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  { name: 'Feed', href: '/feed', icon: QueueListIcon },
+  { name: 'Chat', href: '/chat/mainChat', icon: ChatBubbleOvalLeftEllipsisIcon },
+  { name: 'Feed', href: '/feed', icon: QueueListIcon }
 ];
 
 export default function NavLinks() {

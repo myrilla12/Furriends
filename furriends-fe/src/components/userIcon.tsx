@@ -103,12 +103,6 @@ export default function UserIcon({ user }: UserIconProps) {
                             <span>My Pets</span>
                         </div>
                     </MenuItem>
-                    <MenuItem onClick={() => router.push('/chat/mainChat')}>
-                        <div className="flex items-center">
-                            <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4 mr-2" />
-                            <span>Chat</span>
-                        </div>
-                    </MenuItem>
                     <MenuItem onClick={signout}>
                         <div className="flex items-center">
                             <PowerIcon className="w-4 h-4 mr-2" />
