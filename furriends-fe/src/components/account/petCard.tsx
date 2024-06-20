@@ -5,7 +5,8 @@ import { createClient } from '../../../../furriends-backend/utils/supabase/compo
 import { useDisclosure } from '@mantine/hooks';
 import { ActionIcon, Button, Text } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
-import PetEdit from '@/components/account/petEdit';
+import PetEditModal from '@/components/account/petEditModal';
+import PetDeleteModal from '@/components/account/petDeleteModal';
 import { PencilIcon, TrashIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import { Pet } from '@/utils/definitions';
 import { calculateAge } from '@/utils/calculateAge';
@@ -22,6 +23,7 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
     const age = calculateAge(pet);
     const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false); // controls opening/closing of petDetailsModal
     const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false); // controls opening/closing of petEdit modal
+    const [deleteOpened, { open: openDelete, close: closeDelete }] = useDisclosure(false); // controls opening/closing of petDeleteModal
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -72,7 +74,8 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                         </Button>
                         <Button variant="subtle" size="compact-xs"
                             onClick={(e) => {
-                                e.stopPropagation()
+                                e.stopPropagation();
+                                openDelete();
                             }}>
                             <TrashIcon className="h-5 w-5" />
                         </Button>
@@ -92,7 +95,8 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
 
             </div>
             <PetDetailsModal opened={detailsOpened} onClose={closeDetails} pet={pet} />
-            <PetEdit opened={editOpened} onClose={closeEdit} pet={pet} />
+            <PetEditModal opened={editOpened} onClose={closeEdit} pet={pet} />
+            <PetDeleteModal opened={deleteOpened} onClose={closeDelete} pet={pet} />
         </>
     );
 };

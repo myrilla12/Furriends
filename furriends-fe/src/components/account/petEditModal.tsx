@@ -9,13 +9,13 @@ import { createClient } from '../../../../furriends-backend/utils/supabase/compo
 import { Pet } from '@/utils/definitions';
 import '@mantine/dates/styles.css';
 
-type PetEditProps = {
+type PetEditModalProps = {
     opened: boolean;
     onClose: () => void;
     pet: Pet
 }
 
-export default function PetEdit({ opened, onClose, pet }: PetEditProps) {
+export default function PetEditModal({ opened, onClose, pet }: PetEditModalProps) {
     const supabase = createClient()
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState<string | null>(pet.name);
@@ -28,25 +28,14 @@ export default function PetEdit({ opened, onClose, pet }: PetEditProps) {
     const [likes, setLikes] = useState<string | null>(pet.likes);
     const [photo_urls, setPhotoUrls] = useState<string[] | null>(pet.photos);
 
-    async function updatePetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls }: {
-        name: string | null
-        type: string | null
-        breed: string | null
-        weight: number | null
-        birthday: Date | null
-        energy_level: string | null
-        description: string | null
-        likes: string | null
-        photo_urls: string[] | null
-    }) {
-        // update relations in supabase with info, else throw error
+    async function updatePetProfile() {
+        // update relations in supabase with new info, else throw error
         try {
             setLoading(true);
             let birthdayString = birthday ? birthday.toISOString() : new Date().toISOString();
 
             // merge existing pet data with new values
             const updatedPet = {
-                ...pet,
                 name,
                 type,
                 breed,
@@ -57,7 +46,7 @@ export default function PetEdit({ opened, onClose, pet }: PetEditProps) {
                 likes
             };
 
-            const { error } = await supabase.from('pets').upsert(updatedPet);
+            const { error } = await supabase.from('pets').update(updatedPet).eq('id', pet.id);
             if (error) throw error;
             alert('Pet profile updated!');
         } catch (error) {
@@ -80,8 +69,20 @@ export default function PetEdit({ opened, onClose, pet }: PetEditProps) {
     return (
         <Modal
             opened={opened}
-            onClose={onClose}
+            onClose={() => {
+                onClose();
+                setName(pet.name);
+                setType(pet.type);
+                setBreed(pet.breed);
+                setWeight(pet.weight);
+                setBirthday(new Date(pet.birthday));
+                setEnergy(pet.energy_level);
+                setDescription(pet.description);
+                setLikes(pet.likes);
+                setPhotoUrls(pet.photos);
+            }}
             title={`Edit ${pet.name}'s pet profile`}
+            centered
             scrollAreaComponent={ScrollArea.Autosize}
         >
             <div className="space-y-4">
@@ -164,8 +165,9 @@ export default function PetEdit({ opened, onClose, pet }: PetEditProps) {
                 <Button variant="default" color="gray"
                     onClick={async () => {
                         if (validateForm()) {
-                            await updatePetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
+                            await updatePetProfile();
                             onClose(); // close modal upon update of pet details
+                            // reset fields
                             setName(pet.name);
                             setType(pet.type);
                             setBreed(pet.breed);
@@ -179,7 +181,7 @@ export default function PetEdit({ opened, onClose, pet }: PetEditProps) {
                     }}
                     disabled={loading} // button shows loading while data is uploaded
                 >
-                    {loading ? 'Loading ...' : 'Update'}
+                    {loading ? 'Loading...' : 'Update'}
                 </Button>
             </div>
         </Modal>
