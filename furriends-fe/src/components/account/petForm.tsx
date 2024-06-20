@@ -101,7 +101,7 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
         <Modal
             opened={modalOpened}
             onClose={() => {
-                setModalOpened(false)
+                setModalOpened(false);
                 setName(null);
                 setType(null);
                 setBreed(null);

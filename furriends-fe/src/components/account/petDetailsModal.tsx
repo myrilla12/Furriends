@@ -43,7 +43,7 @@ export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModa
     useEffect(() => { getPetPhotos() }, [pet.photos, getPetPhotos]);
 
     return (
-        <Modal opened={opened} onClose={onClose} title={pet.name} scrollAreaComponent={ScrollArea.Autosize} size='lg'>
+        <Modal opened={opened} onClose={onClose} title={pet.name} scrollAreaComponent={ScrollArea.Autosize} size='lg' centered>
             <div className="space-y-4">
 
                 <div className="flex space-x-4">
