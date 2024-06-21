@@ -4,7 +4,7 @@ import { Menu, MenuItem } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { type User } from '@supabase/supabase-js';
 import { createClient } from '../../../furriends-backend/utils/supabase/component';
-import { PowerIcon, UserIcon as PersonIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
+import { PowerIcon, UserIcon as PersonIcon } from '@heroicons/react/24/outline';
 
 type UserIconProps = {
     user: User | null;

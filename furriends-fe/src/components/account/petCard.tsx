@@ -85,11 +85,9 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                 {chattable && (
                     <Button variant="light" color="rgba(0, 0, 0, 1)" size="sm" m='md'
                         onClick={() => console.log("Go to chat feature")}
-                    >   
-                        <Text size='lg' fw={700}>Chat</Text>
-                        <ActionIcon variant="transparent" color="rgba(0, 0, 0, 1)" size="lg" aria-label="Settings">
-                            <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
-                        </ActionIcon>
+                    >
+                        <Text size='lg' fw={700} mr='xs'>Chat</Text>
+                        <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
                     </Button>
                 )}
 
