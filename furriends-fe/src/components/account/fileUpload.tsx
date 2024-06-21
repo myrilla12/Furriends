@@ -14,31 +14,8 @@ export default function FileUpload({ uid, urls, onUpload, }: {
     onUpload: (urls: string[]) => void
 }) {
     const supabase = createClient();
-    const [photo_urls, setPhotoUrls] = useState<string[]>(urls || []);
+    const photo_urls = urls || [];
     const [uploading, setUploading] = useState(false); // can be used later on to modify state of buttons etc.
-
-    /*
-    // download existing images in database, if any
-    useEffect(() => {
-        async function downloadImage(path: string) {
-            try {
-                const { data, error } = await supabase.storage.from('pet_photos').download(path);
-                if (error) {
-                    throw error
-                }
-
-                const url = URL.createObjectURL(data)
-                setPhotoUrls(prevUrls => [...prevUrls, url])
-            } catch (error) {
-                console.log('Error downloading image: ', error)
-            }
-        }
-
-        if (urls) {
-            urls.forEach(url => downloadImage(url));
-        }
-    }, [urls, supabase])
-    */
 
     // selected files will be uploaded to supabase storage and generate unique urls
     const uploadPhoto: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
@@ -61,17 +38,28 @@ export default function FileUpload({ uid, urls, onUpload, }: {
                     throw uploadError;
                 }
 
-                uploadedPhotos.push(filePath);
+                const { data: urlData } = await supabase.storage
+                    .from('pet_photos')
+                    .getPublicUrl(filePath);
+
+                uploadedPhotos.push(urlData.publicUrl);
             }
 
-            setPhotoUrls(prevUrls => [...prevUrls, ...uploadedPhotos]);
-            onUpload(uploadedPhotos)
+            const updatedUrls = [...photo_urls, ...uploadedPhotos];
+            onUpload(updatedUrls);
         } catch (error) {
             alert('Error uploading avatar!')
         } finally {
             setUploading(false)
         }
     };
+
+    function handleFileChange(files: File[]) {
+        const event = {
+            target: { files: files as any }
+        } as React.ChangeEvent<HTMLInputElement>;
+        uploadPhoto(event);
+    }
 
     return (
         <div>
@@ -88,11 +76,4 @@ export default function FileUpload({ uid, urls, onUpload, }: {
             */}
         </div>
     );
-
-    function handleFileChange(files: File[]) {
-        const event = {
-            target: { files: files as any }
-        } as React.ChangeEvent<HTMLInputElement>;
-        uploadPhoto(event);
-    }
 }

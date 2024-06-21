@@ -2,9 +2,10 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react';
-import { Modal, ScrollArea, Button, TextInput, Select, NumberInput } from '@mantine/core';
+import { Modal, ScrollArea, Button, TextInput, Select, NumberInput, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
+import SortablePhotoArray from './sortablePhotoArray';
 import { createClient } from '../../../../furriends-backend/utils/supabase/component';
 import { Pet } from '@/utils/definitions';
 import '@mantine/dates/styles.css';
@@ -46,8 +47,53 @@ export default function PetEditModal({ opened, onClose, pet }: PetEditModalProps
                 likes
             };
 
-            const { error } = await supabase.from('pets').update(updatedPet).eq('id', pet.id);
-            if (error) throw error;
+            // insert pet data into `pets` relation
+            const { error: dataError } = await supabase.from('pets').update(updatedPet).eq('id', pet.id);
+            if (dataError) throw dataError;
+
+            // delete all entries in `pet_photos` linked to the pet id
+            const { error: photoDeleteError } = await supabase
+                .from('pet_photos')
+                .delete()
+                .eq('pet_id', pet.id);
+            if (photoDeleteError) throw photoDeleteError;
+
+            // re-insert photos to ensure they take on the new order, including any new photos while omitting deleted photos
+            if (photo_urls && photo_urls.length > 0) {
+                const photoInserts = photo_urls?.map((url) => ({
+                    pet_id: pet.id,
+                    photo_url: url,
+                }));
+                const { error: photoInsertError } = await supabase
+                    .from('pet_photos')
+                    .insert(photoInserts);
+                if (photoInsertError) throw photoInsertError;
+            }
+
+            /* method that does not require removing all photos (more efficient), but unable to ensure order of photos after rearrangement
+            // determine photos to delete (present in old list but not the updated list)
+            const photosToDelete = pet.photos.filter((url) => !photo_urls?.includes(url));
+
+            // determine photos to insert (not present in old list but present in updated list)
+            const photosToInsert = photo_urls?.filter((url) => !pet.photos.includes(url));
+
+            // delete photos according to photosToDelete
+            for (const photo of photosToDelete) {
+                const { error: photoDeleteError } = await supabase.from('pet_photos').delete().eq('photo_url', photo);
+                if (photoDeleteError) throw photoDeleteError;
+            }
+
+            // insert new photos according to photosToInsert
+            if (photosToInsert && photosToInsert.length > 0) {
+                const photoInserts = photosToInsert?.map((url) => ({
+                    pet_id: pet.id,
+                    photo_url: url,
+                }));
+                const { error: photoInsertError } = await supabase.from('pet_photos').insert(photoInserts);
+                if (photoInsertError) throw photoInsertError;
+            }
+            */
+
             alert('Pet profile updated!');
         } catch (error) {
             alert('Error updating the data!');
@@ -162,6 +208,7 @@ export default function PetEditModal({ opened, onClose, pet }: PetEditModalProps
                         setPhotoUrls(urls)
                     }}
                 />
+                <SortablePhotoArray photoUrls={photo_urls} setPhotoUrls={setPhotoUrls} />
                 <Button variant="default" color="gray"
                     onClick={async () => {
                         if (validateForm()) {
