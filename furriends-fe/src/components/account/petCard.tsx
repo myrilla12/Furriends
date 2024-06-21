@@ -2,7 +2,7 @@
 // pencil button in top right allows users to edit their pet profile
 import { createClient } from '../../../../furriends-backend/utils/supabase/component';
 import { useDisclosure } from '@mantine/hooks';
-import { ActionIcon, Button, Text } from '@mantine/core';
+import { ActionIcon, Button, MantineColorsTuple, Text, createTheme } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
 import PetEditModal from '@/components/account/petEditModal';
 import PetDeleteModal from '@/components/account/petDeleteModal';
@@ -57,7 +57,7 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                 )}
 
                 {chattable && (
-                    <Button variant="light" color="rgba(0, 0, 0, 1)" size="sm" m='md'
+                    <Button variant="filled" size="sm" m='md' color="#6d543e"
                         onClick={() => console.log("Go to chat feature")}
                     >
                         <Text size='lg' fw={700} mr='xs'>Chat</Text>
