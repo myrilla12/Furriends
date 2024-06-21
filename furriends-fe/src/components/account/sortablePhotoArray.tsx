@@ -28,7 +28,7 @@ export default function SortablePhotoArray({ photoUrls, setPhotoUrls }: Sortable
 
     return (
         <>
-            <Text size="sm" fw={630}>Photos</Text>
+            {photoUrls && photoUrls.length > 0 && <Text size="sm" fw={630}>Photos</Text>}
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="photos" direction="horizontal">
                     {(provided) => (
