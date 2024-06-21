@@ -20,8 +20,8 @@ export default function MyPetsPage({ pets, user }: MyPetsPageProps) {
     return (
         <Layout user={user}>
             <div className="flex-grow p-6">
-                <h1 className="mb-7 text-2xl font-bold">My Pets</h1>
-                <Button variant='default' color="gray" onClick={() => setModalOpened(true)}>Add a pet</Button>
+                <h1 className="mb-7 text-2xl font-bold text-amber-950">My Pets</h1>
+                <Button variant='light' color="#6d543e" onClick={() => setModalOpened(true)}>Add a pet</Button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6 px-6">
                 {petList.map((pet) => (
