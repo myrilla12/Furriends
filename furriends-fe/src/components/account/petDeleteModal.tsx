@@ -1,7 +1,6 @@
-// deletes pet profiles from db on click
+// warning modal with button allowing users to delete pet from profile
 import { useState } from 'react';
 import { Modal, Button } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { Pet } from '@/utils/definitions';
 import { createClient } from '../../../../furriends-backend/utils/supabase/component';
 
@@ -14,7 +13,6 @@ type PetDeleteModalProps = {
 export default function PetDeleteModal({ opened, onClose, pet }: PetDeleteModalProps) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
-    const [deleteOpened, { open: deleteOpen, close: deleteClose }] = useDisclosure(false);
 
     async function deletePet() {
         try {
@@ -31,17 +29,19 @@ export default function PetDeleteModal({ opened, onClose, pet }: PetDeleteModalP
 
     return (
         <>
-            <Modal opened={opened} onClose={onClose} title="Warning!" centered>
-                <p className="font-bold text-red-600">Are you sure you want to remove {pet.name} from your profile?</p>
+            <Modal opened={opened} onClose={onClose} title="Warning!" size="auto" centered>
+                <p className="font-bold text-red-600">
+                    Are you sure you want to remove <span className="underline">{pet.name}</span> from your profile?</p>
+                <p className="text-red-600 pt-2">This action is irreversible.</p>
                 <div className="flex justify-end">
-                    <Button variant="light" color="rgba(217, 0, 0, 1)" className="mr-2"
+                    <Button variant="light" color="rgba(217, 0, 0, 1)" className="mr-1"
                         onClick={async () => {
                             await deletePet();
                             onClose(); // close modal upon deletion
                         }}
                         disabled={loading} // button shows loading while data is deleted
                     >
-                        {loading ? 'Deleting...' : 'Yes, I am sure'}
+                        {loading ? 'Deleting...' : 'Yes, I am sure.'}
                     </Button>
                 </div>
             </Modal>
