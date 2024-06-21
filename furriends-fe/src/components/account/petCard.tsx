@@ -1,6 +1,5 @@
 // card component showing pet photo (scrollable), overlayed with name, type, breed, age in the bottom left
 // pencil button in top right allows users to edit their pet profile
-import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '../../../../furriends-backend/utils/supabase/component';
 import { useDisclosure } from '@mantine/hooks';
 import { ActionIcon, Button, Text } from '@mantine/core';
@@ -24,37 +23,12 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
     const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false); // controls opening/closing of petDetailsModal
     const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false); // controls opening/closing of petEdit modal
     const [deleteOpened, { open: openDelete, close: closeDelete }] = useDisclosure(false); // controls opening/closing of petDeleteModal
-    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    // create a memoized getCardPhoto; only recreated if dependencies change
-    // get the first pet photo in the array to act as pet card photo
-    const getCardPhoto = useCallback(async () => {
-        if (pet.photos && pet.photos.length > 0) {
-            await downloadImage(pet.photos[0]);
-        }
-
-        async function downloadImage(path: string) {
-            try {
-                const { data } = await supabase.storage
-                    .from('pet_photos')
-                    .getPublicUrl(path);
-                setPhotoUrl(data.publicUrl);
-            } catch (error) {
-                console.log('Error downloading image: ', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-    }, [pet.photos, supabase]);
-
-    useEffect(() => { getCardPhoto() }, [pet.photos, getCardPhoto]);
 
     return (
         <>
             <div
                 className="relative bg-cover bg-center h-64 w-full rounded-lg overflow-hidden shadow-lg cursor-pointer"
-                style={{ backgroundImage: `url(${pet.photos && photoUrl})` }}
+                style={{ backgroundImage: `url(${pet.photos && pet.photos[0]})` }}
                 onClick={openDetails}
             >
                 <div className="absolute bottom-0 left-0 pl-5 pb-4 text-white mix-blend-difference">
