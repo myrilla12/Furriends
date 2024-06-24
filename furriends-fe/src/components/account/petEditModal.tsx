@@ -70,30 +70,6 @@ export default function PetEditModal({ opened, onClose, pet }: PetEditModalProps
                 if (photoInsertError) throw photoInsertError;
             }
 
-            /* method that does not require removing all photos (more efficient), but unable to ensure order of photos after rearrangement
-            // determine photos to delete (present in old list but not the updated list)
-            const photosToDelete = pet.photos.filter((url) => !photo_urls?.includes(url));
-
-            // determine photos to insert (not present in old list but present in updated list)
-            const photosToInsert = photo_urls?.filter((url) => !pet.photos.includes(url));
-
-            // delete photos according to photosToDelete
-            for (const photo of photosToDelete) {
-                const { error: photoDeleteError } = await supabase.from('pet_photos').delete().eq('photo_url', photo);
-                if (photoDeleteError) throw photoDeleteError;
-            }
-
-            // insert new photos according to photosToInsert
-            if (photosToInsert && photosToInsert.length > 0) {
-                const photoInserts = photosToInsert?.map((url) => ({
-                    pet_id: pet.id,
-                    photo_url: url,
-                }));
-                const { error: photoInsertError } = await supabase.from('pet_photos').insert(photoInserts);
-                if (photoInsertError) throw photoInsertError;
-            }
-            */
-
             alert('Pet profile updated!');
         } catch (error) {
             alert('Error updating the data!');
