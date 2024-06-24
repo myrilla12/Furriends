@@ -43,7 +43,8 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                             onClick={(e) => {
                                 e.stopPropagation();
                                 openEdit();
-                            }}>
+                            }}
+                        >
                             <PencilIcon className="h-5 w-5" />
                         </Button>
                         <Button variant="subtle" size="compact-xs"
@@ -57,12 +58,17 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                 )}
 
                 {chattable && (
-                    <Button variant="filled" size="sm" m='md' color="#6d543e"
-                        onClick={() => console.log("Go to chat feature")}
-                    >
-                        <Text size='lg' fw={700} mr='xs'>Chat</Text>
-                        <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
-                    </Button>
+                    <div className="absolute top-0 left-0 pl-2 pt-2 mix-blend-difference">
+                        <Button variant="subtle" size="compact-sm"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                console.log("Go to chat feature");
+                            }}
+                        >
+                            <Text size='lg' fw={700} mr='7'>Chat</Text>
+                            <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
+                        </Button>
+                    </div>
                 )}
 
             </div>
