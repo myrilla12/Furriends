@@ -4,7 +4,7 @@ import Layout from '@/components/layout';
 import { useEffect, useState, useRef } from "react";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import type { User } from '@supabase/supabase-js'
-import { createClient } from '../../utils/supabase/server-props'
+import { createClient } from '../utils/supabase/server-props'
 import type { GetServerSidePropsContext } from 'next'
 import { Box, Button, Group, Input, Text } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
@@ -82,8 +82,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return;
     }
 
-    console.log('chat ids: ', chatData);
-
     const chats = chatData.map(chat => chat.id);
 
     // get the other user that corresponds to the chat ids
@@ -100,8 +98,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const otherUserIds = otherUserData.map(otherUser => otherUser.chat_user);
 
-    console.log('other user ids: ', otherUserIds);
-
     // get user profile of the other users
     const { data: otherProfilesData, error: otherProfilesError } = await supabase
         .from('profiles')
@@ -112,8 +108,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error('Error fetching the id of the other user in chat:', otherUserError);
         return;
     }
-
-    console.log('other user profiles: ', otherProfilesData);
     
     return {
         props: {
