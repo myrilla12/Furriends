@@ -9,8 +9,9 @@ export default function NoPetsFound() {
             align="center"
         >
             <Image
-                src='/sadface.jpeg'
+                src="/sadface.jpeg"
                 w={400}
+                alt="Picture of a sad dog"
             />
 
             <Title order={2}>No pets found :(</Title>

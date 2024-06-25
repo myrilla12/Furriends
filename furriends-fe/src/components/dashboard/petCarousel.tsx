@@ -11,10 +11,12 @@ interface PetCarouselProps {
 export default function PetCarousel({ pets }: PetCarouselProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const slides = pets.map((pet) => (
-    <Carousel.Slide>
-      {<PetCard pet={pet} editable={false} chattable={true} />}
-    </Carousel.Slide>
+  const slides = pets.map((pet, index) => (
+    <div key={index}>
+      <Carousel.Slide>
+        {<PetCard pet={pet} editable={false} chattable={true} />}
+      </Carousel.Slide>
+    </div>
   ));
 
   return (

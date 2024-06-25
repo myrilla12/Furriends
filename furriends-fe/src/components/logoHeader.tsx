@@ -6,8 +6,9 @@ export default function LogoHeader() {
     return (
         <Box className="flex items-center justify-left w-[70px] h-[70px] m-4 cursor-pointer">
             <Image
-                src='/logo-icon.png'
+                src="/logo-icon.png"
                 onClick={() => router.push("/dashboard")}
+                alt="furriends logo"
             />   
         </Box>
     );

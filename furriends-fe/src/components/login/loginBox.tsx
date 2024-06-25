@@ -64,7 +64,7 @@ export default function LoginBox() {
 
         <Group>
           <Box mt="lg">
-            <Text c='dimmed'>Don't have an account yet?</Text>
+            <Text c='dimmed'>Don&apos;t have an account yet?</Text>
           </Box>
           <Box mt='lg'>
             <Button variant="transparent" onClick={() => router.push("/signup")}><u>Sign up</u></Button>
