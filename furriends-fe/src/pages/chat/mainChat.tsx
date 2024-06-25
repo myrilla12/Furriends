@@ -12,36 +12,21 @@ import Chat from '@/components/chat/chat';
 
 type ChatProps = {
     user: User;
-    chatId: string;
+    chatIds: string[];
+    otherUsers: User[];
+    //chatNames: string[];
 }
 
-
-export default function MainChatPage({ user, chatId }: ChatProps) {
-    /*
-    const supabase = createClient();
-
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'messages',
-        },
-        (payload) => console.log(payload)
-      )
-      .subscribe();
-    */
+export default function MainChatPage({ user, chatIds, otherUsers }: ChatProps) {
 
     return (
         <Layout user={user}>
             <div className="flex-grow p-6 md:overflow-y-auto">
                 <Box style={{"display": "flex"}}>
                     <Box>
-                        <ChatNav user={user} />
+                        <ChatNav user={user} chatIds={chatIds} otherUsers={otherUsers} />
                     </Box>
-                    <Chat chatId={chatId}/>
+                    <Chat chatIds={chatIds}/>
                 </Box>
             </div>
         </Layout>
@@ -72,10 +57,56 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         .eq('id', data.user.id)
         .single();
 
+    // use supabase realtime
+    const channel = supabase
+        .channel('schema-db-changes')
+        .on(
+        'postgres_changes',
+        {
+            event: '*',
+            schema: 'public',
+            table: 'messages',
+        },
+        (payload) => console.log(payload)
+        )
+        .subscribe();
+
+    // fetch all chat ids that corespond to user
+    const { data: chatData, error: chatError } = await supabase
+        .from('chat_users')
+        .select('id')
+        .eq('chat_user', data.user.id);
+
+    if (chatError) {
+        console.error('Error fetching chat IDs:', chatError);
+        return;
+    }
+
+    const chats = chatData.map(chat => chat.id);
+
+    // get the other user that corresponds to the chat ids
+    const { data: otherUserData, error: otherUserError } = await supabase
+        .from('chat_users')
+        .select('chat_user')
+        .in('id', chats)
+        .neq('chat_user', data.user.id);
+
+    if (otherUserError) {
+        console.error('Error fetching the id of the other user in chat:', otherUserError);
+        return;
+    }
+
+    const otherUserIds = otherUserData.map(otherUser => otherUser.chat_user);
+
+    // get user data of the other users
+    const otherProfiles = await otherUserIds.map(userId => supabase.auth.admin.getUserById(userId));
+
     return {
         props: {
             user: data.user,
-            username: profileData?.username || '',
+            chatIds: chatData || [],
+            otherUsers: otherProfiles,
+            //chatNames: ,
         },
     };
 }
