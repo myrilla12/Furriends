@@ -6,12 +6,12 @@ import UserIcon from '../userIcon';
 import type { User } from '@supabase/supabase-js'
 import { Box, Title } from '@mantine/core';
 import ChatIcon from './chatIcon';
+import { Profile } from '@/utils/definitions';
 
 type ChatNavProps = {
     user: User;
     chatIds: string[];
-    otherUsers: User[];
-    //chatNames: string[];
+    otherUsers: Profile[];
 }
 
 export default function ChatNav({ user, chatIds, otherUsers } : ChatNavProps) {
@@ -27,32 +27,29 @@ export default function ChatNav({ user, chatIds, otherUsers } : ChatNavProps) {
 function ChatCard({ user, otherUsers } : ChatNavProps) {
     const pathname = usePathname();
 
-    const links = [
-    { name: 'Chat1', href: '/dashboard' },
-    { name: 'Chat2', href: '/dashboard' },
-    { name: 'Chat3', href: '/dashboard' }
-    ];
+    // const links = [
+    // { name: 'Chat1', href: '/dashboard' },
+    // { name: 'Chat2', href: '/dashboard' },
+    // { name: 'Chat3', href: '/dashboard' }
+    // ];
   
     return (
       <>
-        {otherUsers.map(otherUser =>
-            {links.map((link) => {
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className={clsx(
-                      "flex h-[70px] w-[400px] items-center justify-start gap-2 rounded-lg bg-gray-100 p-3 text-lg font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-3 md:px-6",
-                      { 'bg-sky-50': pathname === link.href },
-                    )}
-                  >
-                      <ChatIcon user={otherUser} />
-                      <p>{link.name}</p>
-                  </Link>
-                );
-              })}
-        )
-        }
+        {otherUsers.map(otherUser => {
+            return (
+                <Link
+                key={otherUser.username}
+                href={'/dashboard'}
+                className={clsx(
+                    "flex h-[70px] w-[400px] items-center justify-start gap-2 rounded-lg bg-gray-100 p-3 text-lg font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-3 md:px-6",
+                    { 'bg-sky-50': pathname === '/dashboard' },
+                )}
+                >
+                    <ChatIcon profile={otherUser} />
+                    <p>{otherUser.username}</p>
+                </Link>
+            );
+        })}
       </>
     );
   }

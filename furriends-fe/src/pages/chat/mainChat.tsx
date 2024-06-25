@@ -9,12 +9,12 @@ import type { GetServerSidePropsContext } from 'next'
 import { Box, Button, Group, Input, Text } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
 import Chat from '@/components/chat/chat';
+import { Profile } from '@/utils/definitions';
 
 type ChatProps = {
     user: User;
     chatIds: string[];
-    otherUsers: User[];
-    //chatNames: string[];
+    otherUsers: Profile[];
 }
 
 export default function MainChatPage({ user, chatIds, otherUsers }: ChatProps) {
@@ -82,6 +82,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return;
     }
 
+    console.log('chat ids: ', chatData);
+
     const chats = chatData.map(chat => chat.id);
 
     // get the other user that corresponds to the chat ids
@@ -98,15 +100,26 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const otherUserIds = otherUserData.map(otherUser => otherUser.chat_user);
 
-    // get user data of the other users
-    const otherProfiles = await otherUserIds.map(userId => supabase.auth.admin.getUserById(userId));
+    console.log('other user ids: ', otherUserIds);
 
+    // get user profile of the other users
+    const { data: otherProfilesData, error: otherProfilesError } = await supabase
+        .from('profiles')
+        .select('id, avatar_url, username')
+        .in('id', otherUserIds);
+    
+    if (otherUserError) {
+        console.error('Error fetching the id of the other user in chat:', otherUserError);
+        return;
+    }
+
+    console.log('other user profiles: ', otherProfilesData);
+    
     return {
         props: {
             user: data.user,
-            chatIds: chatData || [],
-            otherUsers: otherProfiles,
-            //chatNames: ,
+            chatIds: chats || [],
+            otherUsers: otherProfilesData,
         },
     };
 }
