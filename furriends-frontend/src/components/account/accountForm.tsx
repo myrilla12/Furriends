@@ -8,35 +8,35 @@ import Avatar from './avatar'
 import { Button, TextInput } from '@mantine/core';
 
 export default function AccountForm({ user }: { user: User | null }) {
-    const supabase = createClient()
-    const [loading, setLoading] = useState(true)
-    const [username, setUsername] = useState<string | null>(null)
-    const [avatar_url, setAvatarUrl] = useState<string | null>(null)
+    const supabase = createClient();
+    const [loading, setLoading] = useState(true);
+    const [username, setUsername] = useState<string | null>(null);
+    const [avatar_url, setAvatarUrl] = useState<string | null>(null);
 
     // create a memoized getProfile; only recreated if dependencies change
     const getProfile = useCallback(async () => {
         try {
-            setLoading(true)
+            setLoading(true);
 
             const { data, error, status } = await supabase
                 .from('profiles')
                 .select(`username, avatar_url`)
                 .eq('id', user?.id)
-                .single()
+                .single();
 
             if (error && status !== 406) {
-                console.log(error)
-                throw error
+                console.log(error);
+                throw error;
             }
 
             if (data) {
-                setUsername(data.username)
-                setAvatarUrl(data.avatar_url)
+                setUsername(data.username);
+                setAvatarUrl(data.avatar_url);
             }
         } catch (error) {
-            alert('Error loading user data!')
+            alert('Error loading user data!');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }, [user, supabase])
 
@@ -50,19 +50,27 @@ export default function AccountForm({ user }: { user: User | null }) {
         avatar_url: string | null
     }) {
         try {
-            setLoading(true)
-
+            setLoading(true);
+            if (!username && user?.email) {
+                const emailPrefix = user.email.split('@')[0]; // split email into parts before & after '@', then store the prefix
+                const usernamePrefix = emailPrefix.length <= 5 ? emailPrefix : emailPrefix.substring(0, 5); // take first 5 charas of prefix, or the entire prefix if length <5
+                const asterisks = '***'; // asterisks to complete the default username
+                const defaultUsername = usernamePrefix + asterisks;
+                username = defaultUsername;
+                setUsername(defaultUsername);
+            }
+            
             const { error } = await supabase.from('profiles').upsert({
                 id: user?.id as string,
                 username,
                 avatar_url,
-            })
-            if (error) throw error
-            alert('Profile updated!')
+            });
+            if (error) throw error;
+            alert('Profile updated!');
         } catch (error) {
-            alert('Error updating the data!')
+            alert('Error updating the data!');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
