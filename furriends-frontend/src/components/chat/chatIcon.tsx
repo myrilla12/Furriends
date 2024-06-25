@@ -17,6 +17,8 @@ export default function ChatIcon({ profile }: ChatIconProps) {
 
     // create a memoized getAvatar; only recreated if dependencies change
     // gets user profile photo
+        // create a memoized getAvatar; only recreated if dependencies change
+    // gets user profile photo
     const getAvatar = useCallback(async () => {
         try {
             setLoading(true)
@@ -33,22 +35,12 @@ export default function ChatIcon({ profile }: ChatIconProps) {
             }
 
             if (data && data.avatar_url) {
-                await downloadImage(data.avatar_url)
+                setAvatarUrl(data.avatar_url)
             } 
         } catch (error) {
             alert('Error loading profile photo!')
         } finally {
             setLoading(false)
-        }
-
-        async function downloadImage(path: string) {
-            try {
-                const { data } = await supabase.storage.from('avatars').getPublicUrl(path)
-                const url = data.publicUrl
-                setAvatarUrl(url)
-            } catch (error) {
-                console.log('Error downloading image: ', error)
-            }
         }
     }, [profile, supabase])
 
