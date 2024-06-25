@@ -79,7 +79,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     // ensure photos attribute is a string[] (array of urls)
     // by default after query it is an array of photo containing photo_url
-    const petsWithPhotoUrlArray = petData.map(pet => {
+    const petsWithPhotoUrlArray = petData.map((pet: { pet_photos: any[]; }) => {
         const photoUrls = pet.pet_photos.map(photo => photo.photo_url);
 
         return {

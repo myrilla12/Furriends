@@ -18,3 +18,9 @@ export type Profile = {
     avatar_url: string;
     username: string;
 }
+
+export type Message = {
+    created_at: string;
+    content: string;
+    author_id: string;
+}

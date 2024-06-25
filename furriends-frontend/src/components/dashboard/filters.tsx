@@ -66,7 +66,9 @@ export default function Filters({ pets, setFilteredPets }: FiltersProps) {
     }
 
     // call on filterPets if there are any changes to the above states
-    useEffect(() => { filterPets() }, [type, fromAge, toAge, fromWeight, toWeight, energy_level, filterPets])
+    useEffect(() => { 
+        filterPets();
+    }, [type, fromAge, toAge, fromWeight, toWeight, energy_level, filterPets])
 
     // // checking current states
     // console.log('type:', type);
