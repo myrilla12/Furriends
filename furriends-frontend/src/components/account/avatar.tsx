@@ -1,4 +1,4 @@
-// from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
+// adapted from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
 'use client'
 
 import React, { useEffect, useState } from 'react';
@@ -18,14 +18,8 @@ export default function Avatar({ uid, url, size, onUpload, }: {
 
     // download exisiting profile photo in database, if any
     useEffect(() => {
-        async function downloadImage(path: string) {
+        async function downloadImage(url: string) {
             try {
-                const { data, error } = await supabase.storage.from('avatars').download(path)
-                if (error) {
-                    throw error
-                }
-
-                const url = URL.createObjectURL(data)
                 setAvatarUrl(url)
             } catch (error) {
                 console.log('Error downloading image: ', error)
@@ -54,7 +48,11 @@ export default function Avatar({ uid, url, size, onUpload, }: {
                 throw uploadError
             }
 
-            onUpload(filePath)
+            const { data: urlData } = await supabase.storage
+                .from('pet_photos')
+                .getPublicUrl(filePath)
+
+            onUpload(urlData.publicUrl)
         } catch (error) {
             alert('Error uploading avatar!')
         } finally {
