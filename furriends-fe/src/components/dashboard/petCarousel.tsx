@@ -12,11 +12,9 @@ export default function PetCarousel({ pets }: PetCarouselProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const slides = pets.map((pet, index) => (
-    <div key={index}>
-      <Carousel.Slide>
+      <Carousel.Slide key={index}>
         {<PetCard pet={pet} editable={false} chattable={true} />}
       </Carousel.Slide>
-    </div>
   ));
 
   return (
