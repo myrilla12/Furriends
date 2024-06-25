@@ -4,13 +4,13 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { type User } from '@supabase/supabase-js';
 import { createClient } from '../../utils/supabase/component';
+import { Profile } from '@/utils/definitions';
 
 type ChatIconProps = {
-    user: User | null;
+    profile: Profile;
 };
 
-export default function ChatIcon({ user }: ChatIconProps) {
-    const router = useRouter();
+export default function ChatIcon({ profile }: ChatIconProps) {
     const [loading, setLoading] = useState(true)
     const [avatarUrl, setAvatarUrl] = useState<string>('/default-avatar.jpg')
     const supabase = createClient();
@@ -24,7 +24,7 @@ export default function ChatIcon({ user }: ChatIconProps) {
             const { data, error, status } = await supabase
                 .from('profiles')
                 .select('avatar_url')
-                .eq('id', user?.id)
+                .eq('id', profile?.id)
                 .single()
 
             if (error && status !== 406) {
@@ -50,9 +50,10 @@ export default function ChatIcon({ user }: ChatIconProps) {
                 console.log('Error downloading image: ', error)
             }
         }
-    }, [user, supabase])
+    }, [profile, supabase])
 
     useEffect(() => { getAvatar() }, [getAvatar])
+        
 
     return (
         <div className="relative">
