@@ -1,7 +1,7 @@
 import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
-import { createClient } from '../../../furriends-backend/utils/supabase/server-props'
+import { createClient } from '../utils/supabase/server-props'
 
 export default function EditAccountPage({ user }: { user: User }) {
     return (

@@ -4,7 +4,7 @@ import { Text, Space, TextInput, PasswordInput, Button, Container, Box, Group, D
 import LoginButton from '../login/loginButton';
 import router from 'next/router';
 import { useState } from 'react';
-import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../../utils/supabase/component';
 
 export default function SignupBox() {
   const [email, setEmail] = useState('');

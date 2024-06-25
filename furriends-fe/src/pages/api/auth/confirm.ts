@@ -3,7 +3,7 @@
 import { type EmailOtpType } from '@supabase/supabase-js'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import createClient from '../../../../../furriends-backend/utils/supabase/api'
+import createClient from '../../../utils/supabase/api'
 
 function stringOrFirstString(item: string | string[] | undefined) {
   return Array.isArray(item) ? item[0] : item

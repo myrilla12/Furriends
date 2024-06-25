@@ -1,6 +1,6 @@
 // from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
-import { createClient } from '../../../furriends-backend/utils/supabase/static-props'
+import { createClient } from '../utils/supabase/static-props'
 
 export default function PublicPage({ data }: { data?: any[] }) {
   return <pre>{data && JSON.stringify(data, null, 2)}</pre>

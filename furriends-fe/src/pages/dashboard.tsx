@@ -2,7 +2,7 @@ import Layout from '@/components/layout';
 
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
-import { createClient } from '../../../furriends-backend/utils/supabase/server-props'
+import { createClient } from '../utils/supabase/server-props'
 import Filters from '@/components/dashboard/filters';
 import PetCarousel from '@/components/dashboard/petCarousel';
 import { Pet } from '@/utils/definitions';

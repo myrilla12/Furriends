@@ -3,7 +3,7 @@
 import { Text, Space, TextInput, PasswordInput, Button, Box, Group } from '@mantine/core';
 import router from 'next/router';
 import { useState } from 'react';
-import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../../utils/supabase/component';
 
 export default function LoginBox() {
   const supabase = createClient();
@@ -64,7 +64,7 @@ export default function LoginBox() {
 
         <Group>
           <Box mt="lg">
-            <Text c='dimmed'>Don't have an account yet?</Text>
+            <Text c='dimmed'>Don&apos;t have an account yet?</Text>
           </Box>
           <Box mt='lg'>
             <Button variant="transparent" onClick={() => router.push("/signup")}><u>Sign up</u></Button>

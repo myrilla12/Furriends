@@ -2,7 +2,7 @@ import Layout from '@/components/layout';
 import AccountForm from '@/components/account/accountForm'
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
-import { createClient } from '../../../../furriends-backend/utils/supabase/server-props'
+import { createClient } from '../../utils/supabase/server-props'
 
 export default function EditAccountPage({ user }: { user: User }) {
     return (
@@ -14,7 +14,7 @@ export default function EditAccountPage({ user }: { user: User }) {
     )
 }
 
-// fetch user data (profile photo) by getting server props
+// fetch user by getting server props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
 

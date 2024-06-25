@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import Layout from '@/components/layout';
 import { Button } from '@mantine/core';
 import type { User } from '@supabase/supabase-js'
-import { createClient } from '../../../../furriends-backend/utils/supabase/server-props'
+import { createClient } from '../../utils/supabase/server-props'
 import PetForm from '@/components/account/petForm';
 import PetCard from '@/components/account/petCard';
 import type { GetServerSidePropsContext } from 'next'

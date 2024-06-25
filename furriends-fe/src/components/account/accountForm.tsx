@@ -2,7 +2,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react';
-import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../../utils/supabase/component';
 import { type User } from '@supabase/supabase-js';
 import Avatar from './avatar'
 import { Button, TextInput } from '@mantine/core';

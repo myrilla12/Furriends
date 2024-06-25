@@ -6,7 +6,7 @@ import { Modal, ScrollArea, Button, TextInput, Select, NumberInput, Text } from 
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
 import SortablePhotoArray from './sortablePhotoArray';
-import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../../utils/supabase/component';
 import { Pet } from '@/utils/definitions';
 import '@mantine/dates/styles.css';
 
