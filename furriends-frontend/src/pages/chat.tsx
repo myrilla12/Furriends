@@ -8,8 +8,9 @@ import { createClient } from '../utils/supabase/server-props'
 import type { GetServerSidePropsContext } from 'next'
 import { Box, Button, Group, Input, Text } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
-import Chat from '@/components/chat/chat';
+import Chat from '@/components/chat/chatBox';
 import { Profile } from '@/utils/definitions';
+import ChatBox from '@/components/chat/chatBox';
 
 type ChatProps = {
     user: User;
@@ -17,7 +18,7 @@ type ChatProps = {
     otherUsers: Profile[];
 }
 
-export default function MainChatPage({ user, chatIds, otherUsers }: ChatProps) {
+export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
 
     return (
         <Layout user={user}>
@@ -26,7 +27,7 @@ export default function MainChatPage({ user, chatIds, otherUsers }: ChatProps) {
                     <Box>
                         <ChatNav user={user} chatIds={chatIds} otherUsers={otherUsers} />
                     </Box>
-                    <Chat chatIds={chatIds}/>
+                    <ChatBox chatIds={chatIds}/>
                 </Box>
             </div>
         </Layout>

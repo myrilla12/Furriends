@@ -8,7 +8,7 @@ import clsx from 'clsx';
 // Map of links to display in the side navigation.
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  { name: 'Chat', href: '/mainChat', icon: ChatBubbleOvalLeftEllipsisIcon },
+  { name: 'Chat', href: '/chat', icon: ChatBubbleOvalLeftEllipsisIcon },
   { name: 'Feed', href: '/feed', icon: QueueListIcon },
   { name: 'Map', href: '/map', icon: MapPinIcon },
 ];

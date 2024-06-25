@@ -6,7 +6,7 @@ type ChatProps = {
   chatIds: string[];
 }
 
-export default function Chat({ chatIds }: ChatProps) {
+export default function ChatBox({ chatIds }: ChatProps) {
 
   return (
     <Container bg='var(--mantine-color-blue-light)' m='md' w={1000} h={650}>
