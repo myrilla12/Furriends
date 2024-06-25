@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { type User } from '@supabase/supabase-js';
-import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../../utils/supabase/component';
 
 type ChatIconProps = {
     user: User | null;

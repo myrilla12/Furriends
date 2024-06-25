@@ -1,6 +1,6 @@
 // card component showing pet photo (scrollable), overlayed with name, type, breed, age in the bottom left
 // pencil button in top right allows users to edit their pet profile
-import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../../utils/supabase/component';
 import { useDisclosure } from '@mantine/hooks';
 import { ActionIcon, Button, MantineColorsTuple, Text, createTheme } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';

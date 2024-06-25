@@ -4,7 +4,7 @@ import Layout from '@/components/layout';
 import { useEffect, useState, useRef } from "react";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import type { User } from '@supabase/supabase-js'
-import { createClient } from '../../../../furriends-backend/utils/supabase/server-props'
+import { createClient } from '../../utils/supabase/server-props'
 import type { GetServerSidePropsContext } from 'next'
 import { Box, Button, Group, Input, Text } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';

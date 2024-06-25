@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { createClient } from '../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../utils/supabase/component';
 import { PowerIcon } from '@heroicons/react/24/outline';
 
 export default function SignoutButton() {

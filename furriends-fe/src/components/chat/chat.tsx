@@ -1,6 +1,6 @@
 // following Supabase documentation at https://supabase.com/docs/guides/realtime/subscribing-to-database-changes
 import { Container, Text } from "@mantine/core";
-import createClient from "../../../../furriends-backend/utils/supabase/api";
+import createClient from "../../utils/supabase/api";
 
 type ChatProps = {
   chatIds: string[];

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Modal, Button } from '@mantine/core';
 import { Pet } from '@/utils/definitions';
-import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../../utils/supabase/component';
 
 type PetDeleteModalProps = {
     opened: boolean;

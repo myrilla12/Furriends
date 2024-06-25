@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Button, Modal, TextInput, Textarea, NumberInput, Select, ScrollArea } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
-import { createClient } from '../../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../../utils/supabase/component';
 import { type User } from '@supabase/supabase-js';
 import '@mantine/dates/styles.css'
 

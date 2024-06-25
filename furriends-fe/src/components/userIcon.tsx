@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Menu, MenuItem } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { type User } from '@supabase/supabase-js';
-import { createClient } from '../../../furriends-backend/utils/supabase/component';
+import { createClient } from '../utils/supabase/component';
 import { PowerIcon, UserIcon as PersonIcon } from '@heroicons/react/24/outline';
 
 type UserIconProps = {
