@@ -54,8 +54,7 @@ export default function AccountForm({ user }: { user: User | null }) {
             if (!username && user?.email) {
                 const emailPrefix = user.email.split('@')[0]; // split email into parts before & after '@', then store the prefix
                 const usernamePrefix = emailPrefix.length <= 5 ? emailPrefix : emailPrefix.substring(0, 5); // take first 5 charas of prefix, or the entire prefix if length <5
-                const asterisks = '***'; // asterisks to complete the default username
-                const defaultUsername = usernamePrefix + asterisks;
+                const defaultUsername = usernamePrefix + '***';
                 username = defaultUsername;
                 setUsername(defaultUsername);
             }
