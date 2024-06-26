@@ -25,7 +25,7 @@ export default function SignupBox() {
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({ email, password });
 
     // if user is not redirected and no error is shown, supabase email rate limit has been exceeded - try again in an hour
     if (error) {
@@ -36,34 +36,7 @@ export default function SignupBox() {
       }
       console.error(error);
     } else {
-      // set default username using user's email prefix
-      const emailPrefix = email.split('@')[0]; // split email into parts before & after '@', then store the prefix
-      const usernamePrefix = emailPrefix.length <= 5 ? emailPrefix : emailPrefix.substring(0, 5); // take first 5 charas of prefix, or the entire prefix if length <5
-      const defaultUsername = usernamePrefix + '***';
-
-            // Add a short delay to ensure the profile row is created by the trigger
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Retry updating the profile until it succeeds
-            let success = false;
-            for (let i = 0; i < 5 && !success; i++) {
-              const { error: usernameError } = await supabase
-                .from('profiles')
-                .update({ username: defaultUsername })
-                .eq('id', data.user?.id);
-      
-              if (!usernameError) {
-                success = true;
-              } else {
-                console.error(usernameError);
-                await new Promise(resolve => setTimeout(resolve, 1000));
-              }
-            }
-      
-            if (success) {
-              router.push('/login');
-            }
-
+      alert("Sign up successful! Verify your account using the link in your email.")
       router.push('/login');
     }
   }
