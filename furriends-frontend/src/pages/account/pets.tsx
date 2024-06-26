@@ -35,6 +35,24 @@ export default function MyPetsPage({ pets, user }: MyPetsPageProps) {
     );
 }
 
+interface RawPetPhoto {
+    photo_url: string;
+}
+
+interface RawPet {
+    id: number;
+    owner_id: number;
+    name: string;
+    type: string;
+    breed: string;
+    weight: number;
+    birthday: string;
+    energy_level: number;
+    description: string;
+    likes: number;
+    created_at: string;
+    pet_photos: RawPetPhoto[];
+}
 
 // fetch user profile photo & pet profile by getting server props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -70,7 +88,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     // ensure photos attribute is a string[] (array of urls)
     // by default after query it is an array of photo containing photo_url
-    const petsWithPhotoUrlArray = petData.map(pet => {
+    const petsWithPhotoUrlArray = petData.map((pet: RawPet) => {
         const photoUrls = pet.pet_photos.map(photo => photo.photo_url);
     
         return {
