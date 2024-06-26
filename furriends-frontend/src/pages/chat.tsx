@@ -2,14 +2,14 @@
 import Layout from '@/components/layout';
 
 import { useEffect, useState, useRef } from "react";
-import { RealtimeChannel } from "@supabase/supabase-js";
 import type { User } from '@supabase/supabase-js'
 import { createClient } from '../utils/supabase/server-props'
+import { createClient as CC } from '@/utils/supabase/component';
 import type { GetServerSidePropsContext } from 'next'
-import { Box, Button, Group, Input, Text } from '@mantine/core';
+import { Box } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
-import Chat from '@/components/chat/chatBox';
-import { Profile } from '@/utils/definitions';
+import { Message, Profile } from '@/utils/definitions';
+import { useRouter } from 'next/router';
 import ChatBox from '@/components/chat/chatBox';
 
 type ChatProps = {
@@ -19,21 +19,48 @@ type ChatProps = {
 }
 
 export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
+    const supabase = CC();
+    const router = useRouter();
+    const id = router.query;
+
+    const [displayChat, setDisplayChat] = useState<boolean>(false);
+    const [messages, setMessages] = useState<Message[] | null>(null);
+
+    useEffect(() => { 
+        const exists = chatIds.includes(String(id.id));
+
+        if (exists) {
+            setDisplayChat(true);
+
+            // set the state messages to the data from supabase
+            supabase
+                .from('messages')
+                .select('created_at, content, author_id')
+                .eq('chat_id', id.id)
+                .then((res: any) => {
+                    setMessages(res.data);
+                });
+
+        } else {
+            setDisplayChat(false);
+        }
+    }, [id])
 
     return (
         <Layout user={user}>
             <div className="flex-grow p-6 md:overflow-y-auto">
                 <Box style={{"display": "flex"}}>
-                    <Box>
-                        <ChatNav user={user} chatIds={chatIds} otherUsers={otherUsers} />
+                    <Box ml='xl' mr='xl'>
+                        <ChatNav chatIds={chatIds} otherUsers={otherUsers} />
                     </Box>
-                    <ChatBox chatIds={chatIds}/>
+                        {displayChat && (
+                            <ChatBox user={user} messages={messages}/>
+                        )}   
                 </Box>
             </div>
         </Layout>
     );
 }
-
 
 // fetch user data by getting server props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -59,18 +86,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         .single();
 
     // use supabase realtime
-    const channel = supabase
-        .channel('schema-db-changes')
-        .on(
-        'postgres_changes',
-        {
-            event: '*',
-            schema: 'public',
-            table: 'messages',
-        },
-        (payload) => console.log(payload)
-        )
-        .subscribe();
+    // following Supabase documentation at https://supabase.com/docs/guides/realtime/subscribing-to-database-changes
+    // const channel = supabase
+    //     .channel('schema-db-changes')
+    //     .on(
+    //     'postgres_changes',
+    //     {
+    //         event: '*',
+    //         schema: 'public',
+    //         table: 'messages',
+    //     },
+    //     (payload) => console.log(payload)
+    //     )
+    //     .subscribe();
 
     // fetch all chat ids that corespond to user
     const { data: chatData, error: chatError } = await supabase
@@ -83,7 +111,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return;
     }
 
-    const chats = chatData.map(chat => chat.id);
+    const chats = chatData.map((chat: { id: string; }) => chat.id);
 
     // get the other user that corresponds to the chat ids
     const { data: otherUserData, error: otherUserError } = await supabase
@@ -97,7 +125,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return;
     }
 
-    const otherUserIds = otherUserData.map(otherUser => otherUser.chat_user);
+    const otherUserIds = otherUserData.map((otherUser: { chat_user: string; }) => otherUser.chat_user);
 
     // get user profile of the other users
     const { data: otherProfilesData, error: otherProfilesError } = await supabase
