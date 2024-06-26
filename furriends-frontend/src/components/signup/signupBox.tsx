@@ -41,8 +41,28 @@ export default function SignupBox() {
       const usernamePrefix = emailPrefix.length <= 5 ? emailPrefix : emailPrefix.substring(0, 5); // take first 5 charas of prefix, or the entire prefix if length <5
       const defaultUsername = usernamePrefix + '***';
 
-      const { error: usernameError } = await supabase.from('profiles').update({ username: defaultUsername }).eq('id', data.user?.id);
-      if (usernameError) throw usernameError;
+            // Add a short delay to ensure the profile row is created by the trigger
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Retry updating the profile until it succeeds
+            let success = false;
+            for (let i = 0; i < 5 && !success; i++) {
+              const { error: usernameError } = await supabase
+                .from('profiles')
+                .update({ username: defaultUsername })
+                .eq('id', data.user?.id);
+      
+              if (!usernameError) {
+                success = true;
+              } else {
+                console.error(usernameError);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+              }
+            }
+      
+            if (success) {
+              router.push('/login');
+            }
 
       router.push('/login');
     }
