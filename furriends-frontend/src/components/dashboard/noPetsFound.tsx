@@ -9,7 +9,7 @@ export default function NoPetsFound() {
             align="center"
         >
             <Image
-                src="/sadface.jpeg"
+                src="/sadface.png"
                 w={400}
                 alt="Picture of a sad dog"
             />

@@ -11,6 +11,7 @@ import ChatNav from '@/components/chat/chatNav';
 import { Message, Profile } from '@/utils/definitions';
 import { useRouter } from 'next/router';
 import ChatBox from '@/components/chat/chatBox';
+import ChatNotFound from '@/components/chat/chatNotFound';
 
 type ChatProps = {
     user: User;
@@ -53,9 +54,10 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
                     <Box ml='xl' mr='xl'>
                         <ChatNav chatIds={chatIds} otherUsers={otherUsers} />
                     </Box>
-                        {displayChat && (
-                            <ChatBox user={user} messages={messages}/>
-                        )}   
+                        {displayChat? 
+                            <ChatBox user={user} messages={messages}/> :
+                            <ChatNotFound />
+                        }   
                 </Box>
             </div>
         </Layout>
