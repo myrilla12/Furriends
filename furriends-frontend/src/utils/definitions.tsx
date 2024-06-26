@@ -12,3 +12,15 @@ export type Pet = {
     created_at: string;
     photos: string[];
 }
+
+export type Profile = {
+    id: string;
+    avatar_url: string;
+    username: string;
+}
+
+export type Message = {
+    created_at: string;
+    content: string;
+    author_id: string;
+}
