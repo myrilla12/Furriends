@@ -1,19 +1,39 @@
 import { Box, Button, Center, Container, Flex, Input, ScrollArea, Text } from "@mantine/core";
-import createClient from "../../utils/supabase/api";
+import { createClient } from "@/utils/supabase/component";
 import { useEffect, useRef, useState } from "react";
 import { RealtimeChannel, User } from "@supabase/supabase-js";
 import { GetServerSidePropsContext } from "next";
-import { Message } from "@/utils/definitions";
+import { Message, Profile } from "@/utils/definitions";
 import styles from '../../styles/chatStyles.module.css';
 
 type ChatBoxProps = {
   user: User;
+  chatId: string | null;
   messages: Message[] | null;
-  chatPartner: string;
+  chatPartner: Profile | null;
 }
 
-export default function ChatBox({ user, messages, chatPartner }: ChatBoxProps) {
+export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBoxProps) {
+  const supabase = createClient();
   const [message, setMessage] = useState<string>('');
+
+  async function sendMessage(content: string) {
+    const { data, error } = await supabase
+                .from('messages')
+                .insert({
+                    chat_id: chatId,
+                    author_id: user.id,
+                    content: content,
+                })
+  }
+
+  const checkMessage = () => {
+    if (message === '') {
+      alert('No message received!');
+      return false;
+    }
+    return true;
+  }
 
   return (
     <Container
@@ -31,7 +51,7 @@ export default function ChatBox({ user, messages, chatPartner }: ChatBoxProps) {
             >   
                 {user.id === msg.author_id ? 
                   (<Text size='sm' fw={700}>You</Text>) : 
-                  (<Text size='sm' fw={700}>{chatPartner}</Text>)
+                  (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
                 }
                 {msg.content}
             </div>
@@ -55,14 +75,18 @@ export default function ChatBox({ user, messages, chatPartner }: ChatBoxProps) {
           size="lg"
           onChange={(e) => setMessage(e.target.value)}
           onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              console.log("send message (to be done)");
+            if (e.key === "Enter" && checkMessage()) {
+              sendMessage(message)
             }
           }}
           className="flex-[0.5] text-2xl"
         />
         <Button size='lg' color='#ad925a' variant='filled'
-          onClick={() => console.log("send message (to be done)")}
+          onClick={() => {
+            if (checkMessage()) 
+              {sendMessage(message)}
+            }
+          }
         >
           Send
         </Button>  
