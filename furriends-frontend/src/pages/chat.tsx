@@ -25,13 +25,16 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
     const id = router.query;
 
     const [displayChat, setDisplayChat] = useState<boolean>(false);
+    const [chatPartner, setChatPartner] = useState<string>('');
     const [messages, setMessages] = useState<Message[] | null>(null);
 
     useEffect(() => { 
-        const exists = chatIds.includes(String(id.id));
+        // check if chat id exists 
+        const exists = chatIds.indexOf(String(id.id));
 
-        if (exists) {
-            setDisplayChat(true);
+        if (exists !== -1) {
+            setDisplayChat(true); // display chat corresponding to chat id
+            setChatPartner(otherUsers[exists].username); // save username of chat partner
 
             // set the state messages to the data from supabase
             supabase
@@ -55,9 +58,9 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
                         <ChatNav chatIds={chatIds} otherUsers={otherUsers} />
                     </Box>
                         {displayChat? 
-                            <ChatBox user={user} messages={messages}/> :
+                            <ChatBox user={user} messages={messages} chatPartner={chatPartner}/> :
                             <ChatNotFound />
-                        }   
+                        }    
                 </Box>
             </div>
         </Layout>

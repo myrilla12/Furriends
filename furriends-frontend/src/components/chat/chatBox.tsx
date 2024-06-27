@@ -4,32 +4,41 @@ import { useEffect, useRef, useState } from "react";
 import { RealtimeChannel, User } from "@supabase/supabase-js";
 import { GetServerSidePropsContext } from "next";
 import { Message } from "@/utils/definitions";
+import styles from '../../styles/chatStyles.module.css';
 
 type ChatBoxProps = {
   user: User;
   messages: Message[] | null;
+  chatPartner: string;
 }
 
-export default function ChatBox({ user, messages }: ChatBoxProps) {
+export default function ChatBox({ user, messages, chatPartner }: ChatBoxProps) {
   const [message, setMessage] = useState<string>('');
 
   return (
-    <Container bg='var(--mantine-color-orange-light)' m='md' w={850} h={650}>
+    <Container
+      m='md'
+      className={`${styles.chatContainer}`}
+    >
+      {/* Display author name + messages in chat bubbles */}
       <Box h={570}>
         <div className="mt-5 flex flex-col gap-3">
           {messages?.map((msg, i) => (
           <div
             key={i}
-            className={`p-3 rounded-lg w-2/3 text-sm bg-${
-              user.id === msg.author_id ? "blue-800" : "gray-600"
-            } ${user.id === msg.author_id ? "self-end" : "self-start"}`}
-          >
+            className={`${styles.chatBubble} ${user.id === msg.author_id ? styles.user : styles.chatPartner}`}
+          >   
+              {user.id === msg.author_id ? 
+                (<Text size='sm' fw={700}>You</Text>) : 
+                (<Text size='sm' fw={700}>{chatPartner}</Text>)
+              }
               {msg.content}
           </div>
         ))}
         </div>
       </Box>
       
+      {/* Input field + button to send messages */}
       <Flex
         gap="md"
         justify="center"
@@ -50,7 +59,7 @@ export default function ChatBox({ user, messages }: ChatBoxProps) {
           }}
           className="flex-[0.5] text-2xl"
         />
-        <Button size='lg' color='#6d543e' variant='light'
+        <Button size='lg' color='#ad925a' variant='filled'
           onClick={() => console.log("send message (to be done)")}
         >
           Send

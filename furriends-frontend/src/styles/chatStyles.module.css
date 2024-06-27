@@ -1,0 +1,23 @@
+.chatBubble {
+    padding: 0.75rem; 
+    border-radius: 0.5rem; 
+    width: 66.666667%; 
+    font-size: 0.875rem; 
+  }
+  
+.user {
+background-color: #DFCAA0; 
+align-self: flex-end; 
+}
+
+.chatPartner {
+background-color: #d0d0d0; 
+align-self: flex-start; 
+}
+
+.chatContainer {
+  background-color: #f6f6f6;
+  border-radius: 0.5rem;
+  width: 850px;
+  height: 650px;
+}
