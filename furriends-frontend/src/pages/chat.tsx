@@ -92,18 +92,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     // use supabase realtime
     // following Supabase documentation at https://supabase.com/docs/guides/realtime/subscribing-to-database-changes
-    // const channel = supabase
-    //     .channel('schema-db-changes')
-    //     .on(
-    //     'postgres_changes',
-    //     {
-    //         event: '*',
-    //         schema: 'public',
-    //         table: 'messages',
-    //     },
-    //     (payload) => console.log(payload)
-    //     )
-    //     .subscribe();
+    const channel = supabase
+        .channel('schema-db-changes')
+        .on(
+        'postgres_changes',
+        {
+            event: '*',
+            schema: 'public',
+            table: 'messages',
+        },
+        (payload) => console.log(payload)
+        )
+        .subscribe();
 
     // fetch all chat ids that corespond to user
     const { data: chatData, error: chatError } = await supabase

@@ -1,4 +1,4 @@
-import { Box, Button, Center, Container, Flex, Input, Text } from "@mantine/core";
+import { Box, Button, Center, Container, Flex, Input, ScrollArea, Text } from "@mantine/core";
 import createClient from "../../utils/supabase/api";
 import { useEffect, useRef, useState } from "react";
 import { RealtimeChannel, User } from "@supabase/supabase-js";
@@ -22,20 +22,22 @@ export default function ChatBox({ user, messages, chatPartner }: ChatBoxProps) {
     >
       {/* Display author name + messages in chat bubbles */}
       <Box h={570}>
-        <div className="mt-5 flex flex-col gap-3">
-          {messages?.map((msg, i) => (
-          <div
-            key={i}
-            className={`${styles.chatBubble} ${user.id === msg.author_id ? styles.user : styles.chatPartner}`}
-          >   
-              {user.id === msg.author_id ? 
-                (<Text size='sm' fw={700}>You</Text>) : 
-                (<Text size='sm' fw={700}>{chatPartner}</Text>)
-              }
-              {msg.content}
+        <ScrollArea h={550} pb='md' scrollbars="y">
+          <div className="mt-5 flex flex-col gap-3">
+            {messages?.map((msg, i) => (
+            <div
+              key={i}
+              className={`${styles.chatBubble} ${user.id === msg.author_id ? styles.user : styles.chatPartner}`}
+            >   
+                {user.id === msg.author_id ? 
+                  (<Text size='sm' fw={700}>You</Text>) : 
+                  (<Text size='sm' fw={700}>{chatPartner}</Text>)
+                }
+                {msg.content}
+            </div>
+          ))}
           </div>
-        ))}
-        </div>
+        </ScrollArea>
       </Box>
       
       {/* Input field + button to send messages */}
