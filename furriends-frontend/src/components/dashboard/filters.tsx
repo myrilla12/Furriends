@@ -26,51 +26,49 @@ export default function Filters({ pets, setFilteredPets }: FiltersProps) {
     const [toWeight, setToWeight] = useState<string | number>('');
     const [energy_level, setEnergy] = useState<string | null>(null);
 
-    // loop through pets and filter out the ones user wants, use setFilterPets to set to the new pet list
-    const filterPets = () => {
-        const filtered = () =>
+    useEffect(() => {
+        const filterPets = () => { // loop through pets & filter out those the user wants, then set the new pet list
+            const filtered = () =>
 
-            pets.filter(pet => {
-                // Type filter
-                if (type && pet.type !== type) {
-                    return false;
-                }
+                pets.filter(pet => {
+                    // Type filter
+                    if (type && pet.type !== type) {
+                        return false;
+                    }
 
-                // Age filters
-                const petAge = calculateAge(pet);
-                if (fromAge && petAge < Number(fromAge)) {
-                    return false;
-                }
-                if (toAge && petAge > Number(toAge)) {
-                    return false;
-                }
+                    // Age filters
+                    const petAge = calculateAge(pet);
+                    if (fromAge && petAge < Number(fromAge)) {
+                        return false;
+                    }
+                    if (toAge && petAge > Number(toAge)) {
+                        return false;
+                    }
 
-                // Weight filters
-                const petWeight = pet.weight;
-                if (fromWeight && petWeight < Number(fromWeight)) {
-                    return false;
-                }
-                if (toWeight && petWeight > Number(toWeight)) {
-                    return false;
-                }
+                    // Weight filters
+                    const petWeight = pet.weight;
+                    if (fromWeight && petWeight < Number(fromWeight)) {
+                        return false;
+                    }
+                    if (toWeight && petWeight > Number(toWeight)) {
+                        return false;
+                    }
 
-                // Energy level filter
-                if (energy_level && pet.energy_level !== energy_level) {
-                    return false;
-                }
+                    // Energy level filter
+                    if (energy_level && pet.energy_level !== energy_level) {
+                        return false;
+                    }
 
-                return true;
-            });
+                    return true;
+                });
 
-        setFilteredPets(filtered);
-    }
+            setFilteredPets(filtered); // set filtered pets as the new pet list
+        }
 
-    // call on filterPets if there are any changes to the above states
-    useEffect(() => { 
         filterPets();
-    }, [type, fromAge, toAge, fromWeight, toWeight, energy_level, filterPets])
+    }, [type, fromAge, toAge, fromWeight, toWeight, energy_level, setFilteredPets]) // call filterPets if there are any changes to these states
 
-    // // checking current states
+    // // check current states
     // console.log('type:', type);
     // console.log('fromAge:', fromAge);
     // console.log('toAge:', toAge);
