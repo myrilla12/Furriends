@@ -76,7 +76,8 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
           onChange={(e) => setMessage(e.target.value)}
           onKeyUp={(e) => {
             if (e.key === "Enter" && checkMessage()) {
-              sendMessage(message)
+              sendMessage(message);
+              setMessage('');
             }
           }}
           className="flex-[0.5] text-2xl"
@@ -84,7 +85,8 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
         <Button size='lg' color='#ad925a' variant='filled'
           onClick={() => {
             if (checkMessage()) 
-              {sendMessage(message)}
+              sendMessage(message);
+              setMessage('');
             }
           }
         >
