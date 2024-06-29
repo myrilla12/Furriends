@@ -110,29 +110,29 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // fetch all chat ids that corespond to user
     const { data: chatData, error: chatError } = await supabase
         .from('chat_users')
-        .select('id')
-        .eq('chat_user', data.user.id);
+        .select('chat_id')
+        .eq('user_id', data.user.id);
 
     if (chatError) {
         console.error('Error fetching chat IDs:', chatError);
         return;
     }
 
-    const chats = chatData.map((chat: { id: string; }) => chat.id);
+    const chats = chatData.map((chat: { chat_idid: string; }) => chat.chat_id);
 
     // get the other user that corresponds to the chat ids
     const { data: otherUserData, error: otherUserError } = await supabase
         .from('chat_users')
-        .select('chat_user')
-        .in('id', chats)
-        .neq('chat_user', data.user.id);
+        .select('user_id')
+        .in('chat_id', chats)
+        .neq('user_id', data.user.id);
 
     if (otherUserError) {
         console.error('Error fetching the id of the other user in chat:', otherUserError);
         return;
     }
 
-    const otherUserIds = otherUserData.map((otherUser: { chat_user: string; }) => otherUser.chat_user);
+    const otherUserIds = otherUserData.map((otherUser: { user_id: string; }) => otherUser.user_id);
 
     // get user profile of the other users
     const { data: otherProfilesData, error: otherProfilesError } = await supabase
