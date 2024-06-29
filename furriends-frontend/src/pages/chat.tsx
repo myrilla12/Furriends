@@ -32,24 +32,56 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
     useEffect(() => { 
         // check if chat id exists 
         const exists = chatIds.indexOf(String(id.id));
+        
+        // if the id matches up to a user_id instead of chat_id generate user_id info
+        async function checkUserExists() {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('id, avatar_url, username')
+                    .eq('id', id.id)
+                    .single();
 
-        if (exists !== -1) {
-            setChatId(String(id.id));
-            setDisplayChat(true); // display chat corresponding to chat id
-            setChatPartner(otherUsers[exists]); // save username of chat partner
-
-            // set the state messages to the data from supabase
-            supabase
-                .from('messages')
-                .select('created_at, content, author_id')
-                .eq('chat_id', id.id)
-                .then((res: any) => {
-                    setMessages(res.data);
-                });
-
-        } else {
-            setDisplayChat(false);
+                if (error) {
+                    if (error.code === 'PGRST116') { // Code for no matching rows found
+                        return null;
+                    }
+                    console.error('Error fetching user data:', error);
+                    return null;
+                }
+                return data;
+            } catch (error) {
+                console.error('An error has occurred:', error);
+                return null;
+            }
         }
+
+        checkUserExists().then((userData: any) => {
+            if (exists !== -1) {
+                setChatId(String(id.id));
+                setDisplayChat(true); // display chat corresponding to chat id
+                setChatPartner(otherUsers[exists]); // save profile of chat partner
+    
+                // set the state messages to the data from supabase
+                supabase
+                    .from('messages')
+                    .select('created_at, content, author_id')
+                    .eq('chat_id', id.id)
+                    .then((res: any) => {
+                        setMessages(res.data);
+                    });
+    
+            } else if (id.id && userData) {
+                // make new temporary chat
+                setDisplayChat(true);
+                setChatPartner(userData);
+                setMessages(null);
+                setChatId(null);
+            }
+            else {
+                setDisplayChat(false);
+            }
+        })
     }, [id])
 
     return (
@@ -101,7 +133,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         {
             event: '*',
             schema: 'public',
-            table: 'messages',
+            table: 'chat_users',
         },
         (payload) => console.log(payload)
         )
@@ -144,7 +176,24 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error('Error fetching the id of the other user in chat:', otherUserError);
         return;
     }
+
+    const userIdToIndexMap: Map<string, number> = new Map(
+        otherUserIds.map((id: string, index: number): [string, number] => [id, index])
+    );
     
+    // Sort otherProfilesData based on the order of ids in otherUserIds
+    otherProfilesData.sort((a: Profile, b: Profile) => {
+        const indexA = userIdToIndexMap.get(a.id);
+        const indexB = userIdToIndexMap.get(b.id);
+    
+        if (indexA === undefined || indexB === undefined) {
+            // Handle the case where the ID is not found in the map
+            return 0;
+        }
+    
+        return indexA - indexB;
+    });
+
     return {
         props: {
             user: data.user,

@@ -28,7 +28,6 @@ export default function ChatButton({ owner_id }: ChatButtonProps) {
                 return;
             }
             setUser(userData.user);
-            console.log("User set:", userData.user);
 
             // Set user's existing chats
             const { data: chatData, error: chatError } = await supabase
@@ -43,7 +42,6 @@ export default function ChatButton({ owner_id }: ChatButtonProps) {
 
             const chats = chatData.map((chat: { chat_id: string }) => chat.chat_id);
             setChatIds(chats);
-            console.log("Chat IDs set:", chats);
 
             // Set user's chat partners
             const { data: otherUserData, error: otherUserError } = await supabase
@@ -59,12 +57,10 @@ export default function ChatButton({ owner_id }: ChatButtonProps) {
 
             const otherUserIds = otherUserData.map((otherUser: { user_id: string }) => otherUser.user_id);
             setPartnerIds(otherUserIds);
-            console.log("Partner IDs set:", otherUserIds);
 
             // Determine the chat ID to navigate to
             const haveChat = otherUserIds.indexOf(owner_id);
             const chatId = haveChat !== -1 ? chats[haveChat] : owner_id;
-            console.log("Navigating to chat ID:", chatId);
 
             router.push(`/chat?id=${chatId}`);
         } catch (error) {
@@ -78,9 +74,6 @@ export default function ChatButton({ owner_id }: ChatButtonProps) {
                 onClick={(e) => {
                     e.stopPropagation();
                     handleClick();
-                    console.log("attempt set user", user)
-                    console.log("attempt set chatids", chatIds)
-                    console.log("attempt set partnerid", partnerIds)
                 }}
             >
                 <Text size='xl' fw={700} mr='7'>Chat</Text>
