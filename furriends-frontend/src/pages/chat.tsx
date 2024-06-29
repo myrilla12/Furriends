@@ -118,7 +118,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return;
     }
 
-    const chats = chatData.map((chat: { chat_idid: string; }) => chat.chat_id);
+    const chats = chatData.map((chat: { chat_id: string; }) => chat.chat_id);
 
     // get the other user that corresponds to the chat ids
     const { data: otherUserData, error: otherUserError } = await supabase
