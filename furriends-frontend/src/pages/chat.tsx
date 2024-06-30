@@ -56,32 +56,32 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
             }
         }
 
-        checkUserExists().then((userData: any) => {
-            if (exists !== -1) {
-                setChatId(String(id.id));
-                setDisplayChat(true); // display chat corresponding to chat id
-                setChatPartner(otherUsers[exists]); // save profile of chat partner
-    
-                // set the state messages to the data from supabase
-                supabase
-                    .from('messages')
-                    .select('created_at, content, author_id')
-                    .eq('chat_id', id.id)
-                    .then((res: any) => {
-                        setMessages(res.data);
-                    });
-    
-            } else if (id.id && userData) {
-                // make new temporary chat
-                setDisplayChat(true);
-                setChatPartner(userData);
-                setMessages(null);
-                setChatId(null);
-            }
-            else {
-                setDisplayChat(false);
-            }
-        })
+        if (exists !== -1) {
+            setChatId(String(id.id));
+            setDisplayChat(true); // display chat corresponding to chat id
+            setChatPartner(otherUsers[exists]); // save profile of chat partner
+
+            // set the state messages to the data from supabase
+            supabase
+                .from('messages')
+                .select('created_at, content, author_id')
+                .eq('chat_id', id.id)
+                .then((res: any) => {
+                    setMessages(res.data);
+                });
+        } else {
+            checkUserExists().then((userData: any) => {
+                if (id.id && userData) {
+                    // make new temporary chat
+                    setDisplayChat(true);
+                    setChatPartner(userData);
+                    setMessages(null);
+                    setChatId(null);
+                } else {
+                    setDisplayChat(false);
+                }
+            });
+        }
     }, [id])
 
     return (
