@@ -11,6 +11,8 @@ import { PencilIcon, TrashIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicon
 import { Pet } from '@/utils/definitions';
 import { calculateAge } from '@/utils/calculateAge';
 import { calculateImageBrightness } from '@/utils/calculateImageBrightness';
+import ChatButton from '../chat/chatButton';
+
 
 type PetCardProps = {
     pet: Pet;
@@ -85,20 +87,7 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                 )}
 
                 {chattable && (
-                    <div className="absolute top-0 left-0 pl-2 pt-2">
-                        <Button
-                            variant="subtle"
-                            size="compact-lg"
-                            style={{ color: textColor }}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                console.log("Go to chat feature");
-                            }}
-                        >
-                            <Text size='xl' fw={700} mr='7'>Chat</Text>
-                            <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
-                        </Button>
-                    </div>
+                    <ChatButton owner_id={pet.owner_id}/>
                 )}
 
             </div>

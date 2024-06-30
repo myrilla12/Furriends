@@ -5,6 +5,8 @@ import { RealtimeChannel, User } from "@supabase/supabase-js";
 import { GetServerSidePropsContext } from "next";
 import { Message, Profile } from "@/utils/definitions";
 import styles from '../../styles/chatStyles.module.css';
+import { useRouter } from "next/router";
+import printTimestamp from "@/utils/printTimestamp";
 
 type ChatBoxProps = {
   user: User;
@@ -14,17 +16,59 @@ type ChatBoxProps = {
 }
 
 export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBoxProps) {
+
   const supabase = createClient();
+  const router = useRouter();
   const [message, setMessage] = useState<string>('');
 
   async function sendMessage(content: string) {
+    // if chat id is null AKA it is a new chat (create new chat)
+    let currChatId = chatId;
+
+    if (currChatId === null) {
+      const { data: newChatData, error: newChatError } = await supabase
+        .from('chats')
+        .insert({})
+        .select('id')
+        .single();
+
+      if (newChatError) {
+        console.error('Error creating new chat:', newChatError);
+        return;
+      }
+
+      currChatId = newChatData.id;
+
+      // create new row in chat users for current user
+      const { data: userData, error: usersError } = await supabase
+        .from('chat_users')
+        .insert([
+          {
+            chat_id: currChatId,
+            user_id: user.id,
+          },
+          {
+            chat_id: currChatId,
+            user_id: chatPartner?.id,
+          }
+        ]);
+
+      if (usersError) {
+        console.error('Error storing user id in chat users:', usersError);
+      }
+
+      router.push(`/chat?id=${currChatId}`);
+    }
+
+    const messageData: Message = {
+      chat_id: currChatId,
+      author_id: user.id,
+      content: content,
+    }
+
     const { data, error } = await supabase
                 .from('messages')
-                .insert({
-                    chat_id: chatId,
-                    author_id: user.id,
-                    content: content,
-                })
+                .insert(messageData);
   }
 
   const checkMessage = () => {
@@ -54,6 +98,7 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
                   (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
                 }
                 {msg.content}
+                <Text className={styles.chatTimestamp}>{msg.created_at ? printTimestamp(msg.created_at) : ''}</Text>
             </div>
           ))}
           </div>
@@ -73,20 +118,20 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
           placeholder="Message"
           value={message}
           size="lg"
+          w={600}
+          className={styles.chatInput}
           onChange={(e) => setMessage(e.target.value)}
           onKeyUp={(e) => {
             if (e.key === "Enter" && checkMessage()) {
-              sendMessage(message);
-              setMessage('');
+              sendMessage(message).then(() => setMessage(''));
             }
           }}
-          className="flex-[0.5] text-2xl"
         />
         <Button size='lg' color='#ad925a' variant='filled'
+          className={styles.chatInput}
           onClick={() => {
             if (checkMessage()) 
-              sendMessage(message);
-              setMessage('');
+            sendMessage(message).then(() => setMessage(''));
             }
           }
         >

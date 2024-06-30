@@ -21,3 +21,13 @@ align-self: flex-start;
   width: 850px;
   height: 650px;
 }
+
+.chatTimestamp {
+  color: #515459;
+  font-size: 12px;
+}
+
+.chatInput {
+  border-radius: 0.5rem;
+  font-size: 14px;
+}

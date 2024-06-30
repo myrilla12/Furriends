@@ -20,7 +20,8 @@ export type Profile = {
 }
 
 export type Message = {
-    created_at: string;
+    created_at?: string;
+    chat_id: string | null;
     content: string;
     author_id: string;
 }

@@ -27,29 +27,88 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
     const [chatId, setChatId] = useState<string | null>(null);
     const [displayChat, setDisplayChat] = useState<boolean>(false);
     const [chatPartner, setChatPartner] = useState<Profile | null>(null);
-    const [messages, setMessages] = useState<Message[] | null>(null);
+    const [messages, setMessages] = useState<Message[]>([]);
 
     useEffect(() => { 
         // check if chat id exists 
         const exists = chatIds.indexOf(String(id.id));
+        
+        // if the id matches up to a user_id instead of chat_id generate user_id info
+        async function checkUserExists() {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('id, avatar_url, username')
+                    .eq('id', id.id)
+                    .single();
+
+                if (error) {
+                    if (error.code === 'PGRST116') { // Code for no matching rows found
+                        return null;
+                    }
+                    console.error('Error fetching user data:', error);
+                    return null;
+                }
+                return data;
+            } catch (error) {
+                console.error('An error has occurred:', error);
+                return null;
+            }
+        }
 
         if (exists !== -1) {
             setChatId(String(id.id));
             setDisplayChat(true); // display chat corresponding to chat id
-            setChatPartner(otherUsers[exists]); // save username of chat partner
+            setChatPartner(otherUsers[exists]); // save profile of chat partner
 
             // set the state messages to the data from supabase
             supabase
                 .from('messages')
                 .select('created_at, content, author_id')
                 .eq('chat_id', id.id)
+                .order('created_at', { ascending: true })
                 .then((res: any) => {
                     setMessages(res.data);
                 });
-
         } else {
-            setDisplayChat(false);
+            // if user_id given as slug, check if valid 
+            checkUserExists().then((userData: any) => {
+                if (id.id && userData) {
+                    // make new temporary chat if user_id valid
+                    setDisplayChat(true);
+                    setChatPartner(userData);
+                    setMessages([]);
+                    setChatId(null);
+                } else {
+                    setDisplayChat(false);
+                }
+            });
         }
+        
+        // use supabase realtime
+        // following Supabase documentation at https://supabase.com/docs/guides/realtime/subscribing-to-database-changes
+        const channel = supabase
+        .channel('schema-db-changes')
+        .on(
+            'postgres_changes',
+            {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'messages',
+            },
+            (payload) => {
+                const newMessage = payload.new as Message;
+
+                if (newMessage.chat_id === id.id) {
+                    setMessages((prevMessages) => [...prevMessages, newMessage]);
+                }
+            }
+        )
+        .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [id])
 
     return (
@@ -92,47 +151,32 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         .eq('id', data.user.id)
         .single();
 
-    // use supabase realtime
-    // following Supabase documentation at https://supabase.com/docs/guides/realtime/subscribing-to-database-changes
-    const channel = supabase
-        .channel('schema-db-changes')
-        .on(
-        'postgres_changes',
-        {
-            event: '*',
-            schema: 'public',
-            table: 'messages',
-        },
-        (payload) => console.log(payload)
-        )
-        .subscribe();
-
     // fetch all chat ids that corespond to user
     const { data: chatData, error: chatError } = await supabase
         .from('chat_users')
-        .select('id')
-        .eq('chat_user', data.user.id);
+        .select('chat_id')
+        .eq('user_id', data.user.id);
 
     if (chatError) {
         console.error('Error fetching chat IDs:', chatError);
         return;
     }
 
-    const chats = chatData.map((chat: { id: string; }) => chat.id);
+    const chats = chatData.map((chat: { chat_id: string; }) => chat.chat_id);
 
     // get the other user that corresponds to the chat ids
     const { data: otherUserData, error: otherUserError } = await supabase
         .from('chat_users')
-        .select('chat_user')
-        .in('id', chats)
-        .neq('chat_user', data.user.id);
+        .select('user_id')
+        .in('chat_id', chats)
+        .neq('user_id', data.user.id);
 
     if (otherUserError) {
         console.error('Error fetching the id of the other user in chat:', otherUserError);
         return;
     }
 
-    const otherUserIds = otherUserData.map((otherUser: { chat_user: string; }) => otherUser.chat_user);
+    const otherUserIds = otherUserData.map((otherUser: { user_id: string; }) => otherUser.user_id);
 
     // get user profile of the other users
     const { data: otherProfilesData, error: otherProfilesError } = await supabase
@@ -144,7 +188,24 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error('Error fetching the id of the other user in chat:', otherUserError);
         return;
     }
+
+    const userIdToIndexMap: Map<string, number> = new Map(
+        otherUserIds.map((id: string, index: number): [string, number] => [id, index])
+    );
     
+    // Sort otherProfilesData based on the order of ids in otherUserIds
+    otherProfilesData.sort((a: Profile, b: Profile) => {
+        const indexA = userIdToIndexMap.get(a.id);
+        const indexB = userIdToIndexMap.get(b.id);
+    
+        if (indexA === undefined || indexB === undefined) {
+            // Handle the case where the ID is not found in the map
+            return 0;
+        }
+    
+        return indexA - indexB;
+    });
+
     return {
         props: {
             user: data.user,
