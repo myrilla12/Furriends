@@ -27,7 +27,7 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
     const [chatId, setChatId] = useState<string | null>(null);
     const [displayChat, setDisplayChat] = useState<boolean>(false);
     const [chatPartner, setChatPartner] = useState<Profile | null>(null);
-    const [messages, setMessages] = useState<Message[] | null>(null);
+    const [messages, setMessages] = useState<Message[]>([]);
 
     useEffect(() => { 
         // check if chat id exists 
@@ -70,18 +70,44 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
                     setMessages(res.data);
                 });
         } else {
+            // if user_id given as slug, check if valid 
             checkUserExists().then((userData: any) => {
                 if (id.id && userData) {
-                    // make new temporary chat
+                    // make new temporary chat if user_id valid
                     setDisplayChat(true);
                     setChatPartner(userData);
-                    setMessages(null);
+                    setMessages([]);
                     setChatId(null);
                 } else {
                     setDisplayChat(false);
                 }
             });
         }
+        
+        // use supabase realtime
+        // following Supabase documentation at https://supabase.com/docs/guides/realtime/subscribing-to-database-changes
+        const channel = supabase
+        .channel('schema-db-changes')
+        .on(
+            'postgres_changes',
+            {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'messages',
+            },
+            (payload) => {
+                const newMessage = payload.new as Message;
+
+                if (newMessage.chat_id === id.id) {
+                    setMessages((prevMessages) => [...prevMessages, newMessage]);
+                }
+            }
+        )
+        .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [id])
 
     return (
@@ -123,21 +149,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         .select('username')
         .eq('id', data.user.id)
         .single();
-
-    // use supabase realtime
-    // following Supabase documentation at https://supabase.com/docs/guides/realtime/subscribing-to-database-changes
-    const channel = supabase
-        .channel('schema-db-changes')
-        .on(
-        'postgres_changes',
-        {
-            event: '*',
-            schema: 'public',
-            table: 'chat_users',
-        },
-        (payload) => console.log(payload)
-        )
-        .subscribe();
 
     // fetch all chat ids that corespond to user
     const { data: chatData, error: chatError } = await supabase
