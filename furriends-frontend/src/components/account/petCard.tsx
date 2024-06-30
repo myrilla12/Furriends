@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '../../utils/supabase/component';
 import { useDisclosure } from '@mantine/hooks';
-import { Button, Text } from '@mantine/core';
+import { Button } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
 import PetEditModal from '@/components/account/petEditModal';
 import PetDeleteModal from '@/components/account/petDeleteModal';
-import { PencilIcon, TrashIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Pet } from '@/utils/definitions';
 import { calculateAge } from '@/utils/calculateAge';
 import { calculateImageBrightness } from '@/utils/calculateImageBrightness';
@@ -87,7 +87,7 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                 )}
 
                 {chattable && (
-                    <ChatButton owner_id={pet.owner_id}/>
+                    <ChatButton owner_id={pet.owner_id} button_color={textColor}/>
                 )}
 
             </div>

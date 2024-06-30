@@ -1,17 +1,16 @@
-import createClient from "@/utils/supabase/api";
 import { createClient as CC } from "@/utils/supabase/component";
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
 import { Button, Text } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
-import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 type ChatButtonProps = {
     owner_id: string,
+    button_color: string,
 }
 
-export default function ChatButton({ owner_id }: ChatButtonProps) {
+export default function ChatButton({ owner_id, button_color }: ChatButtonProps) {
     const supabase = CC();
     const router = useRouter();
 
@@ -69,8 +68,11 @@ export default function ChatButton({ owner_id }: ChatButtonProps) {
     }
 
     return (
-        <div className="absolute top-0 left-0 pl-2 pt-2 mix-blend-difference">
-            <Button variant="subtle" size="compact-lg"
+        <div className="absolute top-0 left-0 pl-2 pt-2">
+            <Button
+                variant="subtle"
+                size="compact-lg"
+                style={{ color: button_color }}
                 onClick={(e) => {
                     e.stopPropagation();
                     handleClick();
