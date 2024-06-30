@@ -1,14 +1,16 @@
 // card component showing pet photo (scrollable), overlayed with name, type, breed, age in the bottom left
 // pencil button in top right allows users to edit their pet profile
+import { useEffect, useState } from 'react';
 import { createClient } from '../../utils/supabase/component';
 import { useDisclosure } from '@mantine/hooks';
-import { ActionIcon, Button, MantineColorsTuple, Text, createTheme } from '@mantine/core';
+import { Button, Text } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
 import PetEditModal from '@/components/account/petEditModal';
 import PetDeleteModal from '@/components/account/petDeleteModal';
 import { PencilIcon, TrashIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import { Pet } from '@/utils/definitions';
 import { calculateAge } from '@/utils/calculateAge';
+import { calculateImageBrightness } from '@/utils/calculateImageBrightness';
 import ChatButton from '../chat/chatButton';
 
 
@@ -20,10 +22,30 @@ type PetCardProps = {
 
 export default function PetCard({ pet, editable, chattable }: PetCardProps) {
     const supabase = createClient();
-    const age = calculateAge(pet);
+    const [textColor, setTextColor] = useState('white');
     const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false); // controls opening/closing of petDetailsModal
     const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false); // controls opening/closing of petEdit modal
     const [deleteOpened, { open: openDelete, close: closeDelete }] = useDisclosure(false); // controls opening/closing of petDeleteModal
+
+    const getAgeString = () => {
+        const age = calculateAge(pet);
+        let ageString = age + (age == 1 ? " year old" : " years old")
+        if (age < 1) {
+            const ageInMonths = Math.ceil(age * 12);
+            ageString = ageInMonths + (ageInMonths == 1 ? " month old" : " months old")
+        }
+        return ageString;
+    }
+
+    useEffect(() => {
+        const setTextColorBasedOnImage = async () => {
+            if (pet.photos && pet.photos[0]) {
+                const brightness = await calculateImageBrightness(pet.photos[0]);
+                setTextColor(brightness > 128 ? 'black' : 'white');
+            }
+        };
+        setTextColorBasedOnImage();
+    }, [pet.photos]);
 
     return (
         <>
@@ -32,15 +54,18 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                 style={{ backgroundImage: `url(${pet.photos && pet.photos[0]})` }}
                 onClick={openDetails}
             >
-                <div className="absolute bottom-0 left-0 pl-5 pb-4 text-white mix-blend-difference">
+                <div className="absolute bottom-0 left-0 pl-5 pb-4" style={{ color: textColor }}>
                     <h2 className="text-2xl font-bold">{pet.name}</h2>
                     <p>{pet.type},{" "}{pet.breed}</p>
-                    <p className="text-sm">{age} {age == 1 ? "year old" : "years old"}</p>
+                    <p className="text-sm">{getAgeString()}</p>
                 </div>
 
                 {editable && (
-                    <div className="absolute top-0 right-0 pr-2 pt-2 mix-blend-difference">
-                        <Button variant="subtle" size="compact-xs"
+                    <div className="absolute top-0 right-0 pr-2 pt-2">
+                        <Button
+                            variant="subtle"
+                            size="compact-xs"
+                            style={{ color: textColor }}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 openEdit();
@@ -48,7 +73,10 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                         >
                             <PencilIcon className="h-5 w-5" />
                         </Button>
-                        <Button variant="subtle" size="compact-xs"
+                        <Button
+                            variant="subtle"
+                            size="compact-xs"
+                            style={{ color: textColor }}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 openDelete();
