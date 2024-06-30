@@ -7,5 +7,14 @@ import { Pet } from './definitions';
  */
 
 export function calculateAge(pet: Pet): number {
-    return new Date().getFullYear() - new Date(pet.birthday).getFullYear();
+    const birthDate = new Date(pet.birthday);
+    const today = new Date();
+    const ageInYears = today.getFullYear() - birthDate.getFullYear();
+
+    if (ageInYears < 1) {
+        const ageInMonths = today.getMonth() - birthDate.getMonth();
+        return parseFloat((ageInMonths / 12).toFixed(2));
+    }
+
+    return ageInYears;
 }

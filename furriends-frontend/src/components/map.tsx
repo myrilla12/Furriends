@@ -14,7 +14,7 @@ const center = {
 };
 
 export default function Map() {
-    const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
   return (
     <LoadScript googleMapsApiKey={googleMapsApiKey}>
       <GoogleMap
@@ -29,17 +29,17 @@ export default function Map() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const supabase = createClient(context)
+  const supabase = createClient(context)
 
-    const { data, error } = await supabase.auth.getUser()
+  const { data, error } = await supabase.auth.getUser()
 
-    // redirect unauthenticated users to home page
-    if (error || !data) {
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false,
-            },
-        }
+  // redirect unauthenticated users to home page
+  if (error || !data) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
     }
+  }
 }
