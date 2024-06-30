@@ -26,3 +26,8 @@ align-self: flex-start;
   color: #515459;
   font-size: 12px;
 }
+
+.chatInput {
+  border-radius: 0.5rem;
+  font-size: 14px;
+}

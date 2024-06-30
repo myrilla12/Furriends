@@ -12,7 +12,7 @@ export default function ChatNotFound() {
             align="center"
         >
             <Image
-                src="/sadface.png"
+                src="/cat-outline.png"
                 w={400}
                 alt="Picture of a sad dog"
             />

@@ -118,15 +118,17 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
           placeholder="Message"
           value={message}
           size="lg"
+          w={600}
+          className={styles.chatInput}
           onChange={(e) => setMessage(e.target.value)}
           onKeyUp={(e) => {
             if (e.key === "Enter" && checkMessage()) {
               sendMessage(message).then(() => setMessage(''));
             }
           }}
-          className="flex-[0.5] text-2xl"
         />
         <Button size='lg' color='#ad925a' variant='filled'
+          className={styles.chatInput}
           onClick={() => {
             if (checkMessage()) 
             sendMessage(message).then(() => setMessage(''));
