@@ -14,7 +14,15 @@ type PetDetailsModalProps = {
 
 export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModalProps) {
     const supabase = createClient();
-    const age = calculateAge(pet);
+    const getAgeString = () => {
+        const age = calculateAge(pet);
+        let ageString = age + (age == 1 ? " year old" : " years old")
+        if (age < 1) {
+            const ageInMonths = Math.ceil(age * 12);
+            ageString = ageInMonths + (ageInMonths == 1 ? " month old" : " months old")
+        }
+        return ageString;
+    }
 
     return (
         <Modal opened={opened} onClose={onClose} title={pet.name} scrollAreaComponent={ScrollArea.Autosize} size='lg' centered>
@@ -36,9 +44,8 @@ export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModa
 
                 <Text><strong>Type:</strong> {pet.type}</Text>
                 <Text><strong>Breed:</strong> {pet.breed}</Text>
-                <Text><strong>Birthday:</strong> {pet.birthday}</Text>
                 <Text><strong>Weight:</strong> {pet.weight}{pet.weight ? " kg" : ""}</Text>
-                <Text><strong>Age:</strong> {age} {age == 1 ? "year old" : "years old"}</Text>
+                <Text><strong>Birthday:</strong> {pet.birthday} ({getAgeString()})</Text>
                 <Text><strong>Energy Level:</strong> {pet.energy_level}</Text>
                 <Text><strong>Description:</strong> {pet.description}</Text>
                 <Text><strong>Likes:</strong> {pet.likes}</Text>
