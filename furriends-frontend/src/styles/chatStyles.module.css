@@ -18,7 +18,7 @@ align-self: flex-start;
 .chatContainer {
   background-color: #f6f6f6;
   border-radius: 0.5rem;
-  width: 850px;
+  /* width: 850px; */
   height: 650px;
 }
 

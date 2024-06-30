@@ -112,7 +112,7 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
         align="flex-end"
         direction="row"
         wrap="wrap"
-        >
+      >
         <Input
           type="text"
           placeholder="Message"

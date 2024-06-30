@@ -113,15 +113,17 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
 
     return (
         <Layout user={user}>
-            <div className="flex-grow p-6 md:overflow-y-auto">
-                <Box style={{"display": "flex"}}>
-                    <Box ml='xl' mr='xl'>
+            <div className="flex flex-grow p-6 md:overflow-y-auto">
+                <Box style={{ display: 'flex', width: '100%' }}>
+                    <Box ml='xl' className="flex-shrink-0 w-60 md:w-1/3">
                         <ChatNav chatIds={chatIds} otherUsers={otherUsers} />
                     </Box>
+                    <Box className="flex-grow">
                         {displayChat? 
                             <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner}/> :
                             <ChatNotFound />
                         }    
+                    </Box>
                 </Box>
             </div>
         </Layout>
