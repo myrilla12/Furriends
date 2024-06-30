@@ -6,6 +6,7 @@ import { GetServerSidePropsContext } from "next";
 import { Message, Profile } from "@/utils/definitions";
 import styles from '../../styles/chatStyles.module.css';
 import { useRouter } from "next/router";
+import printTimestamp from "@/utils/printTimestamp";
 
 type ChatBoxProps = {
   user: User;
@@ -97,6 +98,7 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
                   (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
                 }
                 {msg.content}
+                <Text className={styles.chatTimestamp}>{msg.created_at ? printTimestamp(msg.created_at) : ''}</Text>
             </div>
           ))}
           </div>

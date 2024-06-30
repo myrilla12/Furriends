@@ -66,6 +66,7 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
                 .from('messages')
                 .select('created_at, content, author_id')
                 .eq('chat_id', id.id)
+                .order('created_at', { ascending: true })
                 .then((res: any) => {
                     setMessages(res.data);
                 });
