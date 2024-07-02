@@ -17,7 +17,7 @@ export default function LoginBox() {
       console.error(error);
       setError('Invalid email or password. Please try again.');
     } else {
-      // fetch username for check
+      // fetch username for checking whether default username needs to be set
       const { data: profileData, error: profileError, status } = await supabase
         .from('profiles')
         .select(`username`)
@@ -49,7 +49,7 @@ export default function LoginBox() {
         <Box mt='lg' mb='lg'>
           <Text size='21pt' mt='xl' fw={700}>Sign In</Text>
 
-          <Space h="lg" />
+          <Space h="xl" />
 
           <TextInput
             variant="filled"
@@ -71,8 +71,8 @@ export default function LoginBox() {
 
           {error && (
             <>
-              <Space h="lg" />
-              <Text c="red">{error}</Text>
+              <Space h="xs" />
+              <Text c="red" size="xs" fw={700}>{error}</Text>
             </>
           )}
 

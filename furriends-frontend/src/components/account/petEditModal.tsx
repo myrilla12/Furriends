@@ -1,8 +1,8 @@
 // pet edit form allowing users to edit their pet details; autofilled with exisitng profile data
 'use client'
 
-import { useCallback, useEffect, useState } from 'react';
-import { Modal, ScrollArea, Button, TextInput, Select, NumberInput, Text } from '@mantine/core';
+import { useState } from 'react';
+import { Modal, ScrollArea, Button, TextInput, Textarea, Select, NumberInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
 import SortablePhotoArray from './sortablePhotoArray';
@@ -163,14 +163,14 @@ export default function PetEditModal({ opened, onClose, pet }: PetEditModalProps
                     onChange={setEnergy}
                     checkIconPosition="right"
                 />
-                <TextInput
+                <Textarea
                     label="Description"
                     name="description"
                     placeholder="Describe your pet"
                     value={description || ''}
                     onChange={(e) => setDescription(e.target.value)}
                 />
-                <TextInput
+                <Textarea
                     label="Likes"
                     name="likes"
                     placeholder="Add your pet's favourite items/activities!"
