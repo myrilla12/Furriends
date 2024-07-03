@@ -42,7 +42,7 @@ export default function Layout({ children, user }: LayoutProps) {
                 <header className="flex justify-between items-center h-28 p-2 border-b-2">
                     {/* sidebar icon & furriends logo on the left */}
                     <div className="flex items-center">
-                        <button onClick={toggleSidebar} className="pl-5 pr-2">
+                        <button onClick={toggleSidebar} className="pl-5">
                             <Bars3Icon className="w-7 h-7" />
                         </button>
                         <LogoHeader />

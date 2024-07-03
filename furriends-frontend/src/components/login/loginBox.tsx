@@ -1,6 +1,6 @@
 // adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
-import { Text, Space, TextInput, PasswordInput, Button, Box, Group } from '@mantine/core';
+import { Text, TextInput, PasswordInput, Button, Box, Group } from '@mantine/core';
 import router from 'next/router';
 import { useState } from 'react';
 import { createClient } from '../../utils/supabase/component';
@@ -47,9 +47,7 @@ export default function LoginBox() {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
       <Box style={{ border: "1px solid black" }} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
         <Box mt='lg' mb='lg'>
-          <Text size='21pt' mt='xl' fw={700}>Sign In</Text>
-
-          <Space h="xl" />
+          <Text size='21pt' mt='xl' fw={700} className='mb-6'>Sign In</Text>
 
           <TextInput
             variant="filled"
@@ -57,9 +55,8 @@ export default function LoginBox() {
             placeholder="Email address"
             value={email}
             onChange={(event) => setEmail(event.currentTarget.value)}
+            className="mb-4"
           />
-
-          <Space h="lg" />
 
           <PasswordInput
             variant="filled"
@@ -71,14 +68,11 @@ export default function LoginBox() {
 
           {error && (
             <>
-              <Space h="xs" />
-              <Text c="red" size="xs" fw={700}>{error}</Text>
+              <Text c="red" size="xs" fw={700} className="mt-1">{error}</Text>
             </>
           )}
 
-          <Space h="lg" />
-
-          <Button variant="default" color="gray" onClick={login}>Sign in</Button>
+          <Button variant="default" color="gray" onClick={login} className="mt-6">Sign in</Button>
 
         </Box>
 

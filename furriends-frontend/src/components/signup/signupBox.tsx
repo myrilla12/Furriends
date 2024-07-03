@@ -1,6 +1,6 @@
 // adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
-import { Text, Space, TextInput, PasswordInput, Button, Container, Box, Group, Divider } from '@mantine/core';
+import { Text, TextInput, PasswordInput, Button, Box, Group, Divider } from '@mantine/core';
 import LoginButton from '../login/loginButton';
 import router from 'next/router';
 import { useState } from 'react';
@@ -42,14 +42,12 @@ export default function SignupBox() {
   }
 
   return (
-    <>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-        <Box style={{ border: "1px solid black" }} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
-          <Box mt='lg' mb='lg'>
-            <Text size='22pt' mb='sm' mt='xl' fw={700}>Create a new account</Text>
-            <Text size='md' c='dimmed'>Join our pet-friendly community at Furriends! Help your pet make some friends and strengthen your bond with your pet!</Text>
-
-            <Space h="lg" />
+        <Box className="border border-black px-8 py-8 w-full max-w-md">
+          <Box>
+            <Text size='22pt' mb='xs' fw={700}>Create a new account</Text>
+            <Text size='md' c='dimmed' className='mb-4'>
+              Join our pet-friendly community at <span style={{ color: '#6d543e' }}>furriends</span>!
+            </Text>
 
             <TextInput
               variant="filled"
@@ -60,13 +58,8 @@ export default function SignupBox() {
             />
 
             {emailError && (
-              <>
-                <Space h="xs" />
-                <Text c="red">{emailError}</Text>
-              </>
+                <Text c="red" size="xs" fw={700} className="mt-1">{emailError}</Text>
             )}
-
-            <Space h="lg" />
 
             <PasswordInput
               variant="filled"
@@ -74,16 +67,12 @@ export default function SignupBox() {
               placeholder="Password"
               value={password}
               onChange={(event) => setPassword(event.currentTarget.value)}
+              className="mt-4"
             />
 
             {passwordError && (
-              <>
-                <Space h="xs" />
-                <Text c="red">{passwordError}</Text>
-              </>
+                <Text c="red" size="xs" fw={700}  className="mt-1">{passwordError}</Text>
             )}
-
-            <Space h="lg" />
 
             <PasswordInput
               variant="filled"
@@ -91,19 +80,14 @@ export default function SignupBox() {
               placeholder="Type password again"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.currentTarget.value)}
+              className="mt-4"
             />
 
             {confirmPasswordError && (
-              <>
-                <Space h="xs" />
-                <Text c="red">{confirmPasswordError}</Text>
-              </>
+                <Text c="red" size="xs" fw={700}  className="mt-1">{confirmPasswordError}</Text>
             )}
 
-            <Space h='lg' />
-
-            <Button variant="default" color="gray" onClick={signup}>Sign up</Button>
-
+            <Button variant="default" color="gray" onClick={signup} className="mt-5 mb-6">Sign up</Button>
           </Box>
 
           <Divider />
@@ -117,7 +101,5 @@ export default function SignupBox() {
             </Box>
           </Group>
         </Box>
-      </div>
-    </>
   );
 }

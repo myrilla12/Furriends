@@ -1,15 +1,17 @@
-import { Box, Image } from "@mantine/core";
+import Image from 'next/image';
 import { useRouter } from "next/router";
 
 export default function LogoHeader() {
     const router = useRouter();
     return (
-        <Box className="flex items-center justify-left w-[70px] h-[70px] m-4 cursor-pointer">
+        <div className="flex items-center justify-left m-5 cursor-pointer">
             <Image
+                width={70}
+                height={70}
                 src="/logo-icon.png"
                 onClick={() => router.push("/dashboard")}
                 alt="furriends logo"
             />   
-        </Box>
+        </div>
     );
 }
