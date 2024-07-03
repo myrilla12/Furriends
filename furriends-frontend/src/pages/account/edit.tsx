@@ -2,7 +2,7 @@ import Layout from '@/components/layout';
 import AccountForm from '@/components/account/accountForm'
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
-import { createClient } from '../../utils/supabase/server-props'
+import { createClient } from '@/utils/supabase/server-props'
 
 export default function EditAccountPage({ user }: { user: User }) {
     return (
@@ -20,6 +20,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const { data, error } = await supabase.auth.getUser()
 
+    // prevent access by unauthenticated users
     if (error || !data) {
         return {
             redirect: {
