@@ -7,7 +7,7 @@ export default function Signup() {
         <>
             <MantineProvider>
                 <LogoHeader />
-                <Container>  
+                <Container className="flex justify-center items-center"  style={{ height: '80vh' }}>
                     <SignupBox />
                 </Container>
             </MantineProvider>
