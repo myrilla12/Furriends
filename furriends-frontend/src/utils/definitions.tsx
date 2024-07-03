@@ -25,3 +25,8 @@ export type Message = {
     content: string;
     author_id: string;
 }
+
+export type Chats = { 
+    id: string;
+    otherUser: Profile; 
+}[]

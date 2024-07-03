@@ -17,59 +17,72 @@ type ChatBoxProps = {
 
 export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBoxProps) {
 
-  const supabase = createClient();
-  const router = useRouter();
-  const [message, setMessage] = useState<string>('');
+    const supabase = createClient();
+    const router = useRouter();
+    const [message, setMessage] = useState<string>('');
 
-  async function sendMessage(content: string) {
+    async function sendMessage(content: string) {
     // if chat id is null AKA it is a new chat (create new chat)
-    let currChatId = chatId;
+        let currChatId = chatId;
 
-    if (currChatId === null) {
-      const { data: newChatData, error: newChatError } = await supabase
-        .from('chats')
-        .insert({})
-        .select('id')
-        .single();
+        if (currChatId === null) {
+            const { data: newChatData, error: newChatError } = await supabase
+                .from('chats')
+                .insert({})
+                .select('id')
+                .single();
 
-      if (newChatError) {
-        console.error('Error creating new chat:', newChatError);
-        return;
-      }
+            if (newChatError) {
+                console.error('Error creating new chat:', newChatError);
+                return;
+            }
 
-      currChatId = newChatData.id;
+            currChatId = newChatData.id;
 
-      // create new row in chat users for current user
-      const { data: userData, error: usersError } = await supabase
-        .from('chat_users')
-        .insert([
-          {
+            // create new row in chat users for current user
+            const { data: userData, error: usersError } = await supabase
+                .from('chat_users')
+                .insert([
+                {
+                    chat_id: currChatId,
+                    user_id: user.id,
+                },
+                {
+                    chat_id: currChatId,
+                    user_id: chatPartner?.id,
+                }
+                ]);
+
+            if (usersError) {
+                console.error('Error storing user id in chat users:', usersError);
+            }
+
+            router.push(`/chat?id=${currChatId}`);
+        }
+
+        const messageData: Message = {
             chat_id: currChatId,
-            user_id: user.id,
-          },
-          {
-            chat_id: currChatId,
-            user_id: chatPartner?.id,
-          }
-        ]);
+            author_id: user.id,
+            content: content,
+        }
 
-      if (usersError) {
-        console.error('Error storing user id in chat users:', usersError);
-      }
+        // insert new message into the database
+        const { data, error } = await supabase
+            .from('messages')
+            .insert(messageData);
 
-      router.push(`/chat?id=${currChatId}`);
+        // update the updated_at value of 'chats'
+        const currentTimestamp = new Date().toISOString();
+
+        const { error: chatsError } = await supabase
+            .from('chats')
+            .update({ updated_at: currentTimestamp })
+            .eq('id', currChatId);
+
+        if (chatsError) {
+            console.error("Error updating the 'updated_at' column in 'chats':", chatsError);
+        }
     }
-
-    const messageData: Message = {
-      chat_id: currChatId,
-      author_id: user.id,
-      content: content,
-    }
-
-    const { data, error } = await supabase
-                .from('messages')
-                .insert(messageData);
-  }
 
   const checkMessage = () => {
     if (message === '') {

@@ -7,31 +7,15 @@ import UserIcon from '../userIcon';
 import type { User } from '@supabase/supabase-js'
 import { Box, Title } from '@mantine/core';
 import ChatIcon from './chatIcon';
-import { Profile } from '@/utils/definitions';
+import { Chats, Profile } from '@/utils/definitions';
 
 type ChatNavProps = {
-    chatIds: string[];
-    otherUsers: Profile[];
+    chats: Chats,
 }
 
-export default function ChatNav({ chatIds, otherUsers } : ChatNavProps) {
-  return (
-    <div className="flex h-full flex-col px-3 py-4 md:px-2">
-      <div className="flex grow flex-col justify-start space-y-2">
-        <ChatCard chatIds={chatIds} otherUsers={otherUsers} />
-      </div>
-    </div>
-  );
-}
-
-function ChatCard({ chatIds, otherUsers } : ChatNavProps) {
+export default function ChatNav({ chats } : ChatNavProps) {
+  function ChatCard() {
     const pathname = usePathname();
-    const chats = chatIds.map((chatId, index) => {
-      return {
-        id: chatId,
-        otherUser: otherUsers[index]
-      }
-    });
 
     return (
       <>
@@ -53,3 +37,13 @@ function ChatCard({ chatIds, otherUsers } : ChatNavProps) {
       </>
     );
   }
+
+  return (
+    <div className="flex h-full flex-col px-3 py-4 md:px-2">
+      <div className="flex grow flex-col justify-start space-y-2">
+        <ChatCard />
+      </div>
+    </div>
+  );
+}
+

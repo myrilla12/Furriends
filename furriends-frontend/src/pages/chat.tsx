@@ -8,7 +8,7 @@ import { createClient as CC } from '@/utils/supabase/component';
 import type { GetServerSidePropsContext } from 'next'
 import { Box } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
-import { Message, Profile } from '@/utils/definitions';
+import { Chats, Message, Profile } from '@/utils/definitions';
 import { useRouter } from 'next/router';
 import ChatBox from '@/components/chat/chatBox';
 import ChatNotFound from '@/components/chat/chatNotFound';
@@ -28,6 +28,12 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
     const [displayChat, setDisplayChat] = useState<boolean>(false);
     const [chatPartner, setChatPartner] = useState<Profile | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
+    const [chats, setChats] = useState<Chats>(chatIds.map((chatId, index) => {
+        return {
+          id: chatId,
+          otherUser: otherUsers[index]
+        }
+    }));
 
     useEffect(() => { 
         // check if chat id exists 
@@ -84,39 +90,89 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
                 }
             });
         }
-        
+
         // use supabase realtime
         // following Supabase documentation at https://supabase.com/docs/guides/realtime/subscribing-to-database-changes
-        const channel = supabase
-        .channel('schema-db-changes')
-        .on(
-            'postgres_changes',
-            {
-                event: 'INSERT',
-                schema: 'public',
-                table: 'messages',
-            },
-            (payload) => {
-                const newMessage = payload.new as Message;
+        const messagesChannel = supabase
+            .channel('messages-changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'messages',
+                },
+                (payload) => {
+                    const eventType = payload.eventType;
 
-                if (newMessage.chat_id === id.id) {
-                    setMessages((prevMessages) => [...prevMessages, newMessage]);
+                    // if messages have been inserted, add to 'messages' state
+                    if (eventType === 'INSERT') {
+                        const newMessage = payload.new as Message;
+                        newMessage.chat_id === id.id
+                        setMessages((prevMessages) => [...prevMessages, newMessage]);
+                    }
                 }
-            }
-        )
-        .subscribe();
+            )
+            .subscribe();
 
         return () => {
-            supabase.removeChannel(channel);
+            supabase.removeChannel(messagesChannel);
         };
     }, [id])
+
+    // make changes to 'chats' table realtime
+    useEffect(() => {
+
+        const messagesChannel = supabase
+            .channel('chats-changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'chats',
+                },
+                (payload) => {
+                    const eventType = payload.eventType;
+
+                    // if chats have been updated reorder the chats const
+                    if (eventType === 'UPDATE') {
+                        const fetchChats = async () => {
+                            // Fetch the chats with their updated_at field
+                            const { data, error } = await supabase
+                              .from('chats')
+                              .select('id, updated_at')
+                              .in('id', chatIds)
+                              .order('updated_at', { ascending: false });
+                      
+                            if (error) {
+                              console.error('Error fetching chats:', error);
+                            } else {
+                              const chatsWithOtherUsers = data.map((chat: { id: string; }) => ({
+                                ...chat,
+                                otherUser: otherUsers[chatIds.indexOf(chat.id)],
+                              }));
+                              setChats(chatsWithOtherUsers)
+                            }
+                        };
+
+                        fetchChats();
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(messagesChannel);
+        };
+    }, [chatIds, otherUsers])
 
     return (
         <Layout user={user}>
             <div className="flex flex-grow p-6 md:overflow-y-auto">
                 <Box style={{ display: 'flex', width: '100%' }}>
                     <Box ml='xl' className="flex-shrink-0 w-60 md:w-1/3">
-                        <ChatNav chatIds={chatIds} otherUsers={otherUsers} />
+                        <ChatNav chats={chats} />
                     </Box>
                     <Box className="flex-grow">
                         {displayChat? 
@@ -153,11 +209,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         .eq('id', data.user.id)
         .single();
 
-    // fetch all chat ids that corespond to user
+    // fetch all chat ids that corespond to user and sort them in descending order of 'updated_at'
     const { data: chatData, error: chatError } = await supabase
         .from('chat_users')
-        .select('chat_id')
-        .eq('user_id', data.user.id);
+        .select('chat_id, chats(updated_at)')
+        .eq('user_id', data.user.id)
+        .order('chats(updated_at)', { ascending: false });
 
     if (chatError) {
         console.error('Error fetching chat IDs:', chatError);
@@ -169,7 +226,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // get the other user that corresponds to the chat ids
     const { data: otherUserData, error: otherUserError } = await supabase
         .from('chat_users')
-        .select('user_id')
+        .select('user_id, chat_id')
         .in('chat_id', chats)
         .neq('user_id', data.user.id);
 
@@ -178,7 +235,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return;
     }
 
-    const otherUserIds = otherUserData.map((otherUser: { user_id: string; }) => otherUser.user_id);
+    const otherUserIds = chats.map((chat_id: string) => {
+        const user = otherUserData.find((user: { chat_id: string; }) => user.chat_id === chat_id);
+        return user ? user.user_id : null;
+    }).filter((user_id: string) => user_id !== null);
 
     // get user profile of the other users
     const { data: otherProfilesData, error: otherProfilesError } = await supabase
@@ -195,13 +255,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         otherUserIds.map((id: string, index: number): [string, number] => [id, index])
     );
     
-    // Sort otherProfilesData based on the order of ids in otherUserIds
+    // sort otherProfilesData based on the order of ids in otherUserIds
     otherProfilesData.sort((a: Profile, b: Profile) => {
         const indexA = userIdToIndexMap.get(a.id);
         const indexB = userIdToIndexMap.get(b.id);
     
         if (indexA === undefined || indexB === undefined) {
-            // Handle the case where the ID is not found in the map
+            // handle the case where the ID is not found in the map
             return 0;
         }
     
