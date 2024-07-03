@@ -1,9 +1,10 @@
 // adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
 import { Text, TextInput, PasswordInput, Button, Box, Group } from '@mantine/core';
+import SignupButton from './signupButton'
 import router from 'next/router';
 import { useState } from 'react';
-import { createClient } from '../../utils/supabase/component';
+import { createClient } from '@/utils/supabase/component';
 
 export default function LoginBox() {
   const supabase = createClient();
@@ -36,7 +37,7 @@ export default function LoginBox() {
         const defaultUsername = usernamePrefix + '***';
 
         const { error: usernameError } = await supabase.from('profiles').update({ username: defaultUsername }).eq('id', data.user?.id);
-        if (usernameError) {console.log(usernameError); }// throw error
+        if (usernameError) { console.log(usernameError); }// throw error
       }
 
       router.push('/dashboard');
@@ -44,50 +45,44 @@ export default function LoginBox() {
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-      <Box style={{ border: "1px solid black" }} pl="xl" pr="xl" pb="xl" ml="25%" mr='25%'>
-        <Box mt='lg' mb='lg'>
-          <Text size='21pt' mt='xl' fw={700} className='mb-6'>Sign In</Text>
+    <Box className="border border-black px-8 py-7 w-full max-w-md">
+      <Box className='mb-5'>
+        <Text size='21pt' className='mb-6 text-amber-950 font-bold'>Sign In</Text>
 
-          <TextInput
-            variant="filled"
-            label="Email address"
-            placeholder="Email address"
-            value={email}
-            onChange={(event) => setEmail(event.currentTarget.value)}
-            className="mb-4"
-          />
+        <TextInput
+          variant="filled"
+          label="Email address"
+          placeholder="Email address"
+          value={email}
+          onChange={(event) => setEmail(event.currentTarget.value)}
+          className="mb-4"
+        />
 
-          <PasswordInput
-            variant="filled"
-            label="Password"
-            placeholder="Password"
-            value={password}
-            onChange={(event) => setPassword(event.currentTarget.value)}
-          />
+        <PasswordInput
+          variant="filled"
+          label="Password"
+          placeholder="Password"
+          value={password}
+          onChange={(event) => setPassword(event.currentTarget.value)}
+        />
 
-          {error && (
-            <>
-              <Text c="red" size="xs" fw={700} className="mt-1">{error}</Text>
-            </>
-          )}
+        {error && (
+          <>
+            <Text c="red" size="xs" fw={700} className="mt-1">{error}</Text>
+          </>
+        )}
 
-          <Button variant="default" color="gray" onClick={login} className="mt-6">Sign in</Button>
-
-        </Box>
-
-        <hr />
-
-        <Group>
-          <Box mt="lg">
-            <Text c='dimmed'>Don&apos;t have an account yet?</Text>
-          </Box>
-          <Box mt='lg'>
-            <Button variant="transparent" onClick={() => router.push("/signup")}><u>Sign up</u></Button>
-          </Box>
-        </Group>
+        <Button variant="outline" color="#6d543e" onClick={login} className="mt-6">Sign in</Button>
 
       </Box>
-    </div>
+
+      <hr />
+
+      <Group className="mt-3">
+        <Text size="sm" c="dimmed">Don&apos;t have an account yet?</Text>
+        <SignupButton />
+      </Group>
+
+    </Box>
   );
 }
