@@ -20,8 +20,18 @@ export type Profile = {
 }
 
 export type Message = {
+    id?: string;
     created_at?: string;
     chat_id: string | null;
     content: string;
     author_id: string;
+    read_at?: string;
+    edited_at?: string;
+    disabled?: boolean;
 }
+
+export type Chats = { 
+    id: string;
+    otherUser: Profile;
+    notification: number; 
+}[]

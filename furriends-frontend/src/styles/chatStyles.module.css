@@ -6,13 +6,13 @@
   }
   
 .user {
-background-color: #DFCAA0; 
-align-self: flex-end; 
+  background-color: #DFCAA0; 
+  align-self: flex-end; 
 }
 
 .chatPartner {
-background-color: #d0d0d0; 
-align-self: flex-start; 
+  background-color: #d0d0d0; 
+  align-self: flex-start; 
 }
 
 .chatContainer {
