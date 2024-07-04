@@ -24,6 +24,7 @@ export type Message = {
     chat_id: string | null;
     content: string;
     author_id: string;
+    read_at?: string;
 }
 
 export type Chats = { 

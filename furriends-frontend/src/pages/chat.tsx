@@ -67,15 +67,35 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
             setDisplayChat(true); // display chat corresponding to chat id
             setChatPartner(otherUsers[exists]); // save profile of chat partner
 
+            // if there are any messages that are unread that are authored by other user, mark read_at
+            const currentTimestamp = new Date().toISOString();
+
+            const updateReadAt = async () => {
+                const { data, error } = await supabase
+                    .from('messages')
+                    .update({ read_at: currentTimestamp })
+                    .eq('chat_id', id.id)
+                    .neq('author_id', user.id)
+                    .is('read_at', null);
+                
+                if (error) {
+                    console.error('Error updating read_at values:', error);
+                    return;
+                }
+            };
+
+            updateReadAt();
+
             // set the state messages to the data from supabase
             supabase
                 .from('messages')
-                .select('created_at, content, author_id')
+                .select('created_at, content, author_id, read_at')
                 .eq('chat_id', id.id)
                 .order('created_at', { ascending: true })
                 .then((res: any) => {
                     setMessages(res.data);
-                });
+            });
+
         } else {
             // if user_id given as slug, check if valid 
             checkUserExists().then((userData: any) => {

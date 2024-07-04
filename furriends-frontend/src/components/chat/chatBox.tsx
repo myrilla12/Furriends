@@ -1,4 +1,4 @@
-import { Box, Button, Center, Container, Flex, Input, ScrollArea, Text } from "@mantine/core";
+import { Box, Button, Center, Container, Flex, Group, Input, ScrollArea, Text } from "@mantine/core";
 import { createClient } from "@/utils/supabase/component";
 import { useEffect, useRef, useState } from "react";
 import { RealtimeChannel, User } from "@supabase/supabase-js";
@@ -111,7 +111,14 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
                   (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
                 }
                 {msg.content}
-                <Text className={styles.chatTimestamp}>{msg.created_at ? printTimestamp(msg.created_at) : ''}</Text>
+
+                <div style={{display: 'flex'}}>
+                    <Text mr='md' className={styles.chatTimestamp}>{msg.created_at ? printTimestamp(msg.created_at) : ''}</Text>
+                    {user.id === msg.author_id ? 
+                    msg.read_at === null ? (<Text fw={500} className={styles.chatTimestamp}>Unead</Text>) : 
+                        (<Text fw={500} className={styles.chatTimestamp}>Read</Text>) : ''
+                    }
+                </div>
             </div>
           ))}
           </div>
