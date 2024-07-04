@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Input, Menu, Text } from "@mantine/core";
+import { Box, Button, Container, Flex, Input, Menu, Stack, Text } from "@mantine/core";
 import { createClient } from "@/utils/supabase/component";
 import { useEffect, useRef, useState } from "react";
 import { User } from "@supabase/supabase-js";
@@ -22,7 +22,8 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const [message, setMessage] = useState<string>('');
     const [editing, setEditing] = useState<boolean>(false);
-    const [messageToEdit, setMessageToEdit] = useState<string | null>(null);
+    const [deleting, setDeleting] = useState<boolean>(false);
+    const [messageToChange, setMessageToChange] = useState<string | null>(null);
 
     const scrollToBottom = () => {
         if (scrollAreaRef.current) {
@@ -104,10 +105,22 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
         const { error: editError } = await supabase
             .from('messages')
             .update({ content: content, edited_at: currentTimestamp })
-            .eq('id', messageToEdit);
+            .eq('id', messageToChange);
 
         if (editError) {
             console.error("Error editing message:", editError);
+        }
+    }
+
+    async function deleteMessage(id: string) {
+
+        const { error: deleteError } = await supabase
+            .from('messages')
+            .update({ disabled: true })
+            .eq('id', messageToChange);
+
+        if (deleteError) {
+            console.error("Error editing message:", deleteError);
         }
     }
 
@@ -121,29 +134,31 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
 
     return (
     <Container m='md' className={`${styles.chatContainer}`}>
-        {/* Display author name + messages in chat bubbles */}
+        {/* Display author name, messages, timestamp, read? and edited? in chat bubbles */}
         <Box h={570}>
             <Box h={550} pb='md' ref={scrollAreaRef} style={{"overflow": "auto"}}>
                 <div className="mt-5 flex flex-col gap-3">
                     {messages?.map((msg, i) => (
-                        <div key={i} className={`${styles.chatBubble} ${user.id === msg.author_id ? styles.user : styles.chatPartner}`}>
-                            {user.id === msg.author_id ? (
+                        <div 
+                            key={i} 
+                            className={`${styles.chatBubble} ${user.id === msg.author_id ? styles.user : styles.chatPartner}`}
+                        >
+                            {msg.disabled ? 
+                                (<Text ta='center' size='sm' fs='italic'>Message deleted</Text>) : 
+                                user.id === msg.author_id ? (
                                 <Menu>
                                     <Menu.Target>
-                                        {/* Chat bubble with author name, content, timestamp and read / unread */}
+                                        {/* Users own chat bubbles will have drop down menu for edit and delete */}
                                         <div>
-                                            {user.id === msg.author_id ? 
-                                            (<Text size='sm' fw={700}>You</Text>) : 
-                                            (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
-                                            }
+                                            <Text size='sm' fw={700}>You</Text>
                                             {msg.content}
                                             <div style={{ display: 'flex' }}>
                                                 <Text mr='md' className={styles.chatTimestamp}>
                                                     {msg.created_at ? printTimestamp(msg.created_at) : ''}
                                                 </Text>
-                                                {user.id === msg.author_id ? 
-                                                    msg.read_at === null ? (<Text mr='md' fw={500} className={styles.chatTimestamp}>Unread</Text>) : 
-                                                    (<Text mr='md' fw={500} className={styles.chatTimestamp}>Read</Text>) : ''
+                                                {msg.read_at === null ? 
+                                                    (<Text mr='md' fw={500} className={styles.chatTimestamp}>Unread</Text>) : 
+                                                    (<Text mr='md' fw={500} className={styles.chatTimestamp}>Read</Text>)
                                                 }
                                                 {msg.edited_at ? (<Text mr='md' fw={500} className={styles.chatTimestamp}>Edited</Text>) : ''}
                                             </div>
@@ -154,7 +169,7 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
                                     <Menu.Dropdown>
                                         <Menu.Item onClick={() => {
                                             setEditing(true);
-                                            msg.id ? setMessageToEdit(msg.id) : '';
+                                            msg.id ? setMessageToChange(msg.id) : '';
                                             setMessage(msg.content);
                                         }}>
                                             <div className="flex items-center">
@@ -162,7 +177,10 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
                                                 <Text size='sm' ml='sm'>Edit</Text>
                                             </div>
                                         </Menu.Item>
-                                        <Menu.Item>
+                                        <Menu.Item onClick={() => {
+                                            setDeleting(true);
+                                            msg.id ? setMessageToChange(msg.id) : '';
+                                        }}>
                                             <div className="flex items-center">
                                                 <TrashIcon className="h-5 w-5" />
                                                 <Text size='sm' ml='sm'>Delete</Text>
@@ -172,19 +190,12 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
                                 </Menu> ) : 
                                 
                                 (<div>
-                                    {user.id === msg.author_id ? 
-                                    (<Text size='sm' fw={700}>You</Text>) : 
-                                    (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
-                                    }
+                                    <Text size='sm' fw={700}>{chatPartner?.username}</Text>
                                     {msg.content}
                                     <div style={{ display: 'flex' }}>
                                         <Text mr='md' className={styles.chatTimestamp}>
                                             {msg.created_at ? printTimestamp(msg.created_at) : ''}
                                         </Text>
-                                        {user.id === msg.author_id ? 
-                                            msg.read_at === null ? (<Text mr='md' fw={500} className={styles.chatTimestamp}>Unread</Text>) : 
-                                            (<Text mr='md' fw={500} className={styles.chatTimestamp}>Read</Text>) : ''
-                                        }
                                         {msg.edited_at ? (<Text mr='md' fw={500} className={styles.chatTimestamp}>Edited</Text>) : ''}
                                     </div>
                                 </div>)}
@@ -200,29 +211,60 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
                     type="text"
                     placeholder="Message"
                     value={message}
-                    size="lg"
+                    size="md"
                     w={600}
                     className={styles.chatInput}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyUp={(e) => {
                         if (e.key === "Enter" && checkMessage()) {
-                            editMessage(message).then(() => {setMessage(''); setMessageToEdit(null);});
+                            editMessage(message).then(() => {setMessage(''); setMessageToChange(null);});
                             setEditing(false);
                         }
                     }}
                 />
-                <Button size='lg' color='#ad925a' variant='filled' className={styles.chatInput}
+                <Button size='md' color='#ad925a' variant='filled' className={styles.chatInput}
                     onClick={() => {
                         if (checkMessage()) {
-                            editMessage(message).then(() => {setMessage(''); setMessageToEdit(null);});
+                            editMessage(message).then(() => {setMessage(''); setMessageToChange(null);});
                         }
                         setEditing(false);
                     }}
                 >
                     Finish edit
                 </Button>  
+                <Button
+                    size='md'
+                    variant='filled' 
+                    color='rgba(255, 5, 5, 1)'
+                    onClick={() => {setMessage(''); setEditing(false);}}
+                >
+                    Cancel
+                </Button>
             </Flex> :
 
+            deleting ? 
+                // if deleting is true show display for deleting messages
+                <Flex gap='lg' justify='center'>
+                    <Button
+                        variant='subtle'
+                        onClick={() => {
+                            messageToChange ? deleteMessage(messageToChange).then(() => {
+                                setMessageToChange(null);
+                                setDeleting(false);
+                            }) : setDeleting(false);
+                        }}
+                    >
+                        <TrashIcon className="h-5 w-5 mr-2" />
+                        Delete?
+                    </Button> 
+                    <Button
+                        variant='filled' 
+                        color='rgba(255, 5, 5, 1)'
+                        onClick={() => { setDeleting(false)}}
+                    >
+                        Cancel
+                    </Button>
+                </Flex> :
             // Input field + button to send messages 
             <Flex gap="md" justify="center" align="flex-end" direction="row" wrap="wrap">
                 <Input

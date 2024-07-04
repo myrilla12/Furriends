@@ -27,6 +27,7 @@ export type Message = {
     author_id: string;
     read_at?: string;
     edited_at?: string;
+    disabled?: boolean;
 }
 
 export type Chats = { 

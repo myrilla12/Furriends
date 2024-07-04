@@ -91,7 +91,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
             // set the state messages to the data from supabase
             supabase
                 .from('messages')
-                .select('id, created_at, content, author_id, read_at, edited_at')
+                .select('id, created_at, content, author_id, read_at, edited_at, disabled')
                 .eq('chat_id', id.id)
                 .order('created_at', { ascending: true })
                 .then((res: any) => {
