@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import UserIcon from './userIcon';
 import LogoHeader from './logoHeader';
-import SideNav from './sideNav';
+import SideNav from '@/components/sidebar/sideNav';
 import { type User } from '@supabase/supabase-js';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 

@@ -1,6 +1,4 @@
-import Link from 'next/link';
 import NavLinks from './navLinks';
-import SignoutButton from '@/components/signoutButton';
 
 export default function SideNav() {
   return (
