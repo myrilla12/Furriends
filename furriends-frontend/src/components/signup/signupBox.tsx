@@ -1,7 +1,6 @@
 // adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
 import { Text, TextInput, PasswordInput, Button, Box, Group, Divider } from '@mantine/core';
-import LoginButton from '../login/loginButton';
 import router from 'next/router';
 import { useState } from 'react';
 import { createClient } from '../../utils/supabase/component';
@@ -42,60 +41,62 @@ export default function SignupBox() {
   }
 
   return (
-        <Box className="border border-black px-8 py-8 w-full max-w-md">
-          <Box>
-            <Text size='21pt' mb='xs' className='mb-6 text-amber-950 font-bold'>Create a new account</Text>
-            <Text size='md' c='dimmed' className='mb-5'>
-              Join our pet-friendly community at <span className="text-brown">furriends</span>!
-            </Text>
+    <Box className="border border-black px-8 py-8 w-full max-w-md">
+      <Box>
+        <Text size='21pt' mb='xs' className='mb-6 text-amber-950 font-bold'>Create a new account</Text>
+        <Text size='md' c='dimmed' className='mb-5'>
+          Join our pet-friendly community at <span className="text-brown">furriends</span>!
+        </Text>
 
-            <TextInput
-              variant="filled"
-              label="Email Address"
-              placeholder="Email Address"
-              value={email}
-              onChange={(event) => setEmail(event.currentTarget.value)}
-            />
+        <TextInput
+          variant="filled"
+          label="Email Address"
+          placeholder="Email Address"
+          value={email}
+          onChange={(event) => setEmail(event.currentTarget.value)}
+        />
 
-            {emailError && (
-                <Text c="red" size="xs" fw={700} className="mt-1">{emailError}</Text>
-            )}
+        {emailError && (
+          <Text c="red" size="xs" fw={700} className="mt-1">{emailError}</Text>
+        )}
 
-            <PasswordInput
-              variant="filled"
-              label="Password"
-              placeholder="Password"
-              value={password}
-              onChange={(event) => setPassword(event.currentTarget.value)}
-              className="mt-4"
-            />
+        <PasswordInput
+          variant="filled"
+          label="Password"
+          placeholder="Password"
+          value={password}
+          onChange={(event) => setPassword(event.currentTarget.value)}
+          className="mt-4"
+        />
 
-            {passwordError && (
-                <Text c="red" size="xs" fw={700}  className="mt-1">{passwordError}</Text>
-            )}
+        {passwordError && (
+          <Text c="red" size="xs" fw={700} className="mt-1">{passwordError}</Text>
+        )}
 
-            <PasswordInput
-              variant="filled"
-              label="Confirm Password"
-              placeholder="Type password again"
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.currentTarget.value)}
-              className="mt-4"
-            />
+        <PasswordInput
+          variant="filled"
+          label="Confirm Password"
+          placeholder="Type password again"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.currentTarget.value)}
+          className="mt-4"
+        />
 
-            {confirmPasswordError && (
-                <Text c="red" size="xs" fw={700}  className="mt-1">{confirmPasswordError}</Text>
-            )}
+        {confirmPasswordError && (
+          <Text c="red" size="xs" fw={700} className="mt-1">{confirmPasswordError}</Text>
+        )}
 
-            <Button  variant="outline" color="#6d543e" onClick={signup} className="mt-5 mb-6">Sign up</Button>
-          </Box>
+        <Button variant="outline" color="#6d543e" onClick={signup} className="mt-5 mb-6">Sign up</Button>
+      </Box>
 
-          <Divider size="sm" />
+      <Divider size="sm" />
 
-          <Group className="mt-2">
-              <Text size="sm" c="dimmed">Already have an account?</Text>
-              <LoginButton />
-          </Group>
-        </Box>
+      <Group className="mt-2">
+        <Text size="sm" c="dimmed">Already have an account?</Text>
+        <Button variant="transparent" color="#6d543e" onClick={() => router.push("/login")}>
+          <u>Sign in</u>
+        </Button>
+      </Group>
+    </Box>
   );
 }

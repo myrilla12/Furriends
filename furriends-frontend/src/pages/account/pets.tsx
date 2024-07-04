@@ -104,32 +104,3 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
     };
 }
-    
-/* kept as reference code for now on how to map & sign urls; delete later!!!
-    // replace photo url with signed link to correct item in supabase storage
-    const petsWithPhotoUrls = await Promise.all(petData.map(async pet => {
-        const signedPhotos = await Promise.all(pet.pet_photos.map(async photo => {
-            const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-                .from('pet_photos')
-                .createSignedUrl(photo.photo_url, 3600);
- 
-            if (signedUrlError || !signedUrlData) {
-                return null;
-            }
- 
-            return signedUrlData.signedUrl;
-        }));
- 
-        return {
-            ...pet,
-            photos: signedPhotos.filter(url => url !== null), // Filter out any null values
-        };
-    }));
- 
-    return {
-        props: {
-            pets: petsWithPhotoUrls,
-            user: data.user,
-        },
-    }
-*/
