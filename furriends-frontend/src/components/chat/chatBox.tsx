@@ -126,13 +126,52 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
             <Box h={550} pb='md' ref={scrollAreaRef} style={{"overflow": "auto"}}>
                 <div className="mt-5 flex flex-col gap-3">
                     {messages?.map((msg, i) => (
-                        <Menu>
-                            <Menu.Target>
-                                {/* Chat bubble with author name, content, timestamp and read / unread */}
-                                <div
-                                    key={i}
-                                    className={`${styles.chatBubble} ${user.id === msg.author_id ? styles.user : styles.chatPartner}`}
-                                >
+                        <div key={i} className={`${styles.chatBubble} ${user.id === msg.author_id ? styles.user : styles.chatPartner}`}>
+                            {user.id === msg.author_id ? (
+                                <Menu>
+                                    <Menu.Target>
+                                        {/* Chat bubble with author name, content, timestamp and read / unread */}
+                                        <div>
+                                            {user.id === msg.author_id ? 
+                                            (<Text size='sm' fw={700}>You</Text>) : 
+                                            (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
+                                            }
+                                            {msg.content}
+                                            <div style={{ display: 'flex' }}>
+                                                <Text mr='md' className={styles.chatTimestamp}>
+                                                    {msg.created_at ? printTimestamp(msg.created_at) : ''}
+                                                </Text>
+                                                {user.id === msg.author_id ? 
+                                                    msg.read_at === null ? (<Text mr='md' fw={500} className={styles.chatTimestamp}>Unread</Text>) : 
+                                                    (<Text mr='md' fw={500} className={styles.chatTimestamp}>Read</Text>) : ''
+                                                }
+                                                {msg.edited_at ? (<Text mr='md' fw={500} className={styles.chatTimestamp}>Edited</Text>) : ''}
+                                            </div>
+                                        </div>
+                                    </Menu.Target>
+                            
+                                    {/* drop down menu with 'edit' and 'delete' when chat bubble is clicked */}
+                                    <Menu.Dropdown>
+                                        <Menu.Item onClick={() => {
+                                            setEditing(true);
+                                            msg.id ? setMessageToEdit(msg.id) : '';
+                                            setMessage(msg.content);
+                                        }}>
+                                            <div className="flex items-center">
+                                                <PencilIcon className="h-5 w-5" />
+                                                <Text size='sm' ml='sm'>Edit</Text>
+                                            </div>
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <div className="flex items-center">
+                                                <TrashIcon className="h-5 w-5" />
+                                                <Text size='sm' ml='sm'>Delete</Text>
+                                            </div>
+                                        </Menu.Item>
+                                    </Menu.Dropdown>
+                                </Menu> ) : 
+                                
+                                (<div>
                                     {user.id === msg.author_id ? 
                                     (<Text size='sm' fw={700}>You</Text>) : 
                                     (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
@@ -148,30 +187,8 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
                                         }
                                         {msg.edited_at ? (<Text mr='md' fw={500} className={styles.chatTimestamp}>Edited</Text>) : ''}
                                     </div>
-                                </div>
-                            </Menu.Target>
-                            
-                            {/* drop down menu with 'edit' and 'delete' when chat bubble is clicked */}
-                            <Menu.Dropdown>
-                                <Menu.Item onClick={() => {
-                                    setEditing(true);
-                                    msg.id ? setMessageToEdit(msg.id) : '';
-                                    setMessage(msg.content);
-                                }}>
-                                    <div className="flex items-center">
-                                        <PencilIcon className="h-5 w-5" />
-                                        <Text size='sm' ml='sm'>Edit</Text>
-                                    </div>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <div className="flex items-center">
-                                        <TrashIcon className="h-5 w-5" />
-                                        <Text size='sm' ml='sm'>Delete</Text>
-                                    </div>
-                                </Menu.Item>
-                            </Menu.Dropdown>
-                        </Menu>
-                    ))}
+                                </div>)}
+                        </div>))}
                 </div>
             </Box>
         </Box>
