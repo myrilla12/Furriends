@@ -67,9 +67,10 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
             if (error) throw error;
 
             const pet_id = data.id;
+
             // insert into `pet_photos` relation - each url creates a new row
             if (photo_urls && photo_urls.length > 0) {
-                const photoInserts = photo_urls.map(photo_url => ({ pet_id, photo_url }))
+                const photoInserts = photo_urls.map(photo_url => ({ pet_id, photo_url }));
 
                 const { error: photoError } = await supabase
                     .from('pet_photos')
