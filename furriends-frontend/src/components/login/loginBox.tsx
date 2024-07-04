@@ -1,7 +1,6 @@
 // adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
 import { Text, TextInput, PasswordInput, Button, Box, Group } from '@mantine/core';
-import SignupButton from './signupButton'
 import router from 'next/router';
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/component';
@@ -80,7 +79,10 @@ export default function LoginBox() {
 
       <Group className="mt-3">
         <Text size="sm" c="dimmed">Don&apos;t have an account yet?</Text>
-        <SignupButton />
+        {/* signup button linking to signup page */}
+        <Button variant="transparent" c="#6d543e" onClick={() => router.push("/signup")}>
+          <u>Sign up</u>
+        </Button>
       </Group>
 
     </Box>
