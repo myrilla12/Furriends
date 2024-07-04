@@ -26,7 +26,7 @@ export default function DashboardPage({ user, username, pets, children }: Dashbo
             <div className="flex-grow p-6 md:overflow-y-auto">
                 <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
                 <h1 className="mb-8 text-2xl font-bold">
-                    Find your pet some <span style={{ color: '#6d543e' }}>furriends</span>!
+                    Find your pet some <span className='text-brown'>furriends</span>!
                 </h1>
 
                 <Filters pets={pets} setFilteredPets={setFilteredPets} />

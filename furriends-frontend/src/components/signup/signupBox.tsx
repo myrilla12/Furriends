@@ -44,9 +44,9 @@ export default function SignupBox() {
   return (
         <Box className="border border-black px-8 py-8 w-full max-w-md">
           <Box>
-            <Text size='22pt' mb='xs' fw={700}>Create a new account</Text>
-            <Text size='md' c='dimmed' className='mb-4'>
-              Join our pet-friendly community at <span style={{ color: '#6d543e' }}>furriends</span>!
+            <Text size='21pt' mb='xs' className='mb-6 text-amber-950 font-bold'>Create a new account</Text>
+            <Text size='md' c='dimmed' className='mb-5'>
+              Join our pet-friendly community at <span className="text-brown">furriends</span>!
             </Text>
 
             <TextInput
@@ -87,18 +87,14 @@ export default function SignupBox() {
                 <Text c="red" size="xs" fw={700}  className="mt-1">{confirmPasswordError}</Text>
             )}
 
-            <Button variant="default" color="gray" onClick={signup} className="mt-5 mb-6">Sign up</Button>
+            <Button  variant="outline" color="#6d543e" onClick={signup} className="mt-5 mb-6">Sign up</Button>
           </Box>
 
-          <Divider />
+          <Divider size="sm" />
 
-          <Group>
-            <Box mt="lg">
-              <Text c='dimmed'>Already have an account?</Text>
-            </Box>
-            <Box mt='lg'>
+          <Group className="mt-2">
+              <Text size="sm" c="dimmed">Already have an account?</Text>
               <LoginButton />
-            </Box>
           </Group>
         </Box>
   );
