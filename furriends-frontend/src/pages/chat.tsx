@@ -91,7 +91,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
             // set the state messages to the data from supabase
             supabase
                 .from('messages')
-                .select('created_at, content, author_id, read_at')
+                .select('id, created_at, content, author_id, read_at, edited_at')
                 .eq('chat_id', id.id)
                 .order('created_at', { ascending: true })
                 .then((res: any) => {
@@ -132,6 +132,18 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                         const newMessage = payload.new as Message;
                         newMessage.chat_id === id.id
                         setMessages((prevMessages) => [...prevMessages, newMessage]);
+                    }
+
+                    // if messages have been updated, update 'messages' state
+                    if (eventType === 'UPDATE') {
+                        const updatedMessage = payload.new as Message;
+
+                        if (updatedMessage.chat_id === id.id) {
+                            setMessages((prevMessages) =>
+                                prevMessages.map((msg) =>
+                                msg.id === updatedMessage.id ? updatedMessage : msg
+                            ));
+                        }
                     }
                 }
             )
