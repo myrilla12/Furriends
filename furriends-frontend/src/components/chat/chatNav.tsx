@@ -1,14 +1,12 @@
 // chatNav on LHS used to select chat
 import { HomeIcon, QueueListIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
+import styles from '../../styles/chatStyles.module.css';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import UserIcon from '../userIcon';
-import type { User } from '@supabase/supabase-js'
-import { Box, Title } from '@mantine/core';
 import ChatIcon from './chatIcon';
 import { Chats, Profile } from '@/utils/definitions';
 import { useRouter } from 'next/router';
+import { Badge } from '@mantine/core';
 
 type ChatNavProps = {
     chats: Chats,
@@ -37,6 +35,10 @@ export default function ChatNav({ chats } : ChatNavProps) {
                     >
                         <ChatIcon profile={obj.otherUser} />
                         <p>{obj.otherUser.username}</p>
+                        {obj.notification > 0 ? 
+                            <Badge size="lg" circle>{obj.notification}</Badge> :
+                            ''
+                        }
                     </Link>
                 );
             })}

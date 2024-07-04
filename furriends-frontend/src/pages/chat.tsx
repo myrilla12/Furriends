@@ -17,9 +17,10 @@ type ChatProps = {
     user: User;
     chatIds: string[];
     otherUsers: Profile[];
+    notifications: number[];
 }
 
-export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
+export default function ChatPage({ user, chatIds, otherUsers, notifications }: ChatProps) {
     const supabase = CC();
     const router = useRouter();
     const id = router.query;
@@ -31,7 +32,8 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
     const [chats, setChats] = useState<Chats>(chatIds.map((chatId, index) => {
         return {
           id: chatId,
-          otherUser: otherUsers[index]
+          otherUser: otherUsers[index],
+          notification: notifications[index],
         }
     }));
 
@@ -171,6 +173,7 @@ export default function ChatPage({ user, chatIds, otherUsers }: ChatProps) {
                               const chatsWithOtherUsers = data.map((chat: { id: string; }) => ({
                                 ...chat,
                                 otherUser: otherUsers[chatIds.indexOf(chat.id)],
+                                // notification: notifications[chatIds.indexOf(chat.id)],
                               }));
                               setChats(chatsWithOtherUsers)
                             }
@@ -288,11 +291,37 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return indexA - indexB;
     });
 
+    // get the number of unread messages for each chat
+    const { data: notificationData, error: notificationError } = await supabase
+        .from('messages')
+        .select('chat_id, read_at, author_id')
+        .in('chat_id', chats)
+        .is('read_at', null)
+        .neq('author_id', data.user.id);
+
+    if (notificationError) {
+        console.error('Error fetching notification data:', notificationError);
+        return;
+    }
+
+    // Create a dictionary to count unread messages for each chat_id
+    const unreadCounts = notificationData.reduce((acc: { [x: string]: number; }, message: { chat_id: string; }) => {
+        if (!acc[message.chat_id]) {
+            acc[message.chat_id] = 0;
+        }
+        acc[message.chat_id]++;
+        return acc;
+    }, {});
+
+    // Create an array of notification counts in the same order as chats
+    const notifications = chats.map((chat_id: string) => unreadCounts[chat_id] || 0);
+
     return {
         props: {
             user: data.user,
             chatIds: chats || [],
             otherUsers: otherProfilesData,
+            notifications: notifications || [],
         },
     };
 }

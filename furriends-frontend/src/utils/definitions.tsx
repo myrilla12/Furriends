@@ -29,5 +29,6 @@ export type Message = {
 
 export type Chats = { 
     id: string;
-    otherUser: Profile; 
+    otherUser: Profile;
+    notification: number; 
 }[]
