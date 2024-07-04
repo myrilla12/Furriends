@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Input, Text } from "@mantine/core";
+import { Box, Button, Container, Flex, Input, Menu, Text } from "@mantine/core";
 import { createClient } from "@/utils/supabase/component";
 import { useEffect, useRef, useState } from "react";
 import { User } from "@supabase/supabase-js";
@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { Message, Profile } from "@/utils/definitions";
 import styles from '../../styles/chatStyles.module.css';
 import printTimestamp from "@/utils/printTimestamp";
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 type ChatBoxProps = {
   user: User;
@@ -105,61 +106,79 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
 
   return (
     <Container m='md' className={`${styles.chatContainer}`}>
-      {/* Display author name + messages in chat bubbles */}
-      <Box h={570}>
-        <Box h={550} pb='md' ref={scrollAreaRef} style={{"overflow": "auto"}}>
-          <div className="mt-5 flex flex-col gap-3">
-            {messages?.map((msg, i) => (
-              <div
-                key={i}
-                className={`${styles.chatBubble} ${user.id === msg.author_id ? styles.user : styles.chatPartner}`}
-              >
-                {user.id === msg.author_id ? 
-                  (<Text size='sm' fw={700}>You</Text>) : 
-                  (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
-                }
-                {msg.content}
-                <div style={{ display: 'flex' }}>
-                  <Text mr='md' className={styles.chatTimestamp}>
-                    {msg.created_at ? printTimestamp(msg.created_at) : ''}
-                  </Text>
-                  {user.id === msg.author_id ? 
-                    msg.read_at === null ? (<Text fw={500} className={styles.chatTimestamp}>Unread</Text>) : 
-                    (<Text fw={500} className={styles.chatTimestamp}>Read</Text>) : ''
-                  }
-                </div>
-              </div>
-            ))}
-          </div>
-        </Box>
-      </Box>
+        {/* Display author name + messages in chat bubbles */}
+        <Box h={570}>
+            <Box h={550} pb='md' ref={scrollAreaRef} style={{"overflow": "auto"}}>
+                <div className="mt-5 flex flex-col gap-3">
+                    {messages?.map((msg, i) => (
+                        <Menu>
+                            <Menu.Target>
+                                <div
+                                    key={i}
+                                    className={`${styles.chatBubble} ${user.id === msg.author_id ? styles.user : styles.chatPartner}`}
+                                >
+                                    {user.id === msg.author_id ? 
+                                    (<Text size='sm' fw={700}>You</Text>) : 
+                                    (<Text size='sm' fw={700}>{chatPartner?.username}</Text>)
+                                    }
+                                    {msg.content}
+                                    <div style={{ display: 'flex' }}>
+                                        <Text mr='md' className={styles.chatTimestamp}>
+                                            {msg.created_at ? printTimestamp(msg.created_at) : ''}
+                                        </Text>
+                                        {user.id === msg.author_id ? 
+                                            msg.read_at === null ? (<Text fw={500} className={styles.chatTimestamp}>Unread</Text>) : 
+                                            (<Text fw={500} className={styles.chatTimestamp}>Read</Text>) : ''
+                                        }
+                                    </div>
+                                </div>
+                            </Menu.Target>
 
-      {/* Input field + button to send messages */}
-      <Flex gap="md" justify="center" align="flex-end" direction="row" wrap="wrap">
-        <Input
-          type="text"
-          placeholder="Message"
-          value={message}
-          size="lg"
-          w={600}
-          className={styles.chatInput}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyUp={(e) => {
-            if (e.key === "Enter" && checkMessage()) {
-              sendMessage(message).then(() => setMessage(''));
-            }
-          }}
-        />
-        <Button size='lg' color='#ad925a' variant='filled' className={styles.chatInput}
-          onClick={() => {
-            if (checkMessage()) 
-              sendMessage(message).then(() => setMessage(''));
-            }
-          }
-        >
-          Send
-        </Button>  
-      </Flex>
+                            <Menu.Dropdown>
+                                <Menu.Item>
+                                    <div className="flex items-center">
+                                        <PencilIcon className="h-5 w-5" />
+                                        <Text size='sm' ml='sm'>Edit</Text>
+                                    </div>
+                                </Menu.Item>
+                                <Menu.Item>
+                                    <div className="flex items-center">
+                                        <TrashIcon className="h-5 w-5" />
+                                        <Text size='sm' ml='sm'>Delete</Text>
+                                    </div>
+                                </Menu.Item>
+                            </Menu.Dropdown>
+                        </Menu>
+                    ))}
+                </div>
+            </Box>
+        </Box>
+
+        {/* Input field + button to send messages */}
+        <Flex gap="md" justify="center" align="flex-end" direction="row" wrap="wrap">
+            <Input
+                type="text"
+                placeholder="Message"
+                value={message}
+                size="lg"
+                w={600}
+                className={styles.chatInput}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyUp={(e) => {
+                    if (e.key === "Enter" && checkMessage()) {
+                    sendMessage(message).then(() => setMessage(''));
+                    }
+                }}
+            />
+            <Button size='lg' color='#ad925a' variant='filled' className={styles.chatInput}
+                onClick={() => {
+                    if (checkMessage()) 
+                    sendMessage(message).then(() => setMessage(''));
+                }}
+            >
+                Send
+            </Button>  
+        </Flex>
     </Container>
   );
 }
