@@ -1,7 +1,7 @@
 // card component showing pet photo (scrollable), overlayed with name, type, breed, age in the bottom left
 // pencil button in top right allows users to edit their pet profile
 import { useEffect, useState } from 'react';
-import { createClient } from '../../utils/supabase/component';
+import { createClient } from '@/utils/supabase/component';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
@@ -11,7 +11,7 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Pet } from '@/utils/definitions';
 import { calculateAge } from '@/utils/calculateAge';
 import { calculateImageBrightness } from '@/utils/calculateImageBrightness';
-import ChatButton from '../chat/chatButton';
+import ChatButton from '@/components/chat/chatButton';
 
 
 type PetCardProps = {
@@ -42,6 +42,8 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
             if (pet.photos && pet.photos[0]) {
                 const brightness = await calculateImageBrightness(pet.photos[0]);
                 setTextColor(brightness > 128 ? 'black' : 'white');
+            } else {
+                setTextColor('black')
             }
         };
         setTextColorBasedOnImage();

@@ -6,22 +6,24 @@ import { useState } from 'react';
 import { Button, Modal, TextInput, Textarea, NumberInput, Select, ScrollArea } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
-import { createClient } from '../../utils/supabase/component';
+import { createClient } from '@/utils/supabase/component';
 import { type User } from '@supabase/supabase-js';
+import { Pet } from '@/utils/definitions';
 import '@mantine/dates/styles.css'
 
 type PetFormProps = {
     modalOpened: boolean;
     setModalOpened: (open: boolean) => void;
     user: User | null;
+    addPetToState: (newPet: Pet) => void;
 }
 
-export default function PetForm({ modalOpened, setModalOpened, user }: PetFormProps) {
+export default function PetForm({ modalOpened, setModalOpened, user, addPetToState }: PetFormProps) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
-    const [name, setName] = useState<string | null>(null);
-    const [type, setType] = useState<string | null>(null);
-    const [breed, setBreed] = useState<string | null>(null);
+    const [name, setName] = useState<string>('');
+    const [type, setType] = useState<string>('');
+    const [breed, setBreed] = useState<string>('');
     const [weight, setWeight] = useState<number | null>(null);
     const [birthday, setBirthday] = useState<Date | null>(null);
     const [energy_level, setEnergy] = useState<string | null>(null);
@@ -32,9 +34,9 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
     // add getProfile using useCallBack here when implementing "edit" button, to allow code reusability
 
     async function addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls }: {
-        name: string | null
-        type: string | null
-        breed: string | null
+        name: string 
+        type: string 
+        breed: string
         weight: number | null
         birthday: Date | null
         energy_level: string | null
@@ -62,7 +64,7 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     description: description,
                     likes: likes,
                 })
-                .select('id') // select the pet_id for insertion into pet_photos
+                .select('id, owner_id, birthday') // select the pet_id for insertion into pet_photos
                 .single(); // expecting a single row
             if (error) throw error;
 
@@ -77,12 +79,28 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     .insert(photoInserts);
                 if (photoError) throw photoError;
             }
+            
+            const newPet = {
+                id: pet_id,
+                name: name,
+                owner_id: data.owner_id,
+                type: type,
+                breed: breed,
+                weight: weight,
+                birthday: data.birthday,
+                energy_level: energy_level,
+                description: description,
+                likes: likes,
+                created_at: new Date().toISOString(),
+                photos: photo_urls
+            };
 
-            alert('Pet added!')
+            addPetToState(newPet);
+            alert('Pet added!');
         } catch (error) {
-            alert('Unable to add pet!')
+            alert('Unable to add pet!');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
@@ -103,9 +121,9 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
             opened={modalOpened}
             onClose={() => {
                 setModalOpened(false);
-                setName(null);
-                setType(null);
-                setBreed(null);
+                setName('');
+                setType('');
+                setBreed('');
                 setWeight(null);
                 setBirthday(null);
                 setEnergy(null);
@@ -131,7 +149,7 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                     placeholder="Select type"
                     value={type || ''}
                     data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea Pig', 'Chinchilla', 'Other']}
-                    onChange={setType}
+                    onChange={(value: string | null) => setType(value || '')}
                     allowDeselect={false}
                     checkIconPosition="right"
                     required
@@ -199,9 +217,9 @@ export default function PetForm({ modalOpened, setModalOpened, user }: PetFormPr
                             await addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
                             setModalOpened(false); // close modal upon addition of pet
                             // reset all fields to prepare modal for next addition
-                            setName(null);
-                            setType(null);
-                            setBreed(null);
+                            setName('');
+                            setType('');
+                            setBreed('');
                             setWeight(null);
                             setBirthday(null);
                             setEnergy(null);

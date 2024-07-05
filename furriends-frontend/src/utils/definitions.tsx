@@ -4,13 +4,13 @@ export type Pet = {
     name: string;
     type: string;
     breed: string;
-    weight: number;
+    weight: number | null;
     birthday: string;
-    energy_level: string;
-    description: string;
-    likes: string;
-    created_at: string;
-    photos: string[];
+    energy_level: string | null;
+    description: string | null;
+    likes: string | null;
+    created_at: string | null;
+    photos: string[] | null;
 }
 
 export type Profile = {
