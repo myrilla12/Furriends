@@ -9,7 +9,6 @@ export type Pet = {
     energy_level: string | null;
     description: string | null;
     likes: string | null;
-    created_at: string | null;
     photos: string[] | null;
 }
 

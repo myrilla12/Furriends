@@ -8,6 +8,25 @@ import PetCard from '@/components/account/petCard';
 import type { GetServerSidePropsContext } from 'next'
 import { Pet } from '@/utils/definitions';
 
+interface RawPetPhoto {
+    photo_url: string;
+}
+
+// raw pet type for pet data that has just been extracted using a join
+interface RawPet {
+    id: number;
+    owner_id: number;
+    name: string;
+    type: string;
+    breed: string;
+    weight: number;
+    birthday: string;
+    energy_level: number;
+    description: string;
+    likes: number;
+    pet_photos: RawPetPhoto[];
+}
+
 type PetsPageProps = {
     user: User,
     pets: Pet[];
@@ -39,26 +58,6 @@ export default function PetsPage({ pets, user }: PetsPageProps) {
     );
 }
 
-interface RawPetPhoto {
-    photo_url: string;
-}
-
-// raw pet type for pet data that has just been extracted using a join
-interface RawPet {
-    id: number;
-    owner_id: number;
-    name: string;
-    type: string;
-    breed: string;
-    weight: number;
-    birthday: string;
-    energy_level: number;
-    description: string;
-    likes: number;
-    created_at: string;
-    pet_photos: RawPetPhoto[];
-}
-
 // fetch user profile photo & pet profile by getting server props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
@@ -78,7 +77,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // select all pets & photos linked to the user's id
     const { data: petData, error: petError } = await supabase
         .from('pets')
-        .select('id, owner_id, name, type, breed, weight, birthday, energy_level, description, likes, created_at, pet_photos (photo_url)')
+        .select('id, owner_id, name, type, breed, weight, birthday, energy_level, description, likes, pet_photos (photo_url)')
         .eq('owner_id', data.user.id);
 
     // if error, there are no pets

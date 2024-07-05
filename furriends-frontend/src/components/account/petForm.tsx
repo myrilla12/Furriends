@@ -91,7 +91,6 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
                 energy_level: energy_level,
                 description: description,
                 likes: likes,
-                created_at: new Date().toISOString(),
                 photos: photo_urls
             };
 
