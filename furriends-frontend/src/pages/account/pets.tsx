@@ -8,37 +8,11 @@ import PetCard from '@/components/account/petCard';
 import type { GetServerSidePropsContext } from 'next'
 import { Pet } from '@/utils/definitions';
 
-type MyPetsPageProps = {
-    user: User,
-    pets: Pet[];
-};
-
-export default function MyPetsPage({ pets, user }: MyPetsPageProps) {
-    const [petList, setPetList] = useState(pets);
-    const [modalOpened, setModalOpened] = useState(false);
-
-    return (
-        <Layout user={user}>
-            <div className="flex-grow p-6">
-                <h1 className="mb-7 text-2xl font-bold text-amber-950">My Pets</h1>
-                <Button variant='light' color="#6d543e" onClick={() => setModalOpened(true)}>Add a pet</Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6 px-6">
-                {petList.map((pet) => (
-                    <PetCard key={pet.id} pet={pet} editable={true} chattable={false} />
-                ))}
-            </div>
-            <div className="flex flex-grow">
-                <PetForm modalOpened={modalOpened} setModalOpened={setModalOpened} user={user} />
-            </div>
-        </Layout>
-    );
-}
-
 interface RawPetPhoto {
     photo_url: string;
 }
 
+// raw pet type for pet data that has just been extracted using a join
 interface RawPet {
     id: number;
     owner_id: number;
@@ -50,8 +24,38 @@ interface RawPet {
     energy_level: number;
     description: string;
     likes: number;
-    created_at: string;
     pet_photos: RawPetPhoto[];
+}
+
+type PetsPageProps = {
+    user: User,
+    pets: Pet[];
+};
+
+export default function PetsPage({ pets, user }: PetsPageProps) {
+    const [petList, setPetList] = useState(pets);
+    const [modalOpened, setModalOpened] = useState(false);
+
+    const addPetToState = useCallback((newPet: Pet) => {
+        setPetList((prevPets) => [...prevPets, newPet]);
+    }, []);
+
+    return (
+        <Layout user={user}>
+            <div className="flex-grow p-6">
+                <h1 className="mb-7 text-2xl font-bold text-amber-950">My Pets</h1>
+                <Button variant="light" color="#6d543e" onClick={() => setModalOpened(true)}>Add a pet</Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6 px-6">
+                {petList.map((pet) => (
+                    <PetCard key={pet.id} pet={pet} editable={true} chattable={false} />
+                ))}
+            </div>
+            <div className="flex flex-grow">
+                <PetForm modalOpened={modalOpened} setModalOpened={setModalOpened} user={user} addPetToState={addPetToState} />
+            </div>
+        </Layout>
+    );
 }
 
 // fetch user profile photo & pet profile by getting server props
@@ -73,7 +77,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // select all pets & photos linked to the user's id
     const { data: petData, error: petError } = await supabase
         .from('pets')
-        .select('id, owner_id, name, type, breed, weight, birthday, energy_level, description, likes, created_at, pet_photos (photo_url)')
+        .select('id, owner_id, name, type, breed, weight, birthday, energy_level, description, likes, pet_photos (photo_url)')
         .eq('owner_id', data.user.id);
 
     // if error, there are no pets

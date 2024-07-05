@@ -63,7 +63,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // get pet data of pets that do not belong to current user
     const { data: petData, error: petError } = await supabase
         .from('pets')
-        .select('id, owner_id, name, type, breed, weight, birthday, energy_level, description, likes, created_at, pet_photos (photo_url)')
+        .select('id, owner_id, name, type, breed, weight, birthday, energy_level, description, likes, pet_photos (photo_url)')
         .neq('owner_id', data?.user?.id)
 
     // if error, there are no other pets

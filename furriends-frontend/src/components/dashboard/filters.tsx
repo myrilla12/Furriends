@@ -47,10 +47,10 @@ export default function Filters({ pets, setFilteredPets }: FiltersProps) {
 
                     // Weight filters
                     const petWeight = pet.weight;
-                    if (fromWeight && petWeight < Number(fromWeight)) {
+                    if (fromWeight && petWeight && petWeight < Number(fromWeight)) {
                         return false;
                     }
-                    if (toWeight && petWeight > Number(toWeight)) {
+                    if (toWeight && petWeight && petWeight > Number(toWeight)) {
                         return false;
                     }
 
