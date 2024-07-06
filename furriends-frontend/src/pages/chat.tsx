@@ -152,7 +152,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         return () => {
             supabase.removeChannel(messagesChannel);
         };
-    }, [id])
+    }, [id, chatIds, otherUsers, supabase, user.id])
 
     // make changes to 'chats' table realtime
     useEffect(() => {
@@ -200,7 +200,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         return () => {
             supabase.removeChannel(messagesChannel);
         };
-    }, [chatIds, otherUsers])
+    }, [chatIds, otherUsers, supabase])
 
     return (
         <Layout user={user}>
