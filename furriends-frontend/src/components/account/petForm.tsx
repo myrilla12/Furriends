@@ -2,6 +2,7 @@
 // allows user to create and add a new pet profile
 'use client'
 
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Button, Modal, TextInput, Textarea, NumberInput, Select, ScrollArea } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
@@ -48,7 +49,7 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
         // update relations in supabase with info, else throw error
         try {
             setLoading(true);
-            let birthdayString = birthday ? birthday.toISOString() : new Date().toISOString();
+            const birthdayString = birthday ? dayjs(birthday).format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD');
 
             // insert into `pets` relation
             const { data, error } = await supabase
@@ -87,7 +88,7 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
                 type: type,
                 breed: breed,
                 weight: weight,
-                birthday: data.birthday,
+                birthday: birthdayString,
                 energy_level: energy_level,
                 description: description,
                 likes: likes,
