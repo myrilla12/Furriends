@@ -1,7 +1,6 @@
 // card component showing pet photo (scrollable), overlayed with name, type, breed, age in the bottom left
 // pencil button in top right allows users to edit their pet profile
 import { useEffect, useState } from 'react';
-import { createClient } from '@/utils/supabase/component';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import PetDetailsModal from '@/components/account/petDetailsModal';
@@ -18,8 +17,8 @@ type PetCardProps = {
     pet: Pet;
     editable: boolean;
     chattable: boolean;
-    updatePetInState: (updatedPet: Pet) => void;
-    deletePetFromState: (deletedPetId: string) => void;
+    updatePetInState?: (updatedPet: Pet) => void; // optional prop, only defined when pet card is editable
+    deletePetFromState?: (deletedPetId: string) => void; // optional prop, only defined when pet card is editable
 };
 
 export default function PetCard({ pet, editable, chattable, updatePetInState, deletePetFromState }: PetCardProps) {
@@ -53,7 +52,7 @@ export default function PetCard({ pet, editable, chattable, updatePetInState, de
                     <p className="text-sm">{getAgeString(calculateAge(pet))}</p>
                 </div>
 
-                {editable && (
+                {editable && updatePetInState && deletePetFromState && (
                     <div className="absolute top-0 right-0 pr-2 pt-2">
                         <Button
                             variant="subtle"
@@ -80,13 +79,19 @@ export default function PetCard({ pet, editable, chattable, updatePetInState, de
                 )}
 
                 {chattable && (
-                    <ChatButton owner_id={pet.owner_id} button_color={textColor}/>
+                    <ChatButton owner_id={pet.owner_id} button_color={textColor} />
                 )}
 
             </div>
             <PetDetailsModal opened={detailsOpened} onClose={closeDetails} pet={pet} />
-            <PetEditModal opened={editOpened} onClose={closeEdit} pet={pet} updatePetInState={updatePetInState} />
-            <PetDeleteModal opened={deleteOpened} onClose={closeDelete} pet={pet} deletePetFromState={deletePetFromState}/>
+
+            {editable && updatePetInState && (
+                <PetEditModal opened={editOpened} onClose={closeEdit} pet={pet} updatePetInState={updatePetInState} />
+            )}
+
+            {editable && deletePetFromState && (
+                <PetDeleteModal opened={deleteOpened} onClose={closeDelete} pet={pet} deletePetFromState={deletePetFromState} />
+            )}
         </>
     );
 };
