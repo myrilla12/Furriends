@@ -9,7 +9,7 @@ import PetEditModal from '@/components/account/petEditModal';
 import PetDeleteModal from '@/components/account/petDeleteModal';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Pet } from '@/utils/definitions';
-import { calculateAge } from '@/utils/calculateAge';
+import { calculateAge, getAgeString } from '@/utils/calculateAge';
 import { calculateImageBrightness } from '@/utils/calculateImageBrightness';
 import ChatButton from '@/components/chat/chatButton';
 
@@ -18,24 +18,15 @@ type PetCardProps = {
     pet: Pet;
     editable: boolean;
     chattable: boolean;
+    updatePetInState: (updatedPet: Pet) => void;
+    deletePetFromState: (deletedPetId: string) => void;
 };
 
-export default function PetCard({ pet, editable, chattable }: PetCardProps) {
-    const supabase = createClient();
+export default function PetCard({ pet, editable, chattable, updatePetInState, deletePetFromState }: PetCardProps) {
     const [textColor, setTextColor] = useState('white');
     const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false); // controls opening/closing of petDetailsModal
     const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false); // controls opening/closing of petEdit modal
     const [deleteOpened, { open: openDelete, close: closeDelete }] = useDisclosure(false); // controls opening/closing of petDeleteModal
-
-    const getAgeString = () => {
-        const age = calculateAge(pet);
-        let ageString = age + (age == 1 ? " year old" : " years old")
-        if (age < 1) {
-            const ageInMonths = Math.ceil(age * 12);
-            ageString = ageInMonths + (ageInMonths == 1 ? " month old" : " months old")
-        }
-        return ageString;
-    }
 
     useEffect(() => {
         const setTextColorBasedOnImage = async () => {
@@ -59,7 +50,7 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
                 <div className="absolute bottom-0 left-0 pl-5 pb-4" style={{ color: textColor }}>
                     <h2 className="text-2xl font-bold">{pet.name}</h2>
                     <p>{pet.type},{" "}{pet.breed}</p>
-                    <p className="text-sm">{getAgeString()}</p>
+                    <p className="text-sm">{getAgeString(calculateAge(pet))}</p>
                 </div>
 
                 {editable && (
@@ -94,8 +85,8 @@ export default function PetCard({ pet, editable, chattable }: PetCardProps) {
 
             </div>
             <PetDetailsModal opened={detailsOpened} onClose={closeDetails} pet={pet} />
-            <PetEditModal opened={editOpened} onClose={closeEdit} pet={pet} />
-            <PetDeleteModal opened={deleteOpened} onClose={closeDelete} pet={pet} />
+            <PetEditModal opened={editOpened} onClose={closeEdit} pet={pet} updatePetInState={updatePetInState} />
+            <PetDeleteModal opened={deleteOpened} onClose={closeDelete} pet={pet} deletePetFromState={deletePetFromState}/>
         </>
     );
 };

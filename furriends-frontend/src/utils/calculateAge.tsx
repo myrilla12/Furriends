@@ -18,3 +18,18 @@ export function calculateAge(pet: Pet): number {
 
     return ageInYears;
 }
+
+/**
+ * Calculate current pet age based on birthday
+ * @param {number} age - number representing age in years
+ * @returns {string} - "<age> month(s)/year(s) old"
+ */
+
+export function getAgeString(age: number) {
+    let ageString = age + (age == 1 ? " year old" : " years old")
+    if (age < 1) {
+        const ageInMonths = Math.ceil(age * 12);
+        ageString = ageInMonths + (ageInMonths == 1 ? " month old" : " months old")
+    }
+    return ageString;
+}

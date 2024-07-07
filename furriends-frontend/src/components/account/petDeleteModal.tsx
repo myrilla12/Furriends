@@ -8,9 +8,10 @@ type PetDeleteModalProps = {
     opened: boolean;
     onClose: () => void;
     pet: Pet
+    deletePetFromState: (deletedPetId: string) => void;
 }
 
-export default function PetDeleteModal({ opened, onClose, pet }: PetDeleteModalProps) {
+export default function PetDeleteModal({ opened, onClose, pet, deletePetFromState }: PetDeleteModalProps) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
 
@@ -19,6 +20,7 @@ export default function PetDeleteModal({ opened, onClose, pet }: PetDeleteModalP
             setLoading(true);
             const { error } = await supabase.from('pets').delete().eq('id', pet.id);
             if (error) throw error;
+            deletePetFromState(pet.id);
             alert(`${pet.name} removed from profile!`);
         } catch (error) {
             alert('Error removing pet!');
