@@ -40,6 +40,16 @@ export default function PetsPage({ pets, user }: PetsPageProps) {
         setPetList((prevPets) => [...prevPets, newPet]);
     }, []);
 
+    const updatePetInState = useCallback((updatedPet: Pet) => {
+        setPetList((prevPets) =>
+            prevPets.map((pet) => (pet.id === updatedPet.id ? updatedPet : pet))
+        );
+    }, []);
+    
+    const deletePetFromState = useCallback((deletedPetId: string) => {
+        setPetList((prevPets) => prevPets.filter((pet) => pet.id !== deletedPetId))
+    }, []);
+
     return (
         <Layout user={user}>
             <div className="flex-grow p-6">
@@ -48,7 +58,7 @@ export default function PetsPage({ pets, user }: PetsPageProps) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6 px-6">
                 {petList.map((pet) => (
-                    <PetCard key={pet.id} pet={pet} editable={true} chattable={false} />
+                    <PetCard key={pet.id} pet={pet} editable={true} chattable={false} updatePetInState={updatePetInState} deletePetFromState={deletePetFromState} />
                 ))}
             </div>
             <div className="flex flex-grow">

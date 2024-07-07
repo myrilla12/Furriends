@@ -6,22 +6,23 @@ import { Modal, ScrollArea, Button, TextInput, Textarea, Select, NumberInput } f
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
 import SortablePhotoArray from './sortablePhotoArray';
-import { createClient } from '../../utils/supabase/component';
+import { createClient } from '@/utils/supabase/component';
 import { Pet } from '@/utils/definitions';
 import '@mantine/dates/styles.css';
 
 type PetEditModalProps = {
     opened: boolean;
     onClose: () => void;
-    pet: Pet
+    pet: Pet;
+    updatePetInState: (updatedPet: Pet) => void;
 }
 
-export default function PetEditModal({ opened, onClose, pet }: PetEditModalProps) {
+export default function PetEditModal({ opened, onClose, pet, updatePetInState }: PetEditModalProps) {
     const supabase = createClient()
     const [loading, setLoading] = useState(false);
-    const [name, setName] = useState<string | null>(pet.name);
-    const [type, setType] = useState<string | null>(pet.type);
-    const [breed, setBreed] = useState<string | null>(pet.breed);
+    const [name, setName] = useState<string>(pet.name);
+    const [type, setType] = useState<string>(pet.type);
+    const [breed, setBreed] = useState<string>(pet.breed);
     const [weight, setWeight] = useState<number | null>(pet.weight);
     const [birthday, setBirthday] = useState<Date | null>(new Date(pet.birthday));
     const [energy_level, setEnergy] = useState<string | null>(pet.energy_level);
@@ -48,7 +49,11 @@ export default function PetEditModal({ opened, onClose, pet }: PetEditModalProps
             };
 
             // insert pet data into `pets` relation
-            const { error: dataError } = await supabase.from('pets').update(updatedPet).eq('id', pet.id);
+            const { data, error: dataError } = await supabase
+                .from('pets')
+                .update(updatedPet)
+                .eq('id', pet.id)
+                .select('birthday');
             if (dataError) throw dataError;
 
             // delete all entries in `pet_photos` linked to the pet id
@@ -70,6 +75,16 @@ export default function PetEditModal({ opened, onClose, pet }: PetEditModalProps
                 if (photoInsertError) throw photoInsertError;
             }
 
+            // include all other fields in Pet definition
+            const fullUpdatedPet = {
+                ...updatedPet,
+                id: pet.id,
+                owner_id: pet.owner_id,
+                birthday: data[0].birthday,
+                photos: photo_urls
+            };
+
+            updatePetInState(fullUpdatedPet);
             alert('Pet profile updated!');
         } catch (error) {
             alert('Error updating the data!');
@@ -122,7 +137,7 @@ export default function PetEditModal({ opened, onClose, pet }: PetEditModalProps
                     placeholder="Select type"
                     value={type || ''}
                     data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea Pig', 'Chinchilla', 'Other']}
-                    onChange={setType}
+                    onChange={(value: string | null) => setType(value || '')}
                     allowDeselect={false}
                     checkIconPosition="right"
                     required
