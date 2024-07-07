@@ -1,6 +1,7 @@
 // pet edit form allowing users to edit their pet details; autofilled with exisitng profile data
 'use client'
 
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Modal, ScrollArea, Button, TextInput, Textarea, Select, NumberInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
@@ -34,7 +35,7 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
         // update relations in supabase with new info, else throw error
         try {
             setLoading(true);
-            let birthdayString = birthday ? birthday.toISOString() : new Date().toISOString();
+            const birthdayString = birthday ? dayjs(birthday).format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD');
 
             // merge existing pet data with new values
             const updatedPet = {
@@ -80,7 +81,7 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
                 ...updatedPet,
                 id: pet.id,
                 owner_id: pet.owner_id,
-                birthday: data[0].birthday,
+                birthday: birthdayString,
                 photos: photo_urls
             };
 
@@ -206,15 +207,15 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
                             await updatePetProfile();
                             onClose(); // close modal upon update of pet details
                             // reset fields
-                            setName(pet.name);
-                            setType(pet.type);
-                            setBreed(pet.breed);
-                            setWeight(pet.weight);
-                            setBirthday(new Date(pet.birthday));
-                            setEnergy(pet.energy_level);
-                            setDescription(pet.description);
-                            setLikes(pet.likes);
-                            setPhotoUrls(pet.photos);
+                            setName(name);
+                            setType(type);
+                            setBreed(breed);
+                            setWeight(weight);
+                            setBirthday(birthday);
+                            setEnergy(energy_level);
+                            setDescription(description);
+                            setLikes(likes);
+                            setPhotoUrls(photo_urls);
                         }
                     }}
                     disabled={loading} // button shows loading while data is uploaded
