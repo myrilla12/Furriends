@@ -44,8 +44,8 @@ export default function LoginBox() {
   }
 
   return (
-    <Box className="border border-black px-8 py-7 w-full max-w-md">
-      <Box className='mb-5'>
+    <Box className="border border-black rounded-lg px-8 py-7 w-full max-w-md">
+      <div className='mb-6'>
         <Text size='21pt' className='mb-6 text-amber-950 font-bold'>Sign In</Text>
 
         <TextInput
@@ -53,7 +53,7 @@ export default function LoginBox() {
           label="Email address"
           placeholder="Email address"
           value={email}
-          onChange={(event) => setEmail(event.currentTarget.value)}
+          onChange={(e) => setEmail(e.currentTarget.value)}
           className="mb-4"
         />
 
@@ -62,7 +62,7 @@ export default function LoginBox() {
           label="Password"
           placeholder="Password"
           value={password}
-          onChange={(event) => setPassword(event.currentTarget.value)}
+          onChange={(e) => setPassword(e.currentTarget.value)}
         />
 
         {error && (
@@ -71,17 +71,22 @@ export default function LoginBox() {
           </>
         )}
 
-        <Button variant="outline" color="#6d543e" onClick={login} className="mt-6">Sign in</Button>
-
-      </Box>
+        <Button variant="outline" color="#6d543e" className="mt-6" onClick={login}>Sign in</Button>
+      </div>
 
       <hr />
 
       <Group className="mt-3">
         <Text size="sm" c="dimmed">Don&apos;t have an account yet?</Text>
-        {/* signup button linking to signup page */}
         <Button variant="transparent" c="#6d543e" onClick={() => router.push("/signup")}>
           <u>Sign up</u>
+        </Button>
+      </Group>
+
+      <Group gap="xl">
+        <Text size="sm" c="dimmed">Trouble signing in?</Text>
+        <Button variant="transparent" c="#6d543e" className="ml-8"onClick={() => router.push("/login/forgot-password")}>
+          <u>Reset password</u>
         </Button>
       </Group>
 

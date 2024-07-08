@@ -41,7 +41,7 @@ export default function SignupBox() {
   }
 
   return (
-    <Box className="border border-black px-8 py-8 w-full max-w-md">
+    <Box className="border border-black rounded-lg px-8 py-8 w-full max-w-md">
       <Box>
         <Text size='21pt' mb='xs' className='mb-6 text-amber-950 font-bold'>Create a new account</Text>
         <Text size='md' c='dimmed' className='mb-5'>

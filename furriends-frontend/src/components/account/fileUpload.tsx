@@ -3,7 +3,7 @@
 // files will be fetched and uploaded from supabase storage bucket `pet_photos`
 // partially adapted from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { createClient } from '../../utils/supabase/component'
 import { FileInput } from '@mantine/core';
 //import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
