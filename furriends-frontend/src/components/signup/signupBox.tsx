@@ -1,6 +1,6 @@
 // adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
-import { Text, TextInput, PasswordInput, Button, Box, Group, Divider } from '@mantine/core';
+import { Text, TextInput, PasswordInput, Button, Box, Group, Divider, Loader } from '@mantine/core';
 import router from 'next/router';
 import { useState } from 'react';
 import { createClient } from '../../utils/supabase/component';
@@ -12,15 +12,18 @@ export default function SignupBox() {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [loading, setLoading] = useState(false);
   const supabase = createClient();
 
   async function signup() {
+    setLoading(true);
     setEmailError('');
     setPasswordError('');
     setConfirmPasswordError('');
 
     if (password !== confirmPassword) {
       setConfirmPasswordError("Passwords do not match");
+      setLoading(false);
       return;
     }
 
@@ -30,11 +33,15 @@ export default function SignupBox() {
     if (error) {
       if (error.message.includes('email')) {
         setEmailError("Invalid email format");
+        setLoading(false);
       } else if (error.message.includes('password')) {
         setPasswordError("Password must have at least 6 characters.");
+        setLoading(false);
       }
       console.error(error);
+      setLoading(false);
     } else {
+      setLoading(false);
       alert("Sign up successful! Verify your account using the link in your email.")
       router.push('/login');
     }
@@ -86,7 +93,9 @@ export default function SignupBox() {
           <Text c="red" size="xs" fw={700} className="mt-1">{confirmPasswordError}</Text>
         )}
 
-        <Button variant="outline" color="#6d543e" onClick={signup} className="mt-5 mb-6">Sign up</Button>
+        <Button variant="outline" color="#6d543e" onClick={signup} className="mt-5 mb-6">
+          {loading ? <Loader size="sm" color="#6d543e" /> : 'Sign up'}
+        </Button>
       </Box>
 
       <Divider size="sm" />

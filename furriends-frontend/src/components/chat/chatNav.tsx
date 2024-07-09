@@ -32,9 +32,9 @@ export default function ChatNav({ chats } : ChatNavProps) {
                         )}
                     >
                         <ChatIcon profile={obj.otherUser} />
-                        <p>{obj.otherUser.username}</p>
+                        <p className="flex-grow">{obj.otherUser.username}</p>
                         {obj.notification > 0 ? 
-                            <Badge size="lg" circle>{obj.notification}</Badge> :
+                            <Badge size="xl" circle color="#6d543e">{obj.notification}</Badge> :
                             ''
                         }
                     </Link>
