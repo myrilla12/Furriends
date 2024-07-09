@@ -7,6 +7,7 @@ import { PasswordInput, Text, Button } from "@mantine/core";
 const supabase = createClient();
 
 export default function ResetPassword() {
+    const [isSignedIn, setIsSignedIn] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -15,17 +16,12 @@ export default function ResetPassword() {
     const router = useRouter();
 
     useEffect(() => {
-        const { access_token } = router.query; // Get access token from URL query
-
-        if (access_token) {
-            supabase.auth.onAuthStateChange(async (event) => {
-                if (event === "PASSWORD_RECOVERY") {
-                    // Prompt is removed in favor of controlled inputs
-                    // Now show the password reset form
-                }
-            });
-        }
-    }, [router.query]);
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event == "PASSWORD_RECOVERY") {
+                setIsSignedIn(true);
+            }
+        })
+    }, [])
 
     const handleResetPassword = async () => {
         if (newPassword !== confirmPassword) {
@@ -37,12 +33,11 @@ export default function ResetPassword() {
 
         if (error) {
             if (error.message.includes('AuthWeakPasswordError')) {
-                setPasswordError("Password must have at least 6 characters.");
-                console.error(error);
+                setPasswordError('Password must have at least 6 characters.');
             } else {
                 setConfirmPasswordError('There was an error changing your password.');
-                console.error(error);
             }
+            console.error(error);
         } else {
             setMessage('Password updated successfully!');
             router.push('/login'); // redirect to login page after successful reset
@@ -53,38 +48,58 @@ export default function ResetPassword() {
         <>
             <LogoHeader />
             <div className="flex justify-center items-center" style={{ height: "80vh" }}>
-                <div className="border border-black rounded-lg px-8 py-7 w-full max-w-md">
-                    <Text size="21pt" className="mb-6 text-amber-950 font-bold">Reset Password</Text>
-                    <PasswordInput
-                        variant="filled"
-                        label="New Password"
-                        placeholder="Enter new password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                    />
+                {!isSignedIn && (
+                    <div className="border border-black rounded-lg px-8 py-7 w-full max-w-md">
+                        <Text size="14pt" className="mb-4 text-amber-950 font-bold">
+                            No password reset request detected!
+                        </Text>
+                        <Text size="12pt" className="" style={{ lineHeight: '1.7em' }}>
+                            Your password reset link may have expired.<br />
+                            Return to{" "}
+                            <span>
+                                <button className="text-brown" onClick={() => router.push("/login")}>
+                                    <u>sign in</u>.
+                                </button>
+                            </span>
+                        </Text>
+                    </div>
+                )}
 
-                    {passwordError && (
-                        <Text c="red" size="xs" fw={700} className="mt-1">{passwordError}</Text>
-                    )}
+                {isSignedIn && (
+                    <div className="border border-black rounded-lg px-8 py-7 w-full max-w-md">
+                        <Text size="21pt" className="mb-6 text-amber-950 font-bold">Reset Password</Text>
+                        <PasswordInput
+                            variant="filled"
+                            label="New Password"
+                            placeholder="Enter new password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                        />
 
-                    <PasswordInput
-                        variant="filled"
-                        label="Confirm Password"
-                        placeholder="Confirm your new password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        mt="md"
-                    />
+                        {passwordError && (
+                            <Text c="red" size="xs" fw={700} className="mt-1">{passwordError}</Text>
+                        )}
 
-                    {confirmPasswordError && (
-                        <Text c="red" size="xs" fw={700} className="mt-1">{confirmPasswordError}</Text>
-                    )}
+                        <PasswordInput
+                            variant="filled"
+                            label="Confirm Password"
+                            placeholder="Confirm your new password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                            mt="md"
+                        />
 
-                    {message && <p>{message}</p>}
-                    <Button variant="outline" color="#6d543e" className="mt-5" onClick={handleResetPassword}>Reset password</Button>
-                </div>
+                        {confirmPasswordError && (
+                            <Text c="red" size="xs" fw={700} className="mt-1">{confirmPasswordError}</Text>
+                        )}
+
+                        {message && <p>{message}</p>}
+                        <Button variant="outline" color="#6d543e" className="mt-5" onClick={handleResetPassword}>Reset password</Button>
+                    </div>
+                )}
+
             </div>
         </>
     );

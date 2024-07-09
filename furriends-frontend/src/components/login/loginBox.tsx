@@ -76,16 +76,16 @@ export default function LoginBox() {
 
       <hr />
 
-      <Group className="mt-3">
+      <Group gap="lg" className="mt-3">
         <Text size="sm" c="dimmed">Don&apos;t have an account yet?</Text>
-        <Button variant="transparent" c="#6d543e" onClick={() => router.push("/signup")}>
+        <Button variant="transparent" c="#6d543e" className="ml-2" onClick={() => router.push("/signup")}>
           <u>Sign up</u>
         </Button>
       </Group>
 
       <Group gap="xl">
         <Text size="sm" c="dimmed">Trouble signing in?</Text>
-        <Button variant="transparent" c="#6d543e" className="ml-8"onClick={() => router.push("/login/forgot-password")}>
+        <Button variant="transparent" c="#6d543e" onClick={() => router.push("/login/forgot-password")}>
           <u>Reset password</u>
         </Button>
       </Group>

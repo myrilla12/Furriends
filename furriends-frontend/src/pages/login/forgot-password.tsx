@@ -12,11 +12,17 @@ export default function ForgotPassword() {
     const handlePasswordReset = async () => {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${siteUrl}/reset-password`,
+            redirectTo: `${siteUrl}/login/reset-password`,
         });
 
         if (error) {
-            setMessage('No account found.');
+            if (error.message.includes('you can only request this once every 60 seconds')) {
+                setMessage('Please try again in 60 seconds.');
+            } else if (error.message.includes('rate limit exceeded')) {
+                setMessage('Email rate limit exceeded. Try again in 1 hour.');
+            } else {
+                setMessage('No account found.');
+            }
             console.error(error);
         } else {
             setMessage('Please check your email for the password reset link.');
@@ -36,11 +42,11 @@ export default function ForgotPassword() {
                         placeholder="Email address"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        
+
                     />
 
                     {message && <p className="mt-1 text-sm text-cyan-600 font-bold">{message}</p>}
-                    <Button variant="outline" color="#6d543e" className="mt-5" onClick={handlePasswordReset}>Send password reset email</Button>
+                    <Button variant="outline" color="#6d543e" className="mt-5" onClick={handlePasswordReset}>Get password reset email</Button>
 
                 </div>
             </div>
