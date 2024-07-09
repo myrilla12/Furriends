@@ -17,7 +17,9 @@ export default function ResetPassword() {
 
     useEffect(() => {
         supabase.auth.onAuthStateChange(async (event, session) => {
-            if (event == "PASSWORD_RECOVERY") {
+            console.log('Auth event:', event);
+            console.log(session)
+            if (event == "SIGNED_IN") {
                 setIsSignedIn(true);
             }
         })
@@ -95,7 +97,7 @@ export default function ResetPassword() {
                             <Text c="red" size="xs" fw={700} className="mt-1">{confirmPasswordError}</Text>
                         )}
 
-                        {message && <p>{message}</p>}
+                        {message && <p className="mt-1 text-sm text-green-600 font-bold">{message}</p>}
                         <Button variant="outline" color="#6d543e" className="mt-5" onClick={handleResetPassword}>Reset password</Button>
                     </div>
                 )}
