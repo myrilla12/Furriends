@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '../../utils/supabase/component';
 import { type User } from '@supabase/supabase-js';
 import Avatar from './avatar'
-import { Button, TextInput } from '@mantine/core';
+import { Button, Switch, Text, TextInput } from '@mantine/core';
 
 export default function AccountForm({ user }: { user: User | null }) {
     const supabase = createClient();
@@ -102,6 +102,14 @@ export default function AccountForm({ user }: { user: User | null }) {
                             setAvatarUrl(url)
                             updateProfile({ username, avatar_url: url })
                         }}
+                    />
+                </div>
+                <div className="col-span-1 md:col-span-2 mt-2 flex justify-center">
+                    <Text size='sm' c='dimmed' mr='md'>Promote pet-related services on Furriends as a freelancer?</Text>
+                    <Switch
+                        defaultChecked
+                        labelPosition="left"
+                        color="#6d543e"
                     />
                 </div>
                 <div className="col-span-1 md:col-span-2 mt-2 flex justify-center">
