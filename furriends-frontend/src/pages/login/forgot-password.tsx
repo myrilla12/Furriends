@@ -12,7 +12,7 @@ export default function ForgotPassword() {
     const handlePasswordReset = async () => {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${siteUrl}/login/reset-password`,
+            redirectTo: `${siteUrl}login/reset-password`,
         });
 
         if (error) {
