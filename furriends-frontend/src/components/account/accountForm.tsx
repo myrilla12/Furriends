@@ -6,12 +6,15 @@ import { createClient } from '../../utils/supabase/component';
 import { type User } from '@supabase/supabase-js';
 import Avatar from './avatar'
 import { Button, Switch, Text, TextInput } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import FreelancerDetailsModal from './freelancerDetailsModal';
 
 export default function AccountForm({ user }: { user: User | null }) {
     const supabase = createClient();
     const [loading, setLoading] = useState(true);
     const [username, setUsername] = useState<string | null>(null);
     const [avatar_url, setAvatarUrl] = useState<string | null>(null);
+    const [opened, { open, close }] = useDisclosure(false);
 
     // create a memoized getProfile; only recreated if dependencies change
     const getProfile = useCallback(async () => {
@@ -105,13 +108,19 @@ export default function AccountForm({ user }: { user: User | null }) {
                     />
                 </div>
                 <div className="col-span-1 md:col-span-2 mt-2 flex justify-center">
-                    <Text size='sm' c='dimmed' mr='md'>Promote pet-related services on Furriends as a freelancer?</Text>
+                    <Text 
+                        size='sm' c='dimmed' td='underline' mr='md'
+                        onClick={open}
+                    >
+                        Promote pet-related services on Furriends as a freelancer? 
+                    </Text>
                     <Switch
                         defaultChecked
                         labelPosition="left"
                         color="#6d543e"
                     />
                 </div>
+                <FreelancerDetailsModal opened={opened} onClose={close} />
                 <div className="col-span-1 md:col-span-2 mt-2 flex justify-center">
                     <Button variant="default" color="gray"
                         onClick={() => updateProfile({ username, avatar_url })}
