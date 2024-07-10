@@ -33,10 +33,8 @@ export default function SignupBox() {
     if (error) {
       if (error.message.includes('email')) {
         setEmailError("Invalid email format");
-        setLoading(false);
       } else if (error.message.includes('password')) {
         setPasswordError("Password must have at least 6 characters.");
-        setLoading(false);
       }
       console.error(error);
       setLoading(false);

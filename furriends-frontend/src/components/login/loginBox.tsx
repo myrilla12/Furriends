@@ -43,9 +43,9 @@ export default function LoginBox() {
 
         const { error: usernameError } = await supabase.from('profiles').update({ username: defaultUsername }).eq('id', data.user?.id);
         if (usernameError) { 
-          console.log(usernameError); 
+          console.log(usernameError); // throw error
           setLoading(false);
-        }// throw error
+        }
       }
 
       router.push('/dashboard');
