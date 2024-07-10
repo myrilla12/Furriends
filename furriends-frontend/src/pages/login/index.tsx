@@ -7,7 +7,7 @@ export default function Login() {
         <>
             <MantineProvider>
                 <LogoHeader />
-                <Container className="flex justify-center items-center"  style={{ height: '80vh' }}>  
+                <Container className="flex justify-center items-center" style={{ height: "80vh" }}>  
                     <LoginBox />
                 </Container>
             </MantineProvider>
