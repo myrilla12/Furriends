@@ -1,21 +1,36 @@
 // modal that opens on click to show stored pet details
 import { createClient } from '../../utils/supabase/component';
-import { Modal, Text, ScrollArea, Title } from '@mantine/core';
-import Image from 'next/image';
-import { Pet } from '@/utils/definitions';
-import { calculateAge, getAgeString } from '@/utils/calculateAge';
+import { Modal, Text, ScrollArea, Title, Button, Group } from '@mantine/core';
+import { type User } from '@supabase/supabase-js';
+import { useRouter } from 'next/router';
 
 
 type FreelancerDetailsModalProps = {
+    user: User | null;
     opened: boolean;
     onClose: () => void;
 }
 
-export default function FreelancerDetailsModal({ opened, onClose }: FreelancerDetailsModalProps) {
+export default function FreelancerDetailsModal({ user, opened, onClose }: FreelancerDetailsModalProps) {
+    const supabase = createClient();
+    const router = useRouter();
+
+    // toggle freelancer mode in profile database
+    async function toggleFreelancer() {
+        const { error: freelancerError } = await supabase
+            .from('profiles')
+            .update({ freelancer: true })
+            .eq('id', user?.id);
+
+        if (freelancerError) {
+            console.error('Error toggling freelancer to true', freelancerError);
+        }
+    }
 
     return (
         <Modal opened={opened} onClose={onClose} scrollAreaComponent={ScrollArea.Autosize} size='xl' centered>
             <div className="space-y-4">
+                    {/* terms and conditions of freelancer profile */}
                     <Title>Furriends Freelancer Profile Terms and Conditions</Title>
                     <Text c='dimmed' fw={600}>Effective Date: 9 July 2024</Text>
 
@@ -81,7 +96,21 @@ export default function FreelancerDetailsModal({ opened, onClose }: FreelancerDe
                         If you do not agree with any part of these terms, do not toggle your profile to a freelancer profile.
                         For any questions or concerns regarding these terms, please contact Furriends support at admin@furriends.com.
                     </Text>
+
+                    <Text>Once you toggle freelancer mode, this change will be made permanent.</Text>
+                    <Group justify='center'>
+                        <Text c='dimmed' fw={500}>I agree to these terms and conditions.</Text>
+                        <Button color="#6d543e"
+                            onClick={async () => {
+                                await toggleFreelancer();
+                                onClose();
+                            }}
+                        >
+                            Toggle freelancer profile
+                        </Button>
+                    </Group>
             </div>
+
         </Modal>
     );
 }
