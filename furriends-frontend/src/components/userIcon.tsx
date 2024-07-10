@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Menu, MenuItem } from '@mantine/core';
+import { Loader, Menu, MenuItem } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { type User } from '@supabase/supabase-js';
 import { createClient } from '../utils/supabase/component';
@@ -14,16 +14,21 @@ export default function UserIcon({ user }: UserIconProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(true)
     const [avatarUrl, setAvatarUrl] = useState<string>('/default-avatar.jpg')
+    const [editProfileLoading, setEditProfileLoading] = useState(false);
+    const [myPetsLoading, setMyPetsLoading] = useState(false);
+    const [signOutLoading, setSignOutLoading] = useState(false);
     const supabase = createClient();
 
     // signout logic to redirect to home page after sign out
     async function signout() {
+        setSignOutLoading(true);
         const { error } = await supabase.auth.signOut();
         if (error) {
             console.error(error)
         } else {
             router.push('/');
         }
+        setSignOutLoading(false);
     }
 
     // create a memoized getAvatar; only recreated if dependencies change
@@ -75,13 +80,24 @@ export default function UserIcon({ user }: UserIconProps) {
 
                 {/* create dropdown menu on avatar icon */}
                 <Menu.Dropdown>
-                    <MenuItem onClick={() => router.push('/account/edit')}>
+                    <MenuItem 
+                        onClick={() => {
+                            setEditProfileLoading(true);
+                            router.push('/account/edit').finally(() => setEditProfileLoading(false));
+                        }}
+                    >
                         <div className="flex items-center">
                             <PersonIcon className="w-4 h-4 mr-2" />
                             <span>Edit Profile</span>
+                            {editProfileLoading && <Loader size="xs" color="#6d543e" />}
                         </div>
                     </MenuItem>
-                    <MenuItem onClick={() => router.push('/account/pets')}>
+                    <MenuItem 
+                        onClick={() => {
+                            setMyPetsLoading(true);
+                            router.push('/account/pets').finally(() => setMyPetsLoading(false));
+                        }}
+                    >
                         <div className="flex items-center">
                             <Image
                                 src='/paw-icon.png' // use default avatar if no avatar set
@@ -91,12 +107,14 @@ export default function UserIcon({ user }: UserIconProps) {
                                 className='mr-1.5'
                             />
                             <span>My Pets</span>
+                            {myPetsLoading && <Loader size="xs" color="#6d543e" />}
                         </div>
                     </MenuItem>
                     <MenuItem onClick={signout}>
                         <div className="flex items-center">
                             <PowerIcon className="w-4 h-4 mr-2" />
                             <span>Sign Out</span>
+                            {signOutLoading && <Loader size="xs" color="#6d543e" />}
                         </div>
                     </MenuItem>
                 </Menu.Dropdown>

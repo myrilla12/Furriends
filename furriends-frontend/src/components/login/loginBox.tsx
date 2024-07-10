@@ -1,6 +1,6 @@
 // adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
-import { Text, TextInput, PasswordInput, Button, Box, Group } from '@mantine/core';
+import { Text, TextInput, PasswordInput, Button, Box, Group, Loader } from '@mantine/core';
 import router from 'next/router';
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/component';
@@ -10,12 +10,17 @@ export default function LoginBox() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   async function login() {
+    setLoading(true);
+    setError('');
+
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
       console.error(error);
       setError('Invalid email or password. Please try again.');
+      setLoading(false);
     } else {
       // fetch username for checking whether default username needs to be set
       const { data: profileData, error: profileError, status } = await supabase
@@ -26,6 +31,7 @@ export default function LoginBox() {
 
       if (profileError && status !== 406) {
         console.log(profileError);
+        setLoading(false);
         throw profileError;
       }
 
@@ -36,7 +42,10 @@ export default function LoginBox() {
         const defaultUsername = usernamePrefix + '***';
 
         const { error: usernameError } = await supabase.from('profiles').update({ username: defaultUsername }).eq('id', data.user?.id);
-        if (usernameError) { console.log(usernameError); }// throw error
+        if (usernameError) { 
+          console.log(usernameError); // throw error
+          setLoading(false);
+        }
       }
 
       router.push('/dashboard');
@@ -71,7 +80,9 @@ export default function LoginBox() {
           </>
         )}
 
-        <Button variant="outline" color="#6d543e" className="mt-6" onClick={login}>Sign in</Button>
+        <Button variant="outline" color="#6d543e" className="mt-6" onClick={login}>
+          {loading ? <Loader size="sm" color="#6d543e" /> : 'Sign in'}
+        </Button>
       </div>
 
       <hr />
