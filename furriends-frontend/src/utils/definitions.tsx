@@ -16,6 +16,7 @@ export type Profile = {
     id: string;
     avatar_url: string;
     username: string;
+    freelancer?: boolean;
 }
 
 export type Message = {
