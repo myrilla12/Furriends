@@ -98,7 +98,12 @@ export default function FreelancerDetailsModal({ user, opened, onClose }: Freela
                         For any questions or concerns regarding these terms, please contact Furriends support at admin@furriends.com.
                     </Text>
 
-                    <Text>Once you toggle freelancer mode, this change will be made permanent.</Text>
+                    <Text
+                        c='rgba(255, 0, 0, 1)'
+                        fw={700}
+                    >
+                        Once you toggle freelancer mode, this change will be made permanent.
+                    </Text>
                     <Group justify='center'>
                         <Text c='dimmed' fw={500}>I agree to these terms and conditions.</Text>
                         <Button color="#6d543e"
