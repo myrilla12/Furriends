@@ -43,8 +43,8 @@ export default function LoginBox() {
 
         const { error: usernameError } = await supabase.from('profiles').update({ username: defaultUsername }).eq('id', data.user?.id);
         if (usernameError) { 
-          console.log(usernameError); // throw error
-          setLoading(false);
+          console.log(usernameError); 
+          setLoading(false); // throw error
         }
       }
 
@@ -84,6 +84,7 @@ export default function LoginBox() {
           {loading ? <Loader size="sm" color="#6d543e" /> : 'Sign in'}
         </Button>
       </div>
+
 
       <hr />
 

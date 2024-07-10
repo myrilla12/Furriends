@@ -5,13 +5,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '../../utils/supabase/component';
 import { type User } from '@supabase/supabase-js';
 import Avatar from './avatar'
-import { Button, TextInput } from '@mantine/core';
+import { Button, Switch, Text, TextInput } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import FreelancerDetailsModal from './freelancerDetailsModal';
 
 export default function AccountForm({ user }: { user: User | null }) {
     const supabase = createClient();
     const [loading, setLoading] = useState(true);
     const [username, setUsername] = useState<string | null>(null);
     const [avatar_url, setAvatarUrl] = useState<string | null>(null);
+    const [freelancer, setFreelancer] = useState<boolean>(false);
+    const [opened, { open, close }] = useDisclosure(false);
+    const [checked, setChecked] = useState(false); 
 
     // create a memoized getProfile; only recreated if dependencies change
     const getProfile = useCallback(async () => {
@@ -20,7 +25,7 @@ export default function AccountForm({ user }: { user: User | null }) {
 
             const { data, error, status } = await supabase
                 .from('profiles')
-                .select(`username, avatar_url`)
+                .select(`username, avatar_url, freelancer`)
                 .eq('id', user?.id)
                 .single();
 
@@ -32,6 +37,7 @@ export default function AccountForm({ user }: { user: User | null }) {
             if (data) {
                 setUsername(data.username);
                 setAvatarUrl(data.avatar_url);
+                setFreelancer(data.freelancer);
             }
         } catch (error) {
             alert('Error loading user data!');
@@ -104,6 +110,35 @@ export default function AccountForm({ user }: { user: User | null }) {
                         }}
                     />
                 </div>
+                <div className="col-span-1 md:col-span-2 mt-2 flex justify-center">
+                    <Text size='sm' c='dimmed' mr='md'>
+                        Promote pet-related services on Furriends as a freelancer? 
+                    </Text>
+                    <Switch
+                        labelPosition="left"
+                        color="#6d543e"
+                        onLabel="Yes" 
+                        offLabel="No"
+                        checked={freelancer ? true : checked} // if user is freelancer switch is checked by default
+                        onChange={(event) => {
+                            setChecked(event.currentTarget.checked);
+                            if (event.currentTarget.checked) {
+                                open();
+                            }
+                        }}
+                        // if user is already a freelancer, disable switch
+                        disabled={freelancer}
+                    />
+                </div>
+                <FreelancerDetailsModal 
+                    user={user}
+                    opened={opened} 
+                    // if modal is closed without agreeing to terms and conditions, reverse switch
+                    onClose={() => {
+                        setChecked(false);
+                        close(); 
+                    }} 
+                />
                 <div className="col-span-1 md:col-span-2 mt-2 flex justify-center">
                     <Button variant="default" color="gray"
                         onClick={() => updateProfile({ username, avatar_url })}
