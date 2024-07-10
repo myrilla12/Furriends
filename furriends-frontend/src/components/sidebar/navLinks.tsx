@@ -1,6 +1,7 @@
 'use client';
 
-import { HomeIcon, QueueListIcon, ChatBubbleOvalLeftEllipsisIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, QueueListIcon, ChatBubbleOvalLeftEllipsisIcon, MapPinIcon, BuildingStorefrontIcon } from '@heroicons/react/24/outline';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -13,6 +14,7 @@ const links = [
   { name: 'Chat', href: '/chat', icon: ChatBubbleOvalLeftEllipsisIcon },
   { name: 'Feed', href: '/feed', icon: QueueListIcon },
   { name: 'Map', href: '/map', icon: MapPinIcon },
+  { name: 'Pet services', href: '/services', icon: BuildingStorefrontIcon },
 ];
 
 export default function NavLinks() {

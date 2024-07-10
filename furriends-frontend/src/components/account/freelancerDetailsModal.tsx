@@ -25,6 +25,7 @@ export default function FreelancerDetailsModal({ user, opened, onClose }: Freela
         if (freelancerError) {
             console.error('Error toggling freelancer to true', freelancerError);
         }
+        router.push('/services')
     }
 
     return (
