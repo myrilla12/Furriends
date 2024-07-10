@@ -3,12 +3,17 @@ import Image from 'next/image';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
+import { Button, Group } from '@mantine/core';
+import FeedLinks from '@/components/feed/feedLinks';
+
 
 export default function FeedPage({ user }: { user: User }) {
+    
     return (
         <Layout user={user}>
             <div className='flex-grow p-6'>
                 <h1 className="mb-7 text-2xl font-bold text-amber-950">Feed - this is a mockup.</h1>
+                <FeedLinks />
             </div>
             <div className='flex justify-center items-center'>
 
