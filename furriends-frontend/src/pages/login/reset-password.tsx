@@ -42,7 +42,6 @@ export default function ResetPassword() {
             console.error(error);
         } else {
             setMessage('Password updated successfully!');
-            router.push('/login'); // redirect to login page after successful reset
         }
     };
 
