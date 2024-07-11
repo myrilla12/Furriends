@@ -2,6 +2,8 @@ import LogoHeader from "@/components/logoHeader";
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/component';
 import { Text, TextInput, Button } from '@mantine/core';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import router from "next/router";
 
 const supabase = createClient();
 
@@ -33,8 +35,13 @@ export default function ForgotPassword() {
         <>
             <LogoHeader />
             <div className="flex justify-center items-center" style={{ height: "80vh" }}>
-                <div className="border border-black rounded-lg px-8 py-7 w-full max-w-md">
-                    <Text size='21pt' className='mb-6 text-amber-950 font-bold'>Forgot your password?</Text>
+                <div className="border border-black rounded-lg px-8 py-4 w-full max-w-md">
+                    <div className="items-start">
+                        <Button leftSection={<ArrowLeftIcon className="h-5 w-5"/>} variant="transparent" c="black" size="compact" onClick={() => router.push("/login")}>
+                            Return to sign in
+                        </Button>
+                    </div>
+                    <Text size='21pt' className='mt-3 mb-6 text-amber-950 font-bold'>Forgot your password?</Text>
 
                     <TextInput
                         variant="filled"
@@ -46,7 +53,7 @@ export default function ForgotPassword() {
                     />
 
                     {message && <p className="mt-1 text-sm text-cyan-600 font-bold">{message}</p>}
-                    <Button variant="outline" color="#6d543e" className="mt-5" onClick={handlePasswordReset}>Get password reset email</Button>
+                    <Button variant="outline" color="#6d543e" className="mt-5 mb-5" onClick={handlePasswordReset}>Get password reset email</Button>
 
                 </div>
             </div>
