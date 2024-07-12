@@ -4,19 +4,15 @@ import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { FreelancerPost } from "@/utils/definitions";
-import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import { createClient } from "@/utils/supabase/component";
 
 type ServicePostCreationModalProps = {
     user: User | null;
     opened: boolean;
     setOpened: (open: boolean) => void;
-    onUpload: (url: string) => void
-    url: string | null
 }
 
-export default function ServicePostCreationModal({user, opened, setOpened, onUpload, url }: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
+export default function ServicePostCreationModal({user, opened, setOpened}: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
     const[uploading, setUploading] = useState(false);
@@ -25,12 +21,38 @@ export default function ServicePostCreationModal({user, opened, setOpened, onUpl
     const [content, setContent] = useState<string | null>(null);
     const [location, setLocation] = useState<string | null>(null);
     const [pricing, setPricing] = useState<number[] | null>(null);
+    const [photo_url, setPhotoUrl] = useState<string | null>('');
 
     console.log('photo_url', photo_path);
     console.log('title', title);
     console.log('content', content);
     console.log('location', location);
     console.log('pricing', pricing);
+
+    async function uploadPhoto(file: FileWithPath): Promise<string | null> {
+        try {
+            setLoading(true);
+            const fileExt = file.name.split('.').pop();
+            const filePath = `${user?.id}-${Math.random()}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage.from('post_images').upload(filePath, file);
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            const { data: urlData } = await supabase.storage
+                .from('post_images')
+                .getPublicUrl(filePath);
+
+            return urlData.publicUrl;
+        } catch (error) {
+            console.error('Error uploading photo', error);
+            alert('Error uploading photo!');
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }
 
     async function addFreelancerPost() {
         try {
@@ -40,7 +62,7 @@ export default function ServicePostCreationModal({user, opened, setOpened, onUpl
             const { error } = await supabase 
                 .from('freelancer_posts')
                 .insert({
-                    post_image: photo_path,
+                    post_image: photo_url,
                     post_title: title,
                     post_content: content,
                     post_location: location,
@@ -76,6 +98,7 @@ export default function ServicePostCreationModal({user, opened, setOpened, onUpl
                 setContent(null);
                 setLocation(null);
                 setPricing(null);
+                setPhotoUrl(null);
             }} 
             scrollAreaComponent={ScrollArea.Autosize} 
             size='lg' 
@@ -87,8 +110,12 @@ export default function ServicePostCreationModal({user, opened, setOpened, onUpl
                 {/* Dropzone for photo upload */}
                 <Dropzone
                     loading={loading}
-                    onDrop={(files) => {
-                        setPhotoPath(files[0]);
+                    onDrop={async (files) => {
+                        const uploadedUrl = await uploadPhoto(files[0]);
+                        if (uploadedUrl) {
+                            setPhotoUrl(uploadedUrl);
+                            setPhotoPath(files[0]);
+                        }
                     }}
                     onReject={(files) => console.log('rejected files', files)}
                     maxSize={5 * 1024 ** 2}
@@ -196,6 +223,7 @@ export default function ServicePostCreationModal({user, opened, setOpened, onUpl
                             setContent(null);
                             setLocation(null);
                             setPricing(null);
+                            setPhotoUrl(null);
                         }
                     }}
                 >
