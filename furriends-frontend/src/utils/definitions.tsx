@@ -35,3 +35,13 @@ export type Chats = {
     otherUser: Profile;
     notification: number; 
 }[]
+
+export type FreelancerPost = {
+    photo: string;
+    title: string;
+    content: string;
+    location: string;
+    pricing: number[];
+    author_id: string;
+    created_at?: string;
+}

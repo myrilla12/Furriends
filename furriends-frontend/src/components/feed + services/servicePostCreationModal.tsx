@@ -1,28 +1,95 @@
-import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button } from "@mantine/core";
+import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Image, Loader } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
-import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import { FreelancerPost } from "@/utils/definitions";
+import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
+import { createClient } from "@/utils/supabase/component";
 
 type ServicePostCreationModalProps = {
     user: User | null;
     opened: boolean;
-    onClose: () => void;
+    setOpened: (open: boolean) => void;
+    onUpload: (url: string) => void
+    url: string | null
 }
 
-export default function ServicePostCreationModal({user, opened, onClose }: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
+export default function ServicePostCreationModal({user, opened, setOpened, onUpload, url }: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
+    const supabase = createClient();
     const [loading, setLoading] = useState(false);
+    const[uploading, setUploading] = useState(false);
+    const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);
+    const [title, setTitle] = useState<string>('');
+    const [content, setContent] = useState<string | null>(null);
+    const [location, setLocation] = useState<string | null>(null);
+    const [pricing, setPricing] = useState<number[] | null>(null);
+
+    console.log('photo_url', photo_path);
+    console.log('title', title);
+    console.log('content', content);
+    console.log('location', location);
+    console.log('pricing', pricing);
+
+    async function addFreelancerPost() {
+        try {
+            setLoading(true);
+
+            // insert new post data into 'freelancer_posts'
+            const { error } = await supabase 
+                .from('freelancer_posts')
+                .insert({
+                    post_image: photo_path,
+                    post_title: title,
+                    post_content: content,
+                    post_location: location,
+                    post_pricing: pricing,
+                    post_author: user?.id, 
+                })
+
+            if (error) {
+                console.error('Error inserting post information', error);
+            }
+        } catch (error) {
+            alert('Unable to add post!');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const validate = () => {
+        if (!photo_path || !title) {
+            alert('Please fill in all required fields: Image upload, Title');
+            return false;
+        }
+        return true;
+    }
 
     return (
-        <Modal opened={opened} onClose={onClose} scrollAreaComponent={ScrollArea.Autosize} size='lg' centered>
+        <Modal 
+            opened={opened} 
+            onClose={() => {
+                setOpened(false);
+                setPhotoPath(null);
+                setTitle('');
+                setContent(null);
+                setLocation(null);
+                setPricing(null);
+            }} 
+            scrollAreaComponent={ScrollArea.Autosize} 
+            size='lg' 
+            centered
+        >
             <Flex justify='center' align='center' direction='column' gap='md'>
                 <Title c='#6d543e'>Create your post</Title>
 
                 {/* Dropzone for photo upload */}
                 <Dropzone
                     loading={loading}
-                    onDrop={(files) => console.log('accepted files', files)}
+                    onDrop={(files) => {
+                        setPhotoPath(files[0]);
+                    }}
                     onReject={(files) => console.log('rejected files', files)}
                     maxSize={5 * 1024 ** 2}
                     maxFiles={1}
@@ -47,7 +114,12 @@ export default function ServicePostCreationModal({user, opened, onClose }: Servi
                             </Flex>
                         </Dropzone.Reject>
                         <Dropzone.Idle>
-                            <Flex direction='row' gap='md' align='center'>
+                            {photo_path ?
+                                <Text size="xl" inline>
+                                    Image successfully uploaded!
+                                </Text>
+                                :
+                                <Flex direction='row' gap='md' align='center'>
                                 <PhotoIcon className="w-12"/>
                                 <div>
                                     <Text size="xl" inline>
@@ -57,7 +129,8 @@ export default function ServicePostCreationModal({user, opened, onClose }: Servi
                                         Attach only 1 image, each file should not exceed 5mb
                                     </Text>
                                 </div>    
-                            </Flex>
+                                </Flex>
+                            }
                         </Dropzone.Idle>
                     </Group>
                 </Dropzone>
@@ -69,6 +142,8 @@ export default function ServicePostCreationModal({user, opened, onClose }: Servi
                     w={500}
                     autosize
                     minRows={1}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
                 />
 
                 {/* Post description input */}
@@ -78,6 +153,7 @@ export default function ServicePostCreationModal({user, opened, onClose }: Servi
                     w={500}
                     autosize
                     minRows={2}
+                    onChange={(e) => setContent(e.target.value)}
                 />
 
                 {/* Service location input */}
@@ -85,6 +161,7 @@ export default function ServicePostCreationModal({user, opened, onClose }: Servi
                     label="Located at"
                     placeholder="E.g. Tampines"
                     w={500}
+                    onChange={(e) => setLocation(e.target.value)}
                 />
 
                 {/* Service price range input */}
@@ -100,13 +177,30 @@ export default function ServicePostCreationModal({user, opened, onClose }: Servi
                         marks={[
                             { value: 0, label: '$0' },
                             { value: 500, label: '$500' }
-                        ]}  
+                        ]} 
+                        onChangeEnd={setPricing}
                     />
                 </Box>
 
                 {/* Button to publish post */}
-                <Button m='sm' size='md' color='#6d543e'>
+                <Button 
+                    m='sm' 
+                    size='md' 
+                    color='#6d543e'
+                    onClick={async () => {
+                        if (validate()) {
+                            await addFreelancerPost();
+                            setOpened(false);
+                            setPhotoPath(null);
+                            setTitle('');
+                            setContent(null);
+                            setLocation(null);
+                            setPricing(null);
+                        }
+                    }}
+                >
                     Publish
+                    {loading && <Loader size="xs" color="#6d543e" />}
                 </Button>
 
             </Flex>
