@@ -7,9 +7,13 @@ import FeedLinks from '@/components/feed + services/feedLinks';
 import { Button, Text } from '@mantine/core';
 import { Profile } from '@/utils/definitions';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import { useDisclosure } from '@mantine/hooks';
+import ServicePostCreationModal from '@/components/feed + services/servicePostCreationModal';
 
 
 export default function ServicesPage({ user, profile }: { user: User; profile: Profile; }) {
+    const [opened, { open, close }] = useDisclosure(false);
+    
     return (
         <Layout user={user}>
             <div className="relative flex-grow px-6 pt-6">
@@ -23,11 +27,14 @@ export default function ServicesPage({ user, profile }: { user: User; profile: P
                             variant='light' 
                             color='#6d543e' 
                             radius='md'
+                            onClick={open}
                         >
                             Create a post
                         </Button>
                     }
                 </div>
+                <ServicePostCreationModal user={user} opened={opened} onClose={close} 
+                />
                 <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
                 <h2 className="mb-7">For all your pet's needs</h2>
             </div>
