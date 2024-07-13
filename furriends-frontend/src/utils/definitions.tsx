@@ -43,5 +43,5 @@ export type FreelancerPost = {
     location: string;
     pricing: number[];
     author_id: string;
-    created_at?: string;
+    created_at: string;
 }

@@ -28,7 +28,7 @@ export default function ServicesPage({ user, profile }: { user: User; profile: P
         location: "Tampines",
         pricing: [10, 15],
         author_id: user.id,
-        created_at: "Today, 3.15pm",
+        created_at: "2024-07-13 16:51:24.103749+00",
     } as FreelancerPost;
     
     return (
