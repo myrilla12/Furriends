@@ -10,7 +10,19 @@ type ChatNavProps = {
     chats: Chats,
 }
 
+/**
+ * Component for the chat navigation on the left-hand side, used to select a chat.
+ *
+ * @param {ChatNavProps} props - The component props.
+ * @param {Chats} props.chats - The array of chats.
+ * @returns {JSX.Element} The chat navigation component.
+ */
 export default function ChatNav({ chats } : ChatNavProps) {
+    /**
+     * Component for displaying a chat card.
+     *
+     * @returns {JSX.Element} The chat card component.
+     */
     function ChatCard() {
         const router = useRouter();
         const { query } = router;
@@ -24,10 +36,10 @@ export default function ChatNav({ chats } : ChatNavProps) {
                         key={obj.otherUser.username}
                         href={`/chat?id=${obj.id}`}
                         className={clsx(
-                            "flex h-[70px] w-[400px] items-center justify-start gap-2 rounded-lg bg-gray-100 p-3 text-lg font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-3 md:px-6",
+                            "flex h-[70px] w-[400px] items-center justify-start gap-2 rounded-lg bg-gray-100 p-3 text-lg font-medium hover:bg-sky-100 md:flex-none md:justify-start md:p-3 md:px-6",
                             { 
                                 'bg-amber-900 bg-opacity-60': isActive,
-                                'bg-gray-100 hover:bg-sky-100 hover:text-blue-600': !isActive,
+                                'bg-gray-100 hover:bg-amber-900 hover:bg-opacity-30': !isActive,
                             },
                         )}
                     >

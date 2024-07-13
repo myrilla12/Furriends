@@ -11,6 +11,15 @@ type ChatButtonProps = {
     feed: boolean,
 }
 
+/**
+ * Component for a chat button that initiates or navigates to a chat with a specific user.
+ *
+ * @param {ChatButtonProps} props - The component props.
+ * @param {string} props.owner_id - The ID of the chat owner.
+ * @param {string} props.button_color - The color of the chat button.
+ * @param {boolean} props.feed - Whether the chat button is used in the feed post or not. 
+ * @returns {JSX.Element} The chat button component.
+ */
 export default function ChatButton({ owner_id, button_color, feed }: ChatButtonProps) {
     const supabase = CC();
     const router = useRouter();
@@ -19,6 +28,12 @@ export default function ChatButton({ owner_id, button_color, feed }: ChatButtonP
     const [chatIds, setChatIds] = useState<string[]>([]);
     const [partnerIds, setPartnerIds] = useState<string[]>([]);
 
+    /**
+     * Handles the click event to initiate or navigate to a chat.
+     *
+     * @async
+     * @function handleClick
+     */
     async function handleClick() {
         try {
             // Set current user
