@@ -25,7 +25,7 @@ export default function FeedLinks() {
                 color='#6d543e'
                 radius='xl'
                 onClick={() => {
-                    router.push('/services');
+                    router.push('/feed/services');
                 }}
             >
                 Pet services
