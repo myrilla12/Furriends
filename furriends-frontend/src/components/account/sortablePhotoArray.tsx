@@ -10,7 +10,20 @@ type SortablePhotoArrayProps = {
     setPhotoUrls: React.Dispatch<React.SetStateAction<string[] | null>>;
 }
 
+/**
+ * Component for displaying a sortable array of photos.
+ *
+ * @param {SortablePhotoArrayProps} props - The component props.
+ * @param {string[] | null} props.photoUrls - The array of photo URLs.
+ * @param {React.Dispatch<React.SetStateAction<string[] | null>>} props.setPhotoUrls - The function to set the photo URLs.
+ * @returns {JSX.Element} The sortable photo array component.
+ */
 export default function SortablePhotoArray({ photoUrls, setPhotoUrls }: SortablePhotoArrayProps) {
+    /**
+     * Handles the drag end event to reorder the photos.
+     *
+     * @param {DropResult} result - The result of the drag event.
+     */
     const onDragEnd = (result: DropResult) => {
         if (!result.destination || !photoUrls) return; // if either is null/undefined, return early
 
@@ -21,6 +34,11 @@ export default function SortablePhotoArray({ photoUrls, setPhotoUrls }: Sortable
         setPhotoUrls(items); // update state
     };
 
+    /**
+     * Handles the removal of a photo from the array.
+     *
+     * @param {number} index - The index of the photo to remove.
+     */
     // filter the current url array to remove the deleted photo, if array is null/undefined, set to null
     const handleRemove = (index: number) => {
         setPhotoUrls((prevUrls) => prevUrls ? prevUrls.filter((_, i) => i !== index) : null);

@@ -10,15 +10,25 @@ type ChatIconProps = {
     profile: Profile;
 };
 
+/**
+ * Component for displaying the chat icon, which is the profile picture of the other user in the chat.
+ *
+ * @param {ChatIconProps} props - The component props.
+ * @param {Profile} props.profile - The profile of the other user in the chat.
+ * @returns {JSX.Element} The chat icon component.
+ */
 export default function ChatIcon({ profile }: ChatIconProps) {
     const [loading, setLoading] = useState(true)
     const [avatarUrl, setAvatarUrl] = useState<string>('/default-avatar.jpg')
     const supabase = createClient();
 
-    // create a memoized getAvatar; only recreated if dependencies change
-    // gets user profile photo
-        // create a memoized getAvatar; only recreated if dependencies change
-    // gets user profile photo
+    /**
+     * Create a memoized getAvatar; only recreated if dependencies change.
+     * Gets user profile photo.
+     *
+     * @async
+     * @function getAvatar
+     */
     const getAvatar = useCallback(async () => {
         try {
             setLoading(true)

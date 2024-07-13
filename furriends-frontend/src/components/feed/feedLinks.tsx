@@ -2,6 +2,11 @@ import { BuildingStorefrontIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { Button, Group } from "@mantine/core";
 import { usePathname, useRouter } from "next/navigation";
 
+/**
+ * Component for navigation links in the feed.
+ *
+ * @returns {JSX.Element} The FeedLinks component.
+ */
 export default function FeedLinks() {
     const pathname = usePathname();
     const router = useRouter();

@@ -11,11 +11,25 @@ type FreelancerDetailsModalProps = {
     onClose: () => void;
 }
 
+/**
+ * Modal component that displays the freelancer profile terms and conditions and allows the user to toggle freelancer mode.
+ *
+ * @param {FreelancerDetailsModalProps} props - The component props.
+ * @param {User | null} props.user - The user object.
+ * @param {boolean} props.opened - Indicates whether the modal is open.
+ * @param {function} props.onClose - Callback function to close the modal.
+ * @returns {JSX.Element} The freelancer details modal component.
+ */
 export default function FreelancerDetailsModal({ user, opened, onClose }: FreelancerDetailsModalProps) {
     const supabase = createClient();
     const router = useRouter();
 
-    // toggle freelancer mode in profile database
+    /**
+     * Toggles the freelancer mode in the user's profile in the database.
+     *
+     * @async
+     * @function toggleFreelancer
+     */
     async function toggleFreelancer() {
         const { error: freelancerError } = await supabase
             .from('profiles')

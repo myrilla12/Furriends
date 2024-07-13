@@ -10,7 +10,19 @@ type ChatNavProps = {
     chats: Chats,
 }
 
+/**
+ * Component for the chat navigation on the left-hand side, used to select a chat.
+ *
+ * @param {ChatNavProps} props - The component props.
+ * @param {Chats} props.chats - The array of chats.
+ * @returns {JSX.Element} The chat navigation component.
+ */
 export default function ChatNav({ chats } : ChatNavProps) {
+    /**
+     * Component for displaying a chat card.
+     *
+     * @returns {JSX.Element} The chat card component.
+     */
     function ChatCard() {
         const router = useRouter();
         const { query } = router;

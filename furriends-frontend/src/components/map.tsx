@@ -13,6 +13,11 @@ const center = {
   lng: 103.8198
 };
 
+/**
+ * Component for displaying a Google Map with a marker.
+ *
+ * @returns {JSX.Element} The Map component.
+ */
 export default function Map() {
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
   return (
@@ -28,6 +33,14 @@ export default function Map() {
   )
 }
 
+/**
+ * Server-side function to handle user authentication and redirection.
+ *
+ * @async
+ * @function getServerSideProps
+ * @param {GetServerSidePropsContext} context - The server-side context.
+ * @returns {Promise<{redirect?: {destination: string, permanent: boolean}}>} The redirection object for unauthenticated users.
+ */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const supabase = createClient(context)
 

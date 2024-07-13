@@ -5,6 +5,11 @@ import router from 'next/router';
 import { useState } from 'react';
 import { createClient } from '../../utils/supabase/component';
 
+/**
+ * Component for the signup box.
+ *
+ * @returns {JSX.Element} The SignupBox component.
+ */
 export default function SignupBox() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,6 +20,12 @@ export default function SignupBox() {
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
 
+  /**
+   * Handles the signup process.
+   *
+   * @async
+   * @function signup
+   */
   async function signup() {
     setLoading(true);
     setEmailError('');

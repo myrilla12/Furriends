@@ -3,6 +3,12 @@ import { Pet } from "@/utils/definitions";
 import { Text, Box, Select, Group, ComboboxItem, OptionsFilter, NumberInput, Space } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
+/**
+ * Custom options filter for the Select component from Mantine.
+ *
+ * @param {OptionsFilter} props - The options filter props.
+ * @returns {ComboboxItem[]} The filtered options.
+ */
 const optionsFilter: OptionsFilter = ({ options, search }) => {
     const splittedSearch = search.toLowerCase().trim().split(' ');
 
@@ -18,6 +24,14 @@ type FiltersProps = {
     setFilteredPets: Dispatch<SetStateAction<Pet[]>>;
 };
 
+/**
+ * Component for filtering pets based on various criteria.
+ *
+ * @param {FiltersProps} props - The component props.
+ * @param {Pet[]} props.pets - The array of pets to filter.
+ * @param {Dispatch<SetStateAction<Pet[]>>} props.setFilteredPets - The function to set the filtered pets.
+ * @returns {JSX.Element} The filters component.
+ */
 export default function Filters({ pets, setFilteredPets }: FiltersProps) {
     const [type, setType] = useState<string | null>(null);
     const [fromAge, setFromAge] = useState<string | number>('');
