@@ -6,6 +6,16 @@ import { createClient } from '../../utils/supabase/component';
 import Image from 'next/image';
 import { Button } from '@mantine/core';
 
+/**
+ * Component for displaying and uploading an avatar image.
+ *
+ * @param {{ uid: string | null, url: string | null, size: number, onUpload: (url: string) => void }} props - The component props.
+ * @param {string | null} props.uid - The user ID.
+ * @param {string | null} props.url - The URL of the avatar image.
+ * @param {number} props.size - The size of the avatar image.
+ * @param {function} props.onUpload - Callback function to handle the uploaded image URL.
+ * @returns {JSX.Element} The avatar component.
+ */
 export default function Avatar({ uid, url, size, onUpload, }: {
     uid: string | null
     url: string | null
@@ -16,7 +26,13 @@ export default function Avatar({ uid, url, size, onUpload, }: {
     const [avatarUrl, setAvatarUrl] = useState<string | null>(url)
     const [uploading, setUploading] = useState(false)
 
-    // download exisiting profile photo in database, if any
+    /**
+     * Downloads the existing profile photo from the database, if any.
+     *
+     * @async
+     * @function downloadImage
+     * @param {string} url - The URL of the image to download.
+     */
     useEffect(() => {
         async function downloadImage(url: string) {
             try {
@@ -29,6 +45,13 @@ export default function Avatar({ uid, url, size, onUpload, }: {
         if (url) downloadImage(url)
     }, [url, supabase])
 
+    /**
+     * Handles the avatar upload process.
+     *
+     * @async
+     * @function uploadAvatar
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The file input change event.
+     */
     // selected file will be uploaded to supabase storage and generate a unique url
     const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
         try {

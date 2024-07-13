@@ -6,7 +6,13 @@ import { createClient } from '@/utils/supabase/server-props'
 import { Button, Group } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 
-
+/**
+ * Page component for displaying the feed.
+ *
+ * @param {{ user: User }} props - The component props.
+ * @param {User} props.user - The user object containing user information.
+ * @returns {JSX.Element} The FeedPage component.
+ */
 export default function FeedPage({ user }: { user: User }) {
     
     return (
@@ -30,7 +36,14 @@ export default function FeedPage({ user }: { user: User }) {
     )
 }
 
-// fetch user by getting server props
+/**
+ * Server-side function to handle user authentication and fetch user data.
+ *
+ * @async
+ * @function getServerSideProps
+ * @param {GetServerSidePropsContext} context - The server-side context.
+ * @returns {Promise<{redirect?: {destination: string, permanent: boolean}, props?: {user: User}}>} The redirection object for unauthenticated users or the user data for authenticated users.
+ */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
 

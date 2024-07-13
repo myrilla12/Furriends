@@ -10,7 +10,14 @@ import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useDisclosure } from '@mantine/hooks';
 import ServicePostCreationModal from '@/components/feed/servicePostCreationModal';
 
-
+/**
+ * Page component for displaying and managing pet services.
+ *
+ * @param {ServicesPageProps} props - The component props.
+ * @param {User} props.user - The user object containing user information.
+ * @param {Profile} props.profile - The profile object containing user profile information.
+ * @returns {JSX.Element} The ServicesPage component.
+ */
 export default function ServicesPage({ user, profile }: { user: User; profile: Profile; }) {
     const [opened, setOpened] = useState(false);
     
@@ -41,7 +48,14 @@ export default function ServicesPage({ user, profile }: { user: User; profile: P
     )
 }
 
-// fetch user data (profile photo) by getting server props
+/**
+ * Server-side function to handle user authentication and fetch user and profile data.
+ *
+ * @async
+ * @function getServerSideProps
+ * @param {GetServerSidePropsContext} context - The server-side context.
+ * @returns {Promise<{redirect?: {destination: string, permanent: boolean}, props?: {user: User, profile: Profile}}>} The redirection object for unauthenticated users or the user and profile data for authenticated users.
+ */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
 

@@ -15,6 +15,16 @@ type ChatBoxProps = {
   chatPartner: Profile | null;
 }
 
+/**
+ * Component for displaying and managing a chat box.
+ *
+ * @param {ChatBoxProps} props - The component props.
+ * @param {User} props.user - The current user.
+ * @param {string | null} props.chatId - The ID of the chat.
+ * @param {Message[] | null} props.messages - The array of messages in the chat.
+ * @param {Profile | null} props.chatPartner - The chat partner's profile.
+ * @returns {JSX.Element} The chat box component.
+ */
 export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBoxProps) {
 
     const supabase = createClient();
@@ -25,6 +35,9 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
     const [deleting, setDeleting] = useState<boolean>(false);
     const [messageToChange, setMessageToChange] = useState<string | null>(null);
 
+    /**
+     * Scrolls the chat area to the bottom.
+     */
     const scrollToBottom = () => {
         if (scrollAreaRef.current) {
         scrollAreaRef.current.scrollTo({
@@ -38,6 +51,12 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
         scrollToBottom();
     }, [messages]);
 
+    /**
+     * Sends a message in the chat.
+     *
+     * @async
+     * @param {string} content - The content of the message to send.
+     */
     async function sendMessage(content: string) {
         let currChatId = chatId;
 
@@ -99,6 +118,12 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
         scrollToBottom();
     }
 
+    /**
+     * Edits a message in the chat.
+     *
+     * @async
+     * @param {string} content - The new content of the message.
+     */
     async function editMessage(content: string) {
         const currentTimestamp = new Date().toISOString();
 
@@ -112,6 +137,12 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
         }
     }
 
+    /**
+     * Deletes a message in the chat.
+     *
+     * @async
+     * @param {string} id - The ID of the message to delete.
+     */
     async function deleteMessage(id: string) {
 
         const { error: deleteError } = await supabase
@@ -124,6 +155,11 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
         }
     }
 
+    /**
+     * Checks if the message is valid or empty.
+     *
+     * @returns {boolean} - Returns true if the message is valid, otherwise false.
+     */
     const checkMessage = () => {
         if (message === '' || message === null) {
             alert('No message received!');

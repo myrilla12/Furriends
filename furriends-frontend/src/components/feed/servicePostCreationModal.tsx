@@ -12,6 +12,16 @@ type ServicePostCreationModalProps = {
     setOpened: (open: boolean) => void;
 }
 
+/**
+ * Component for creating a service post.
+ *
+ * @param {ServicePostCreationModalProps} props - The component props.
+ * @param {User | null} props.user - The current user.
+ * @param {boolean} props.opened - Indicates whether the modal is open.
+ * @param {function} props.setOpened - Function to set the modal open state.
+ * @param {Partial<DropzoneProps>} props.props - Additional dropzone properties.
+ * @returns {JSX.Element} The ServicePostCreationModal component.
+ */
 export default function ServicePostCreationModal({user, opened, setOpened}: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
@@ -23,6 +33,13 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
     const [pricing, setPricing] = useState<number[] | null>(null);
     const [photo_url, setPhotoUrl] = useState<string>('');
 
+    /**
+     * Uploads a photo to the Supabase storage.
+     *
+     * @async
+     * @param {FileWithPath} file - The file to upload.
+     * @returns {Promise<string | null>} The URL of the uploaded photo or null if there was an error.
+     */
     async function uploadPhoto(file: FileWithPath): Promise<string | null> {
         try {
             setLoading(true);
@@ -48,6 +65,11 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
         }
     }
 
+    /**
+     * Adds a new freelancer post to the Supabase database.
+     *
+     * @async
+     */
     async function addFreelancerPost() {
         try {
             setLoading(true);
@@ -74,6 +96,11 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
         }
     }
 
+    /**
+     * Validates the form inputs.
+     *
+     * @returns {boolean} True if the form is valid, otherwise false.
+     */
     const validate = () => {
         if (!photo_path || !title) {
             alert('Please fill in all required fields: Image upload, Title');

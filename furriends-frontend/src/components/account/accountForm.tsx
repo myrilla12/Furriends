@@ -9,6 +9,14 @@ import { Button, Switch, Text, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import FreelancerDetailsModal from './freelancerDetailsModal';
 
+/**
+ * Component for rendering and managing the account form.
+ *
+ * @param {{ user: User | null }} props - The component props.
+ * @param {User | null} props.user - The user object.
+ * @returns {JSX.Element} The account form component.
+ */
+
 export default function AccountForm({ user }: { user: User | null }) {
     const supabase = createClient();
     const [loading, setLoading] = useState(true);
@@ -18,6 +26,12 @@ export default function AccountForm({ user }: { user: User | null }) {
     const [opened, { open, close }] = useDisclosure(false);
     const [checked, setChecked] = useState(false); 
 
+    /**
+     * Fetches and sets the user profile data.
+     * 
+     * @async
+     * @function getProfile
+     */
     // create a memoized getProfile; only recreated if dependencies change
     const getProfile = useCallback(async () => {
         try {
@@ -48,6 +62,13 @@ export default function AccountForm({ user }: { user: User | null }) {
 
     useEffect(() => { getProfile() }, [user, getProfile])
 
+    /**
+     * Updates the user profile data.
+     * 
+     * @async
+     * @function updateProfile
+     * @param {{ username: string | null, avatar_url: string | null }} profileData - The profile data to update.
+     */
     async function updateProfile({
         username,
         avatar_url,

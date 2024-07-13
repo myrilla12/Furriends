@@ -7,10 +7,19 @@ import router from "next/router";
 
 const supabase = createClient();
 
+/**
+ * ForgotPassword component provides a UI for users to request a password reset.
+ *
+ * @returns {JSX.Element} The rendered ForgotPassword component.
+ */
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
 
+    /**
+     * Handles password reset request.
+     * Sends a password reset email to the provided email address.
+     */
     const handlePasswordReset = async () => {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
