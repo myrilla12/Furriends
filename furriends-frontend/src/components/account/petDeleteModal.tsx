@@ -11,10 +11,26 @@ type PetDeleteModalProps = {
     deletePetFromState: (deletedPetId: string) => void;
 }
 
+/**
+ * Modal component for deleting a pet from the profile.
+ *
+ * @param {PetDeleteModalProps} props - The component props.
+ * @param {boolean} props.opened - Indicates whether the modal is open.
+ * @param {function} props.onClose - Callback function to close the modal.
+ * @param {Pet} props.pet - The pet object to be deleted.
+ * @param {function} props.deletePetFromState - Callback function to delete the pet from the state.
+ * @returns {JSX.Element} The pet delete modal component.
+ */
 export default function PetDeleteModal({ opened, onClose, pet, deletePetFromState }: PetDeleteModalProps) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
 
+    /**
+     * Deletes the pet from the database and updates the state.
+     *
+     * @async
+     * @function deletePet
+     */
     async function deletePet() {
         try {
             setLoading(true);

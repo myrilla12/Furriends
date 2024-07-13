@@ -1,5 +1,10 @@
-// allow image to be enlarged and reduced in size
 let enlarged = 0;
+
+/**
+ * Allow image to be enlarged and reduced in size
+ * @param img - image to be enlarged / reduced
+ * @returns {number} - number showing whether image is enlarged or not
+ */
 
 export function toggleImageZoom(img) {
     if (enlarged === 0) {

@@ -5,6 +5,12 @@ import router from 'next/router';
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/component';
 
+
+/**
+ * Component for the login box.
+ *
+ * @returns {JSX.Element} The LoginBox component.
+ */
 export default function LoginBox() {
   const supabase = createClient();
   const [email, setEmail] = useState('');
@@ -12,6 +18,12 @@ export default function LoginBox() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles the login process.
+   *
+   * @async
+   * @function login
+   */
   async function login() {
     setLoading(true);
     setError('');
@@ -80,8 +92,14 @@ export default function LoginBox() {
           </>
         )}
 
-        <Button variant="outline" color="#6d543e" className="mt-6" onClick={login}>
-          {loading ? <Loader size="sm" color="#6d543e" /> : 'Sign in'}
+        <Button 
+          variant="outline" 
+          color="#6d543e" 
+          rightSection={loading && <Loader size="sm" color="#6d543e" />}
+          className="mt-6" 
+          onClick={login}
+        >
+          Sign in
         </Button>
       </div>
 
