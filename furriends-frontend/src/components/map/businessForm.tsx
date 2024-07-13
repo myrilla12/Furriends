@@ -50,6 +50,7 @@ export default function BusinessForm() {
 
     /**
      * Validates the form to ensure all required fields (name, type, address, email) are filled.
+     * 
      * @returns {boolean} Returns true if the form is valid, otherwise false.
      */
     // can be further refined to show error message below relevant fields instead of using alert
