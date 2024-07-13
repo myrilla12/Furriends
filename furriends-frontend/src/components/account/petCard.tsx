@@ -78,9 +78,11 @@ export default function PetCard({ pet, editable, chattable, updatePetInState, de
                     </div>
                 )}
 
+                <div className="absolute top-0 left-0 pl-2 pt-2">
                 {chattable && (
-                    <ChatButton owner_id={pet.owner_id} button_color={textColor} />
+                    <ChatButton owner_id={pet.owner_id} button_color={textColor} feed={false}/>
                 )}
+                </div>
 
             </div>
             <PetDetailsModal opened={detailsOpened} onClose={closeDetails} pet={pet} />

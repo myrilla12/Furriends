@@ -5,14 +5,24 @@ import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../utils/supabase/server-props'
 import FeedLinks from '@/components/feed/feedLinks';
 import { Button, Text } from '@mantine/core';
-import { Profile } from '@/utils/definitions';
+import { FreelancerPost, Profile } from '@/utils/definitions';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useDisclosure } from '@mantine/hooks';
 import ServicePostCreationModal from '@/components/feed/servicePostCreationModal';
+import ServicePost from '@/components/feed/servicePost';
 
 
 export default function ServicesPage({ user, profile }: { user: User; profile: Profile; }) {
     const [opened, setOpened] = useState(false);
+    const example = {
+        photo: "https://gratisography.com/wp-content/uploads/2024/01/gratisography-cyber-kitty-800x525.jpg",
+        title: "Test post",
+        content: "Hello, this is a tester post to see if the post UI looks good iowj djiwj djioqj djiojd iwo jdiow jdiwojd iwjodijw jdiojd iwoqjidojwoiqj djiwoq djiwo djiwo djiwoq djiowq jdiwoq jdiowq djiwoq jdiwoq jwdioq djiwoq djwioq djwioq djwioqd jiwoq dw jiodwj iodjwioq djiwoq djiow djwiqo djiow djiow jdoi djiow djio jdoiw djiow djo djoiq djiow djoi djioq ",
+        location: "Tampines",
+        pricing: [10, 15],
+        author_id: user.id,
+        created_at: "Today, 3.15pm",
+    } as FreelancerPost;
     
     return (
         <Layout user={user}>
@@ -36,6 +46,7 @@ export default function ServicesPage({ user, profile }: { user: User; profile: P
                 <ServicePostCreationModal user={user} opened={opened} setOpened={setOpened}/>
                 <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
                 <h2 className="mb-7">For all your pet's needs</h2>
+                <ServicePost post={example}/>
             </div>
         </Layout >
     )

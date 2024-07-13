@@ -8,9 +8,10 @@ import { useState } from "react";
 type ChatButtonProps = {
     owner_id: string,
     button_color: string,
+    feed: boolean,
 }
 
-export default function ChatButton({ owner_id, button_color }: ChatButtonProps) {
+export default function ChatButton({ owner_id, button_color, feed }: ChatButtonProps) {
     const supabase = CC();
     const router = useRouter();
 
@@ -68,20 +69,22 @@ export default function ChatButton({ owner_id, button_color }: ChatButtonProps) 
     }
 
     return (
-        <div className="absolute top-0 left-0 pl-2 pt-2">
-            <Button
-                variant="subtle"
-                size="compact-lg"
-                style={{ color: button_color }}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    handleClick();
-                }}
-            >
+        <Button
+            variant={feed ? "filled" : "subtle"}
+            color={feed ? "#6d543e" : ""}
+            size="compact-lg"
+            style={{ color: button_color }}
+            onClick={(e) => {
+                e.stopPropagation();
+                handleClick();
+            }}
+        >
+            {feed ?
+                <Text size='lg' fw={600} mr='7'>Chat with freelancer</Text> :
                 <Text size='xl' fw={700} mr='7'>Chat</Text>
-                <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
-            </Button>
-        </div>
+            }
+            <ChatBubbleOvalLeftEllipsisIcon className="h-6 w-6" />
+        </Button>
     );
 }
 
