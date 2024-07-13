@@ -28,9 +28,9 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
     const[uploading, setUploading] = useState(false);
     const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);
     const [title, setTitle] = useState<string>('');
-    const [content, setContent] = useState<string | null>(null);
-    const [location, setLocation] = useState<string | null>(null);
-    const [pricing, setPricing] = useState<number[] | null>(null);
+    const [content, setContent] = useState<string>('');
+    const [location, setLocation] = useState<string>('');
+    const [pricing, setPricing] = useState<number[]>([50, 150]);
     const [photo_url, setPhotoUrl] = useState<string>('');
 
     /**
@@ -102,8 +102,8 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
      * @returns {boolean} True if the form is valid, otherwise false.
      */
     const validate = () => {
-        if (!photo_path || !title) {
-            alert('Please fill in all required fields: Image upload, Title');
+        if (!photo_path || !title || !content || !location || !pricing || !photo_url) {
+            alert('Please fill in all required fields: Image upload, Title, Description, Location and Pricing!');
             return false;
         }
         return true;
@@ -116,9 +116,9 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                 setOpened(false);
                 setPhotoPath(null);
                 setTitle('');
-                setContent(null);
-                setLocation(null);
-                setPricing(null);
+                setContent('');
+                setLocation('');
+                setPricing([50, 150]);
                 setPhotoUrl('');
             }} 
             scrollAreaComponent={ScrollArea.Autosize} 
@@ -202,6 +202,7 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                     autosize
                     minRows={2}
                     onChange={(e) => setContent(e.target.value)}
+                    required
                 />
 
                 {/* Service location input */}
@@ -210,11 +211,12 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                     placeholder="E.g. Tampines"
                     w={500}
                     onChange={(e) => setLocation(e.target.value)}
+                    required
                 />
 
                 {/* Service price range input */}
                 <Box m='md' w={500}>
-                    <Text size='sm' fw={500} mb='xs' inline>Price range</Text>
+                    <Text size='sm' fw={500} mb='xs' inline>Price range <span style={{ color: 'red' }}>*</span></Text>
                     <RangeSlider 
                         minRange={0} 
                         min={0} 
@@ -241,9 +243,9 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                             setOpened(false);
                             setPhotoPath(null);
                             setTitle('');
-                            setContent(null);
-                            setLocation(null);
-                            setPricing(null);
+                            setContent('');
+                            setLocation('');
+                            setPricing([50, 150]);
                             setPhotoUrl('');
                         }
                     }}
