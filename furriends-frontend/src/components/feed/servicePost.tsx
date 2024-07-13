@@ -1,12 +1,19 @@
 import { FreelancerPost } from "@/utils/definitions";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { Card, Image, Text, Badge, Button, Group } from '@mantine/core';
-import ChatButton from "../chat/chatButton";
+import ChatButton from "@/components/chat/chatButton";
 
 type ServicePostProps = {
     post: FreelancerPost,
 }
 
+/**
+ * Renders a service post card displaying details of a freelancer's service post.
+ * 
+ * @param {ServicePostProps} props - The props for the component.
+ * @param {FreelancerPost} props.post - The service post data.
+ * @returns {JSX.Element} The rendered ServicePost component.
+ */
 export default function ServicePost({ post }: ServicePostProps) {
 
     return (
