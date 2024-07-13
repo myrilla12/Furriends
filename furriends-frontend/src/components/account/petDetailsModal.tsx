@@ -12,6 +12,15 @@ type PetDetailsModalProps = {
     pet: Pet;
 }
 
+/**
+ * Modal component that displays detailed information about a pet.
+ *
+ * @param {PetDetailsModalProps} props - The component props.
+ * @param {boolean} props.opened - Indicates whether the modal is open.
+ * @param {function} props.onClose - Callback function to close the modal.
+ * @param {Pet} props.pet - The pet object with detailed information.
+ * @returns {JSX.Element} The pet details modal component.
+ */
 export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModalProps) {
     const supabase = createClient();
 

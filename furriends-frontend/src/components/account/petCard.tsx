@@ -21,6 +21,18 @@ type PetCardProps = {
     deletePetFromState?: (deletedPetId: string) => void; // optional prop, only defined when pet card is editable
 };
 
+/**
+ * Component for displaying a pet card with photo, name, type, breed, and age. 
+ * Allows editing and deleting the pet profile if editable.
+ *
+ * @param {PetCardProps} props - The component props.
+ * @param {Pet} props.pet - The pet object.
+ * @param {boolean} props.editable - Indicates if the pet profile is editable.
+ * @param {boolean} props.chattable - Indicates if the chat button should be displayed.
+ * @param {function} [props.updatePetInState] - Callback function to update the pet in the state.
+ * @param {function} [props.deletePetFromState] - Callback function to delete the pet from the state.
+ * @returns {JSX.Element} The pet card component.
+ */
 export default function PetCard({ pet, editable, chattable, updatePetInState, deletePetFromState }: PetCardProps) {
     const [textColor, setTextColor] = useState('white');
     const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false); // controls opening/closing of petDetailsModal
@@ -28,6 +40,12 @@ export default function PetCard({ pet, editable, chattable, updatePetInState, de
     const [deleteOpened, { open: openDelete, close: closeDelete }] = useDisclosure(false); // controls opening/closing of petDeleteModal
 
     useEffect(() => {
+        /**
+         * Sets the text color based on the brightness of the pet's photo.
+         * 
+         * @async
+         * @function setTextColorBasedOnImage
+         */
         const setTextColorBasedOnImage = async () => {
             if (pet.photos && pet.photos[0]) {
                 const brightness = await calculateImageBrightness(pet.photos[0]);

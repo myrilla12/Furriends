@@ -19,6 +19,16 @@ type PetFormProps = {
     addPetToState: (newPet: Pet) => void;
 }
 
+/**
+ * Modal component for creating and adding a new pet profile.
+ *
+ * @param {PetFormProps} props - The component props.
+ * @param {boolean} props.modalOpened - Indicates whether the modal is open.
+ * @param {function} props.setModalOpened - Callback function to set the modal open state.
+ * @param {User | null} props.user - The user object.
+ * @param {function} props.addPetToState - Callback function to add the new pet to the state.
+ * @returns {JSX.Element} The pet form modal component.
+ */
 export default function PetForm({ modalOpened, setModalOpened, user, addPetToState }: PetFormProps) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
@@ -34,6 +44,22 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
 
     // add getProfile using useCallBack here when implementing "edit" button, to allow code reusability
 
+    /**
+     * Adds a new pet profile to the database and state.
+     *
+     * @async
+     * @function addPetProfile
+     * @param {Object} petProfile - The pet profile data.
+     * @param {string} petProfile.name - The name of the pet.
+     * @param {string} petProfile.type - The type of the pet.
+     * @param {string} petProfile.breed - The breed of the pet.
+     * @param {number | null} petProfile.weight - The weight of the pet.
+     * @param {Date | null} petProfile.birthday - The birthday of the pet.
+     * @param {string | null} petProfile.energy_level - The energy level of the pet.
+     * @param {string | null} petProfile.description - The description of the pet.
+     * @param {string | null} petProfile.likes - The likes of the pet.
+     * @param {string[] | null} petProfile.photo_urls - The photo URLs of the pet.
+     */
     async function addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls }: {
         name: string 
         type: string 
@@ -104,7 +130,12 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
         }
     }
 
-    // form validation to ensure all required fields are filled
+    /**
+     * Validates the form to ensure all required fields are filled.
+     *
+     * @function validateForm
+     * @returns {boolean} - Returns true if the form is valid, otherwise false.
+     */
     // can be further refined to show error message below relevant fields instead of using alert
     const validateForm = () => {
         if (!name || !type || !breed || !birthday) {

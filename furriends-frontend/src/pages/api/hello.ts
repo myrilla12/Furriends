@@ -5,6 +5,13 @@ type Data = {
   name: string;
 };
 
+/**
+ * API route handler that responds with a JSON object containing a name.
+ *
+ * @param {NextApiRequest} req - The API request object.
+ * @param {NextApiResponse<Data>} res - The API response object.
+ * @returns {void} The response object with a status of 200 and a JSON object containing a name.
+ */
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>,
