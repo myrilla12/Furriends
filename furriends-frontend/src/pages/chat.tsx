@@ -20,6 +20,12 @@ type ChatProps = {
     notifications: number[];
 }
 
+/**
+ * ChatPage component displays the chat interface.
+ *
+ * @param {ChatProps} props - The props for the ChatPage component.
+ * @returns {JSX.Element} The rendered ChatPage component.
+ */
 export default function ChatPage({ user, chatIds, otherUsers, notifications }: ChatProps) {
     const supabase = CC();
     const router = useRouter();
@@ -221,7 +227,12 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
     );
 }
 
-// fetch user data by getting server props
+/**
+ * Fetch user data and chat information from the server-side.
+ *
+ * @param {GetServerSidePropsContext} context - The server-side context.
+ * @returns {Promise<{ props: { user: User; chatIds: string[]; otherUsers: Profile[]; notifications: number[] } }>} The props for the page.
+ */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
 

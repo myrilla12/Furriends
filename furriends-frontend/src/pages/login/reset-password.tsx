@@ -6,6 +6,11 @@ import { PasswordInput, Text, Button } from "@mantine/core";
 
 const supabase = createClient();
 
+/**
+ * Component for resetting the user's password.
+ *
+ * @returns {JSX.Element} The rendered ResetPassword component.
+ */
 export default function ResetPassword() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [newPassword, setNewPassword] = useState('');
@@ -15,6 +20,9 @@ export default function ResetPassword() {
     const [message, setMessage] = useState('');
     const router = useRouter();
 
+    /**
+     * Check the authentication state on component mount.
+     */
     useEffect(() => {
         supabase.auth.onAuthStateChange(async (event, session) => {
             console.log('Auth event:', event);
@@ -25,6 +33,9 @@ export default function ResetPassword() {
         })
     }, [])
 
+    /**
+     * Handles the password reset process.
+     */
     const handleResetPassword = async () => {
         if (newPassword !== confirmPassword) {
             setConfirmPasswordError('Passwords do not match');
