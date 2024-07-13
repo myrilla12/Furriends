@@ -80,15 +80,7 @@ export default function Filters({ pets, setFilteredPets }: FiltersProps) {
         }
 
         filterPets();
-    }, [type, fromAge, toAge, fromWeight, toWeight, energy_level, setFilteredPets]) // call filterPets if there are any changes to these states
-
-    // // check current states
-    // console.log('type:', type);
-    // console.log('fromAge:', fromAge);
-    // console.log('toAge:', toAge);
-    // console.log('fromWeight:', fromWeight);
-    // console.log('toWeight:', toWeight);
-    // console.log('energy level:', energy_level);
+    }, [pets, type, fromAge, toAge, fromWeight, toWeight, energy_level, setFilteredPets]) // call filterPets if there are any changes to these states
 
     // filter input fields
     return (

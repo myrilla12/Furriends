@@ -52,7 +52,7 @@ export default function ServicesPage({ user, profile }: { user: User; profile: P
                 </div>
                 <ServicePostCreationModal user={user} opened={opened} setOpened={setOpened}/>
                 <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
-                <h2 className="mb-7">For all your pet's needs</h2>
+                <h2 className="mb-7">For all your pet&apos;s needs</h2>
                 <ServicePost user={user} post={example}/>
             </div>
         </Layout >
