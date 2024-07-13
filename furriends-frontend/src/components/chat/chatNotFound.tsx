@@ -2,6 +2,11 @@
 import { Container, Stack, Image, Title } from "@mantine/core";
 import styles from '../../styles/chatStyles.module.css';
 
+/**
+ * Component that displays a message when no chat is selected.
+ *
+ * @returns {JSX.Element} The ChatNotFound component.
+ */
 export default function ChatNotFound() {
 
   return (

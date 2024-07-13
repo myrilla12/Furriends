@@ -8,6 +8,13 @@ interface PetCarouselProps {
   pets: Pet[];
 }
 
+/**
+ * Component for displaying a carousel of pet cards.
+ *
+ * @param {PetCarouselProps} props - The component props.
+ * @param {Pet[]} props.pets - The array of pets to display in the carousel.
+ * @returns {JSX.Element} The PetCarousel component.
+ */
 export default function PetCarousel({ pets }: PetCarouselProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);

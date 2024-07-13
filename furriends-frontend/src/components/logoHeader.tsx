@@ -1,6 +1,11 @@
 import Image from 'next/image';
 import { useRouter } from "next/router";
 
+/**
+ * Component for displaying the logo header.
+ *
+ * @returns {JSX.Element} The LogoHeader component.
+ */
 export default function LogoHeader() {
     const router = useRouter();
     return (

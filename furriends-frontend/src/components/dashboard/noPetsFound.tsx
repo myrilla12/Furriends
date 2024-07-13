@@ -3,6 +3,11 @@
 
 import { Box, Stack, Image, Title } from "@mantine/core";
 
+/**
+ * Component displayed when no pets are found to fit the filter conditions.
+ *
+ * @returns {JSX.Element} The NoPetsFound component.
+ */
 export default function NoPetsFound() {
     return (
         <Stack

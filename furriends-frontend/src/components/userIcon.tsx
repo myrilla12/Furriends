@@ -10,6 +10,13 @@ type UserIconProps = {
     user: User | null;
 };
 
+/**
+ * Component for displaying the user's profile picture as an icon with a dropdown menu.
+ *
+ * @param {UserIconProps} props - The component props.
+ * @param {User | null} props.user - The user object containing user information.
+ * @returns {JSX.Element} The UserIcon component.
+ */
 export default function UserIcon({ user }: UserIconProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(true)
@@ -19,7 +26,12 @@ export default function UserIcon({ user }: UserIconProps) {
     const [signOutLoading, setSignOutLoading] = useState(false);
     const supabase = createClient();
 
-    // signout logic to redirect to home page after sign out
+    /**
+     * Signs out the user and redirects to the home page.
+     *
+     * @async
+     * @function signout
+     */
     async function signout() {
         setSignOutLoading(true);
         const { error } = await supabase.auth.signOut();
@@ -31,8 +43,12 @@ export default function UserIcon({ user }: UserIconProps) {
         setSignOutLoading(false);
     }
 
-    // create a memoized getAvatar; only recreated if dependencies change
-    // gets user profile photo
+    /**
+     * Memoized function to get the user's avatar from the profile.
+     *
+     * @async
+     * @function getAvatar
+     */
     const getAvatar = useCallback(async () => {
         try {
             setLoading(true)

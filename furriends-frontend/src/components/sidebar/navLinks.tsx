@@ -16,10 +16,21 @@ const links = [
   { name: 'Map', href: '/map', icon: MapPinIcon },
 ];
 
+/**
+ * Component for displaying navigation links in the sidebar.
+ *
+ * @returns {JSX.Element} The NavLinks component.
+ */
 export default function NavLinks() {
   const pathname = usePathname();
   const [loadingLink, setLoadingLink] = useState('');
 
+  /**
+   * Handles the click event on a link.
+   *
+   * @param {string} link - The name of the link.
+   * @param {string} href - The URL of the link.
+   */
   const handleClick = (link: string, href: string) => {
     if (pathname !== href) {
       setLoadingLink(link);
