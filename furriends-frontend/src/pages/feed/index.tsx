@@ -12,8 +12,8 @@ export default function FeedPage({ user }: { user: User }) {
     return (
         <Layout user={user}>
             <div className='flex-grow p-6'>
-                <h1 className="mb-7 text-2xl font-bold text-amber-950">Feed - this is a mockup.</h1>
                 <FeedLinks />
+                <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed - this is a mockup.</h1>
             </div>
             <div className='flex justify-center items-center'>
 
