@@ -1,3 +1,9 @@
+/**
+ * Print timestamp from Supabase string into user friendly readable format
+ * @param {string} timestamp - timestamp from Supabase
+ * @returns {string} - pretty print string for timestamp
+ */
+
 export default function printTimestamp(timestamp: string): string {
     // Store date
     const date = new Date(timestamp);
