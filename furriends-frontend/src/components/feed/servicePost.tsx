@@ -1,8 +1,10 @@
-import { FreelancerPost } from "@/utils/definitions";
+import { FreelancerPost, Profile } from "@/utils/definitions";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { Card, Image, Text, Badge, Button, Group } from '@mantine/core';
 import ChatButton from "@/components/chat/chatButton";
 import { User } from "@supabase/supabase-js";
+import { createClient } from "@/utils/supabase/component";
+import { useState } from "react";
 
 type ServicePostProps = {
     user: User,
@@ -17,9 +19,39 @@ type ServicePostProps = {
  * @returns {JSX.Element} The rendered ServicePost component.
  */
 export default function ServicePost({ user, post }: ServicePostProps) {
+    const supabase = createClient();
+    const [profile, setProfile] = useState<Profile | null>(null)
+
+    /**
+     * Get the profile data of the post author.
+     * 
+     * @returns {Profile} Profile data of post author.
+     */
+    supabase
+        .from('profiles')
+        .select(`id, username, avatar_url`)
+        .eq('id', post.author_id)
+        .single()
+        .then((res: any) => {
+            setProfile(res.data)
+        });
 
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder w={400}>
+        <Card.Section className="bg-amber-900 bg-opacity-10">
+            <Group m="xs">
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-700 ml-5 mr-5">
+                    <Image
+                        src={profile?.avatar_url} // use default avatar if no avatar set
+                        alt="profile picture"
+                        width={48}
+                        height={48}
+                        className="object-cover"
+                    />
+                </div>
+                <Text size="lg" fw={700} c="#6d543e">{profile?.username}</Text>
+            </Group>
+        </Card.Section>
         <Card.Section>
             <Image
                 src={post.photo}
