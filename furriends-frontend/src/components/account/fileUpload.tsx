@@ -8,6 +8,15 @@ import { createClient } from '../../utils/supabase/component'
 import { FileInput } from '@mantine/core';
 //import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 
+/**
+ * Component for uploading multiple files to Supabase storage.
+ *
+ * @param {{ uid: string | null, urls: string[] | null, onUpload: (urls: string[]) => void }} props - The component props.
+ * @param {string | null} props.uid - The user ID.
+ * @param {string[] | null} props.urls - The URLs of the uploaded files.
+ * @param {function} props.onUpload - Callback function to handle the uploaded file URLs.
+ * @returns {JSX.Element} The file upload component.
+ */
 export default function FileUpload({ uid, urls, onUpload, }: {
     uid: string | null
     urls: string[] | null
@@ -17,6 +26,13 @@ export default function FileUpload({ uid, urls, onUpload, }: {
     const photo_urls = urls || [];
     const [uploading, setUploading] = useState(false); // can be used later on to modify state of buttons etc.
 
+    /**
+     * Handles the photo upload process.
+     *
+     * @async
+     * @function uploadPhoto
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The file input change event.
+     */
     // selected files will be uploaded to supabase storage and generate unique urls
     const uploadPhoto: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
         try {
@@ -54,6 +70,12 @@ export default function FileUpload({ uid, urls, onUpload, }: {
         }
     };
 
+    /**
+     * Handles the file change event.
+     *
+     * @function handleFileChange
+     * @param {File[]} files - The selected files.
+     */
     function handleFileChange(files: File[]) {
         const event = {
             target: { files: files as any }

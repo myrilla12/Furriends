@@ -11,15 +11,27 @@ type LayoutProps = {
     user: User;
 };
 
+/**
+ * Layout component that includes a sidebar, header, and main content area.
+ *
+ * @param {LayoutProps} props - The component props.
+ * @param {React.ReactNode} props.children - The children components to be rendered in the main content area.
+ * @param {User} props.user - The user object containing user information.
+ * @returns {JSX.Element} The Layout component.
+ */
 export default function Layout({ children, user }: LayoutProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    // used to change state of side bar
+    /**
+     * Toggles the sidebar open or closed.
+     */
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-    // used to close sidebar when overlay is clicked
+    /**
+     * Closes the sidebar when overlay is clicked.
+     */
     const closeSidebar = () => {
         setIsSidebarOpen(false);
     };

@@ -32,20 +32,43 @@ type PetsPageProps = {
     pets: Pet[];
 };
 
+/**
+ * Page component for displaying and managing user's pets.
+ *
+ * @param {PetsPageProps} props - The component props.
+ * @param {User} props.user - The user object containing user information.
+ * @param {Pet[]} props.pets - The list of pets belonging to the user.
+ * @returns {JSX.Element} The PetsPage component.
+ */
 export default function PetsPage({ pets, user }: PetsPageProps) {
     const [petList, setPetList] = useState(pets);
     const [modalOpened, setModalOpened] = useState(false);
 
+    /**
+     * Adds a new pet to the state.
+     *
+     * @param {Pet} newPet - The new pet to add.
+     */
     const addPetToState = useCallback((newPet: Pet) => {
         setPetList((prevPets) => [...prevPets, newPet]);
     }, []);
 
+    /**
+     * Updates an existing pet in the state.
+     *
+     * @param {Pet} updatedPet - The pet to update.
+     */
     const updatePetInState = useCallback((updatedPet: Pet) => {
         setPetList((prevPets) =>
             prevPets.map((pet) => (pet.id === updatedPet.id ? updatedPet : pet))
         );
     }, []);
     
+    /**
+     * Deletes a pet from the state.
+     *
+     * @param {string} deletedPetId - The ID of the pet to delete.
+     */
     const deletePetFromState = useCallback((deletedPetId: string) => {
         setPetList((prevPets) => prevPets.filter((pet) => pet.id !== deletedPetId))
     }, []);
@@ -68,7 +91,14 @@ export default function PetsPage({ pets, user }: PetsPageProps) {
     );
 }
 
-// fetch user profile photo & pet profile by getting server props
+/**
+ * Server-side function to handle user authentication and fetch user and pet data.
+ *
+ * @async
+ * @function getServerSideProps
+ * @param {GetServerSidePropsContext} context - The server-side context.
+ * @returns {Promise<{redirect?: {destination: string, permanent: boolean}, props?: {pets: Pet[], user: User}}>} The redirection object for unauthenticated users or the user and pet data for authenticated users.
+ */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
 

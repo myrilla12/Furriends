@@ -9,7 +9,14 @@ import { Pet } from '@/utils/definitions';
 import { useState } from 'react';
 import NoPetsFound from '@/components/dashboard/noPetsFound';
 
-// define prop types
+/**
+ * Props for the DashboardPage component.
+ * @typedef {Object} DashboardProps
+ * @property {User} user - The authenticated user.
+ * @property {string} username - The username of the user.
+ * @property {React.ReactNode} children - Children components to render within the layout.
+ * @property {Pet[]} pets - Array of pet objects.
+ */
 type DashboardProps = {
     user: User;
     username: string;
@@ -17,6 +24,12 @@ type DashboardProps = {
     pets: Pet[]
 };
 
+/**
+ * The DashboardPage component for displaying the user's dashboard with pet filters and carousel.
+ *
+ * @param {DashboardProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered DashboardPage component.
+ */
 export default function DashboardPage({ user, username, pets, children }: DashboardProps) {
 
     const [filteredPets, setFilteredPets] = useState<Pet[]>(pets);
@@ -37,7 +50,12 @@ export default function DashboardPage({ user, username, pets, children }: Dashbo
     );
 }
 
-// fetch user data (username, profile photo) by getting server props
+/**
+ * Fetches user data (username, profile photo) and pet data by getting server props.
+ *
+ * @param {GetServerSidePropsContext} context - The server-side context.
+ * @returns {Promise<{ props: { user: User, username: string, pets: Pet[] } }>} The server-side props.
+ */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
 

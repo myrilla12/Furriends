@@ -18,6 +18,16 @@ type PetEditModalProps = {
     updatePetInState: (updatedPet: Pet) => void;
 }
 
+/**
+ * Modal component for editing pet details, autofilled with existing profile data.
+ *
+ * @param {PetEditModalProps} props - The component props.
+ * @param {boolean} props.opened - Indicates whether the modal is open.
+ * @param {function} props.onClose - Callback function to close the modal.
+ * @param {Pet} props.pet - The pet object with existing profile data.
+ * @param {function} props.updatePetInState - Callback function to update the pet in the state.
+ * @returns {JSX.Element} The pet edit modal component.
+ */
 export default function PetEditModal({ opened, onClose, pet, updatePetInState }: PetEditModalProps) {
     const supabase = createClient()
     const [loading, setLoading] = useState(false);
@@ -31,6 +41,12 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
     const [likes, setLikes] = useState<string | null>(pet.likes);
     const [photo_urls, setPhotoUrls] = useState<string[] | null>(pet.photos);
 
+    /**
+     * Updates the pet profile in the database and state.
+     *
+     * @async
+     * @function updatePetProfile
+     */
     async function updatePetProfile() {
         // update relations in supabase with new info, else throw error
         try {
@@ -94,7 +110,12 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
         }
     }
 
-    // form validation to ensure all required fields are filled
+    /**
+     * Validates the form to ensure all required fields are filled.
+     *
+     * @function validateForm
+     * @returns {boolean} - Returns true if the form is valid, otherwise false.
+     */
     // can be further refined to show error message below relevant fields instead of using alert
     const validateForm = () => {
         if (!name || !type || !breed || !birthday) {

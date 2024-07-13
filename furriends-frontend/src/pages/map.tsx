@@ -6,7 +6,14 @@ import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
 import BusinessForm from '@/components/map/businessForm';
 
-
+/**
+ * The Map page that allows users to find new locations
+ * to hang out with their pets. It includes a map and a layout component.
+ *
+ * @param {Object} props - The component props.
+ * @param {User} props.user - The user object.
+ * @returns {JSX.Element} The rendered Map page.
+ */
 export default function MapPage({ user }: { user: User }) {
     return (
         <Layout user={user}>
@@ -21,7 +28,12 @@ export default function MapPage({ user }: { user: User }) {
     )
 }
 
-// fetch user data (profile photo) by getting server props
+/**
+ * Fetch user data (profile photo) by getting server props.
+ *
+ * @param {GetServerSidePropsContext} context - The server-side context.
+ * @returns {Promise<{ props: { user: User } }>} The user data to be passed as props.
+ */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
 

@@ -5,10 +5,25 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import createClient from '@/utils/supabase/api'
 
+/**
+ * Returns the first string if the input is an array, otherwise returns the input.
+ *
+ * @param {string | string[] | undefined} item - The input string or array of strings.
+ * @returns {string | undefined} The first string if the input is an array, otherwise the input.
+ */
 function stringOrFirstString(item: string | string[] | undefined) {
   return Array.isArray(item) ? item[0] : item
 }
 
+/**
+ * API route handler for verifying OTP and redirecting the user based on query parameters.
+ *
+ * @async
+ * @function handler
+ * @param {NextApiRequest} req - The API request object.
+ * @param {NextApiResponse} res - The API response object.
+ * @returns {Promise<void>} The response object with a redirect or error status.
+ */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     res.status(405).appendHeader('Allow', 'GET').end()

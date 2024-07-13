@@ -3,6 +3,11 @@ import { Button, MantineProvider, Text, Title } from '@mantine/core';
 import router from 'next/router';
 import BusinessForm from '@/components/map/businessForm';
 
+/**
+ * The Home component serves as the landing page for the application.
+ *
+ * @returns {JSX.Element} The rendered Home component.
+ */
 export default function Home() {
     return (
         <>
