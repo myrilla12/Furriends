@@ -21,7 +21,7 @@ export default function FeedLinks() {
             </Button>
             <Button
                 leftSection={<BuildingStorefrontIcon className="w-6"/>}
-                variant={pathname === '/services' ? 'filled' : 'outline'}
+                variant={pathname === '/feed/services' ? 'filled' : 'outline'}
                 color='#6d543e'
                 radius='xl'
                 onClick={() => {
