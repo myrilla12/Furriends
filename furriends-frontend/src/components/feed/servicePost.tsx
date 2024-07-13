@@ -88,11 +88,11 @@ export default function ServicePost({ user, post }: ServicePostProps) {
             }
         </Group>
 
-        <Group gap="xs" mb="xs">
+        <Group gap="xs">
             <MapPinIcon className="w-4 text-gray-500" />
             <Text size="sm" c="dimmed">{post.location}</Text>
-            {/* <Text size="sm" c="dimmed">Posted at: {printTimestamp(post.created_at)}</Text> */}
         </Group>
+        <Text size="xs" c="dimmed" mb="xs">Posted at: {printTimestamp(post.created_at)}</Text>
 
         <Text size="sm" c="dimmed" mb="xs">
             {post.content}
