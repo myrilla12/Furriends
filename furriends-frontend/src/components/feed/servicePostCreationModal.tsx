@@ -21,13 +21,7 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
     const [content, setContent] = useState<string | null>(null);
     const [location, setLocation] = useState<string | null>(null);
     const [pricing, setPricing] = useState<number[] | null>(null);
-    const [photo_url, setPhotoUrl] = useState<string | null>('');
-
-    console.log('photo_url', photo_path);
-    console.log('title', title);
-    console.log('content', content);
-    console.log('location', location);
-    console.log('pricing', pricing);
+    const [photo_url, setPhotoUrl] = useState<string>('');
 
     async function uploadPhoto(file: FileWithPath): Promise<string | null> {
         try {
@@ -98,7 +92,7 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                 setContent(null);
                 setLocation(null);
                 setPricing(null);
-                setPhotoUrl(null);
+                setPhotoUrl('');
             }} 
             scrollAreaComponent={ScrollArea.Autosize} 
             size='lg' 
@@ -223,7 +217,7 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                             setContent(null);
                             setLocation(null);
                             setPricing(null);
-                            setPhotoUrl(null);
+                            setPhotoUrl('');
                         }
                     }}
                 >

@@ -4,7 +4,7 @@ import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
 import { Button, Group } from '@mantine/core';
-import FeedLinks from '@/components/feed + services/feedLinks';
+import FeedLinks from '@/components/feed/feedLinks';
 
 
 export default function FeedPage({ user }: { user: User }) {

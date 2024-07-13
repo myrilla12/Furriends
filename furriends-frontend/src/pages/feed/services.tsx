@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
-import { createClient } from '../utils/supabase/server-props'
-import FeedLinks from '@/components/feed + services/feedLinks';
+import { createClient } from '../../utils/supabase/server-props'
+import FeedLinks from '@/components/feed/feedLinks';
 import { Button, Text } from '@mantine/core';
 import { Profile } from '@/utils/definitions';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useDisclosure } from '@mantine/hooks';
-import ServicePostCreationModal from '@/components/feed + services/servicePostCreationModal';
+import ServicePostCreationModal from '@/components/feed/servicePostCreationModal';
 
 
 export default function ServicesPage({ user, profile }: { user: User; profile: Profile; }) {
