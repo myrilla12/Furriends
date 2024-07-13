@@ -93,8 +93,14 @@ export default function SignupBox() {
           <Text c="red" size="xs" fw={700} className="mt-1">{confirmPasswordError}</Text>
         )}
 
-        <Button variant="outline" color="#6d543e" onClick={signup} className="mt-5 mb-6">
-          {loading ? <Loader size="sm" color="#6d543e" /> : 'Sign up'}
+        <Button 
+          variant="outline" 
+          color="#6d543e" 
+          onClick={signup} 
+          className="mt-5 mb-6"
+          rightSection={loading && <Loader size="sm" color="#6d543e" />}
+        >
+          Sign up
         </Button>
       </Box>
 

@@ -80,8 +80,14 @@ export default function LoginBox() {
           </>
         )}
 
-        <Button variant="outline" color="#6d543e" className="mt-6" onClick={login}>
-          {loading ? <Loader size="sm" color="#6d543e" /> : 'Sign in'}
+        <Button 
+          variant="outline" 
+          color="#6d543e" 
+          rightSection={loading && <Loader size="sm" color="#6d543e" />}
+          className="mt-6" 
+          onClick={login}
+        >
+          Sign in
         </Button>
       </div>
 
