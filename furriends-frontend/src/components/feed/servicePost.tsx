@@ -2,8 +2,10 @@ import { FreelancerPost } from "@/utils/definitions";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { Card, Image, Text, Badge, Button, Group } from '@mantine/core';
 import ChatButton from "@/components/chat/chatButton";
+import { User } from "@supabase/supabase-js";
 
 type ServicePostProps = {
+    user: User,
     post: FreelancerPost,
 }
 
@@ -14,7 +16,7 @@ type ServicePostProps = {
  * @param {FreelancerPost} props.post - The service post data.
  * @returns {JSX.Element} The rendered ServicePost component.
  */
-export default function ServicePost({ post }: ServicePostProps) {
+export default function ServicePost({ user, post }: ServicePostProps) {
 
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder w={400}>
@@ -49,7 +51,7 @@ export default function ServicePost({ post }: ServicePostProps) {
             {post.content}
         </Text>
         
-        <ChatButton owner_id={post.author_id} button_color="white" feed={true}/>
+        {user.id !== post.author_id && <ChatButton owner_id={post.author_id} button_color="white" feed={true}/>}
         </Card>
     );
 }
