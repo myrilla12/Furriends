@@ -1,4 +1,4 @@
-import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Image, Loader } from "@mantine/core";
+import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
@@ -25,7 +25,6 @@ type ServicePostCreationModalProps = {
 export default function ServicePostCreationModal({user, opened, setOpened}: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
-    const[uploading, setUploading] = useState(false);
     const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');

@@ -1,10 +1,11 @@
 import Layout from '@/components/layout';
-import Image from 'next/image';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
-import { Button, Group } from '@mantine/core';
+import { Button } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
 
 /**
  * Page component for displaying the feed.
@@ -14,23 +15,26 @@ import FeedLinks from '@/components/feed/feedLinks';
  * @returns {JSX.Element} The FeedPage component.
  */
 export default function FeedPage({ user }: { user: User }) {
-    
+    const [opened, setOpened] = useState(false);
+
     return (
         <Layout user={user}>
-            <div className='flex-grow p-6'>
+            <div className='relative flex-grow p-6'>
                 <FeedLinks />
+                <div className="absolute top-6 right-6">
+                    <Button 
+                        leftSection={<PlusCircleIcon className='w-6'/>} 
+                        m='md' 
+                        size='md' 
+                        variant='light' 
+                        color='#6d543e' 
+                        radius='md'
+                        onClick={() => setOpened(true)}
+                    >
+                        Create a post
+                    </Button>
+                </div>
                 <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed - this is a mockup.</h1>
-            </div>
-            <div className='flex justify-center items-center'>
-
-                <Image
-                    width={0}
-                    height={0}
-                    src='/feed-placeholder.png'
-                    alt='Feed Mockup'
-                    sizes="100vw"
-                    style={{ width: '64%', height: 'auto' }}
-                />
             </div>
         </Layout >
     )
