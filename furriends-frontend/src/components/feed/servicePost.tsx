@@ -35,7 +35,7 @@ export default function ServicePost({ user, post }: ServicePostProps) {
             const { data: ProfileData, error: ProfileError } = await supabase
                 .from('profiles')
                 .select(`username, avatar_url`)
-                .eq('id', post.author_id)
+                .eq('id', post.post_author)
                 .single();
 
             if (ProfileData) {
@@ -68,7 +68,7 @@ export default function ServicePost({ user, post }: ServicePostProps) {
         </Card.Section>
         <Card.Section>
             <Image
-                src={post.photo}
+                src={post.post_image}
                 h={400}
                 fit="contain"
                 alt="Not loading..."
@@ -77,28 +77,28 @@ export default function ServicePost({ user, post }: ServicePostProps) {
         </Card.Section>
 
         <Group justify="space-between" mt="md" mb="xs">
-            <Text fw={700} size="xl" c="#6d543e">{post.title}</Text>
-            {post.pricing[0] === post.pricing[1] ?
+            <Text fw={700} size="xl" c="#6d543e">{post.post_title}</Text>
+            {post.post_pricing[0] === post.post_pricing[1] ?
                 <Badge size="md" color="#6d543e">
-                    ${post.pricing[0]} 
+                    ${post.post_pricing[0]} 
                 </Badge> :
                 <Badge size="md" color="#6d543e">
-                    ${post.pricing[0]} - {post.pricing[1]}
+                    ${post.post_pricing[0]} - {post.post_pricing[1]}
                 </Badge>
             }
         </Group>
 
         <Group gap="xs">
             <MapPinIcon className="w-4 text-gray-500" />
-            <Text size="sm" c="dimmed">{post.location}</Text>
+            <Text size="sm" c="dimmed">{post.post_location}</Text>
         </Group>
         <Text size="xs" c="dimmed" mb="xs">Posted at: {printTimestamp(post.created_at)}</Text>
 
         <Text size="sm" c="dimmed" mb="xs">
-            {post.content}
+            {post.post_content}
         </Text>
         
-        {user.id !== post.author_id && <ChatButton owner_id={post.author_id} button_color="white" feed={true}/>}
+        {user.id !== post.post_author && <ChatButton owner_id={post.post_author} button_color="white" feed={true}/>}
         </Card>
     );
 }

@@ -38,11 +38,11 @@ export type Chats = {
 
 export type FreelancerPost = {
     id: string;
-    photo: string;
-    title: string;
-    content: string;
-    location: string;
-    pricing: number[];
-    author_id: string;
     created_at: string;
+    post_image: string;
+    post_title: string;
+    post_content: string;
+    post_location: string;
+    post_pricing: number[];
+    post_author: string;
 }
