@@ -84,7 +84,7 @@ export default function ServicePostCreationModal({user, opened, setOpened, servi
                     post_location: location,
                     post_pricing: pricing,
                     post_author: user?.id, 
-                })
+                });
 
             if (error) {
                 console.error('Error inserting post information', error);
@@ -114,7 +114,7 @@ export default function ServicePostCreationModal({user, opened, setOpened, servi
                     post_content: content,
                     post_location: location,
                     post_author: user?.id, 
-                })
+                });
 
             if (error) {
                 console.error('Error inserting post information', error);
@@ -132,12 +132,19 @@ export default function ServicePostCreationModal({user, opened, setOpened, servi
      * @returns {boolean} True if the form is valid, otherwise false.
      */
     const validate = () => {
-        if (!photo_path || !title || !content || !location || !pricing || !photo_url) {
-            alert('Please fill in all required fields: Image upload, Title, Description, Location and Pricing!');
-            return false;
+        if (service) {
+            if (!photo_path || !title || !content || !location || !pricing || !photo_url) {
+                alert('Please fill in all required fields: Image upload, Title, Description, Location and Pricing!');
+                return false;
+            } 
+        } else {
+            if (!photo_path || !title || !content || !location || !photo_url) {
+                alert('Please fill in all required fields: Image upload, Title, Description and Location!');
+                return false;
+            } 
         }
         return true;
-    }
+    }   
 
     return (
         <Modal 
@@ -244,23 +251,25 @@ export default function ServicePostCreationModal({user, opened, setOpened, servi
                     required
                 />
 
-                {/* Service price range input */}
-                <Box m='md' w={500}>
-                    <Text size='sm' fw={500} mb='xs' inline>Price range <span style={{ color: 'red' }}>*</span></Text>
-                    <RangeSlider 
-                        minRange={0} 
-                        min={0} 
-                        max={500} 
-                        step={1} 
-                        label={(value) => `$ ${value}`} 
-                        defaultValue={[50, 150]}
-                        marks={[
-                            { value: 0, label: '$0' },
-                            { value: 500, label: '$500' }
-                        ]} 
-                        onChangeEnd={setPricing}
-                    />
-                </Box>
+                {/* Service price range input for service modal */}
+                {service && 
+                    <Box m='md' w={500}>
+                        <Text size='sm' fw={500} mb='xs' inline>Price range <span style={{ color: 'red' }}>*</span></Text>
+                        <RangeSlider 
+                            minRange={0} 
+                            min={0} 
+                            max={500} 
+                            step={1} 
+                            label={(value) => `$ ${value}`} 
+                            defaultValue={[50, 150]}
+                            marks={[
+                                { value: 0, label: '$0' },
+                                { value: 500, label: '$500' }
+                            ]} 
+                            onChangeEnd={setPricing}
+                        />
+                    </Box>
+                }
 
                 {/* Button to publish post */}
                 <Button 
@@ -269,9 +278,11 @@ export default function ServicePostCreationModal({user, opened, setOpened, servi
                     color='#6d543e'
                     onClick={async () => {
                         if (validate()) {
-                            service ? 
-                                await addFreelancerPost() :
+                            if (service) {
+                                await addFreelancerPost();
+                            } else {
                                 await addCommunityPost();
+                            }
                             setOpened(false);
                             setPhotoPath(null);
                             setTitle('');

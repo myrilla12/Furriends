@@ -6,6 +6,7 @@ import { Button } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import ServicePostCreationModal from '@/components/feed/servicePostCreationModal';
 
 /**
  * Page component for displaying the feed.
@@ -34,6 +35,7 @@ export default function FeedPage({ user }: { user: User }) {
                         Create a post
                     </Button>
                 </div>
+                <ServicePostCreationModal user={user} opened={opened} setOpened={setOpened} service={false}/>
                 <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed - this is a mockup.</h1>
             </div>
         </Layout >

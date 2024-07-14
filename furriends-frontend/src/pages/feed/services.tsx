@@ -98,7 +98,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const { data: postData, error: postError } = await supabase
         .from('freelancer_posts')
         .select('*')
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: false });
 
     if (postError) {
         console.error('Error fetching post data', postError);
