@@ -47,7 +47,7 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
                         </Button>
                     }
                 </div>
-                <ServicePostCreationModal user={user} opened={opened} setOpened={setOpened}/>
+                <ServicePostCreationModal user={user} opened={opened} setOpened={setOpened} service={true}/>
                 <Flex direction="row">
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>

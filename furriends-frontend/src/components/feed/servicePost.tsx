@@ -23,6 +23,7 @@ export default function ServicePost({ user, post }: ServicePostProps) {
     const supabase = createClient();
     const [username, setUsername] = useState<string>('');
     const [avatar_url, setAvatarUrl] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     /**
      * Fetches and profile data of the author of the post.
@@ -32,6 +33,7 @@ export default function ServicePost({ user, post }: ServicePostProps) {
      */
     async function getProfileData() {
         try {
+            setLoading(true);
             const { data: ProfileData, error: ProfileError } = await supabase
                 .from('profiles')
                 .select(`username, avatar_url`)
@@ -45,10 +47,12 @@ export default function ServicePost({ user, post }: ServicePostProps) {
         } catch (ProfileError) {
             console.log("Error fetching profile data", ProfileError)
         } finally {
-            
+            setLoading(false);
         }
     }
-    useEffect(() => { getProfileData() }, [user, getProfileData])
+    useEffect(() => { 
+        getProfileData(); 
+    }, [user, post.post_author]);
 
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder w={400}>

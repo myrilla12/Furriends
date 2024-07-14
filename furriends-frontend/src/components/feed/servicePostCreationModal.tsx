@@ -10,6 +10,7 @@ type ServicePostCreationModalProps = {
     user: User | null;
     opened: boolean;
     setOpened: (open: boolean) => void;
+    service: boolean
 }
 
 /**
@@ -22,7 +23,7 @@ type ServicePostCreationModalProps = {
  * @param {Partial<DropzoneProps>} props.props - Additional dropzone properties.
  * @returns {JSX.Element} The ServicePostCreationModal component.
  */
-export default function ServicePostCreationModal({user, opened, setOpened}: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
+export default function ServicePostCreationModal({user, opened, setOpened, service}: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
     const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);
@@ -82,6 +83,36 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                     post_content: content,
                     post_location: location,
                     post_pricing: pricing,
+                    post_author: user?.id, 
+                })
+
+            if (error) {
+                console.error('Error inserting post information', error);
+            }
+        } catch (error) {
+            alert('Unable to add post!');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    /**
+     * Adds a new community post to the Supabase database.
+     *
+     * @async
+     */
+    async function addCommunityPost() {
+        try {
+            setLoading(true);
+
+            // insert new post data into 'freelancer_posts'
+            const { error } = await supabase 
+                .from('community_posts')
+                .insert({
+                    post_image: photo_url,
+                    post_title: title,
+                    post_content: content,
+                    post_location: location,
                     post_author: user?.id, 
                 })
 
@@ -238,7 +269,9 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                     color='#6d543e'
                     onClick={async () => {
                         if (validate()) {
-                            await addFreelancerPost();
+                            service ? 
+                                await addFreelancerPost() :
+                                await addCommunityPost();
                             setOpened(false);
                             setPhotoPath(null);
                             setTitle('');
