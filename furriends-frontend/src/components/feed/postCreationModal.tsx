@@ -2,7 +2,7 @@ import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, 
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon, FaceSmileIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/component";
 
@@ -201,9 +201,12 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                         </Dropzone.Reject>
                         <Dropzone.Idle>
                             {photo_path ?
-                                <Text size="xl" inline>
+                                <Flex direction='row' gap='md' align='center'>
+                                    <FaceSmileIcon className="w-12"/>
+                                    <Text size="xl" inline>
                                     Image successfully uploaded!
-                                </Text>
+                                    </Text>
+                                </Flex>
                                 :
                                 <Flex direction='row' gap='md' align='center'>
                                 <PhotoIcon className="w-12"/>
