@@ -14,7 +14,7 @@ type LocationInputProps = {
     defaultValue: string;
 };
 
-const libraries = ['places'];
+const libraries: ("places")[] = ['places'];
 
 export default function LocationInput({ onSelectAddress, defaultValue }: LocationInputProps) {
     const { isLoaded, loadError } = useJsApiLoader({
@@ -42,7 +42,7 @@ function ReadySearchBox({ onSelectAddress, defaultValue }: LocationInputProps) {
     useEffect(() => {
         setValue(defaultValue);
     }, [defaultValue]);
-    
+
     const [value, setValue] = useState(defaultValue);
     const [places, setPlaces] = useState<google.maps.places.PlaceResult[]>([]);
     const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
