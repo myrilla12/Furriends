@@ -4,18 +4,16 @@ import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../utils/supabase/server-props'
 import FeedLinks from '@/components/feed/feedLinks';
-import { Button, Group, Text, Box, Flex } from '@mantine/core';
-import { FreelancerPost, Profile } from '@/utils/definitions';
+import { Button, Flex } from '@mantine/core';
+import { Post, Profile } from '@/utils/definitions';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import { useDisclosure } from '@mantine/hooks';
 import ServicePostCreationModal from '@/components/feed/servicePostCreationModal';
-import ServicePost from '@/components/feed/servicePost';
 import Feed from '@/components/feed/feed';
 
 type ServicesPageProps = {
     user: User,
     profile: Profile, 
-    posts: FreelancerPost[],
+    posts: Post[],
 }
 
 /**
@@ -24,7 +22,7 @@ type ServicesPageProps = {
  * @param {ServicesPageProps} props - The component props.
  * @param {User} props.user - The user object containing user information.
  * @param {Profile} props.profile - The profile object containing user profile information.
- * @param {FreelancerPost[]} props.posts - All freelancer post information. 
+ * @param {Post[]} props.posts - All freelancer post information. 
  * @returns {JSX.Element} The ServicesPage component.
  */
 export default function ServicesPage({ user, profile, posts }: ServicesPageProps) {
@@ -101,6 +99,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         .from('freelancer_posts')
         .select('*')
         .order('created_at', { ascending: true });
+
+    if (postError) {
+        console.error('Error fetching post data', postError);
+    }
 
     return {
         props: {

@@ -1,6 +1,6 @@
-import { FreelancerPost, Profile } from "@/utils/definitions";
+import { Post } from "@/utils/definitions";
 import { MapPinIcon } from "@heroicons/react/24/outline";
-import { Card, Image, Text, Badge, Button, Group, Box } from '@mantine/core';
+import { Card, Image, Text, Badge, Group } from '@mantine/core';
 import ChatButton from "@/components/chat/chatButton";
 import { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/component";
@@ -9,14 +9,14 @@ import printTimestamp from "@/utils/printTimestamp";
 
 type ServicePostProps = {
     user: User,
-    post: FreelancerPost,
+    post: Post,
 }
 
 /**
  * Renders a service post card displaying details of a freelancer's service post.
  * 
  * @param {ServicePostProps} props - The props for the component.
- * @param {FreelancerPost} props.post - The service post data.
+ * @param {Post} props.post - The service post data.
  * @returns {JSX.Element} The rendered ServicePost component.
  */
 export default function ServicePost({ user, post }: ServicePostProps) {
@@ -54,7 +54,7 @@ export default function ServicePost({ user, post }: ServicePostProps) {
         <Card shadow="sm" padding="lg" radius="md" withBorder w={400}>
         <Card.Section className="bg-amber-900 bg-opacity-10">
             <Group m="xs">
-                <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-gray-700 ml-4 mr-1">
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-700 ml-4 mr-1">
                     <Image
                         src={avatar_url} // use default avatar if no avatar set
                         alt="profile picture"
@@ -63,20 +63,21 @@ export default function ServicePost({ user, post }: ServicePostProps) {
                         className="object-cover"
                     />
                 </div>
-                <Text size="lg" fw={700} c="#6d543e">{username}</Text>
+                <Text size="md" fw={700} c="#6d543e">{username}</Text>
             </Group>
         </Card.Section>
+
         <Card.Section>
             <Image
                 src={post.post_image}
-                h={400}
+                h={350}
                 fit="contain"
                 alt="Not loading..."
                 className="bg-slate-950"
             />
         </Card.Section>
 
-        <Group justify="space-between" mt="md" mb="xs">
+        <Group justify="space-between" mt="sm">
             <Text fw={700} size="xl" c="#6d543e">{post.post_title}</Text>
             {post.post_pricing[0] === post.post_pricing[1] ?
                 <Badge size="md" color="#6d543e">
@@ -92,9 +93,9 @@ export default function ServicePost({ user, post }: ServicePostProps) {
             <MapPinIcon className="w-4 text-gray-500" />
             <Text size="sm" c="dimmed">{post.post_location}</Text>
         </Group>
-        <Text size="xs" c="dimmed" mb="xs">Posted at: {printTimestamp(post.created_at)}</Text>
+        <Text size="xs" c="dimmed">Posted at: {printTimestamp(post.created_at)}</Text>
 
-        <Text size="sm" c="dimmed" mb="xs">
+        <Text size="sm" mb="xs">
             {post.post_content}
         </Text>
         

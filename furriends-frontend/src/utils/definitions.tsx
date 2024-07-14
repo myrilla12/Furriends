@@ -36,7 +36,7 @@ export type Chats = {
     notification: number; 
 }[]
 
-export type FreelancerPost = {
+export type Post = {
     id: string;
     created_at: string;
     post_image: string;
