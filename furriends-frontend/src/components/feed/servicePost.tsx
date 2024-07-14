@@ -54,7 +54,7 @@ export default function ServicePost({ user, post }: ServicePostProps) {
         <Card shadow="sm" padding="lg" radius="md" withBorder w={400}>
         <Card.Section className="bg-amber-900 bg-opacity-10">
             <Group m="xs">
-                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-700 ml-5 mr-5">
+                <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-gray-700 ml-4 mr-1">
                     <Image
                         src={avatar_url} // use default avatar if no avatar set
                         alt="profile picture"
