@@ -17,6 +17,7 @@ export default function SignupBox() {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
 
@@ -33,27 +34,30 @@ export default function SignupBox() {
     setConfirmPasswordError('');
 
     if (password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match");
+      setConfirmPasswordError('Passwords do not match');
       setLoading(false);
       return;
     }
 
     const { error } = await supabase.auth.signUp({ email, password });
 
-    // if user is not redirected and no error is shown, supabase email rate limit has been exceeded - try again in an hour
     if (error) {
-      if (error.message.includes('email')) {
-        setEmailError("Invalid email format");
-        setLoading(false);
+      if (error.message.includes('you can only request this once every 60 seconds')) {
+        setMessage('Please try again in 60 seconds.');
+      } else if (error.message.includes('rate limit exceeded')) {
+        setMessage('Email rate limit exceeded. Try again in 1 hour.');
+      } else if (error.message.includes('email')) {
+        setEmailError('Invalid email format');
       } else if (error.message.includes('password')) {
-        setPasswordError("Password must have at least 6 characters.");
-        setLoading(false);
+        setPasswordError('Password must have at least 6 characters.');
+      } else {
+        setConfirmPasswordError('Invalid email or password.')
       }
       console.error(error);
       setLoading(false);
     } else {
       setLoading(false);
-      alert("Sign up successful! Verify your account using the link in your email.")
+      alert('Sign up successful! Please verify your account using the link in your email.')
       router.push('/login');
     }
   }
@@ -71,7 +75,7 @@ export default function SignupBox() {
           label="Email Address"
           placeholder="Email Address"
           value={email}
-          onChange={(event) => setEmail(event.currentTarget.value)}
+          onChange={(e) => setEmail(e.currentTarget.value)}
         />
 
         {emailError && (
@@ -83,7 +87,7 @@ export default function SignupBox() {
           label="Password"
           placeholder="Password"
           value={password}
-          onChange={(event) => setPassword(event.currentTarget.value)}
+          onChange={(e) => setPassword(e.currentTarget.value)}
           className="mt-4"
         />
 
@@ -96,7 +100,7 @@ export default function SignupBox() {
           label="Confirm Password"
           placeholder="Type password again"
           value={confirmPassword}
-          onChange={(event) => setConfirmPassword(event.currentTarget.value)}
+          onChange={(e) => setConfirmPassword(e.currentTarget.value)}
           className="mt-4"
         />
 
@@ -104,10 +108,12 @@ export default function SignupBox() {
           <Text c="red" size="xs" fw={700} className="mt-1">{confirmPasswordError}</Text>
         )}
 
-        <Button 
-          variant="outline" 
-          color="#6d543e" 
-          onClick={signup} 
+        {message && <p className="mt-1 text-sm text-cyan-600 font-bold">{message}</p>}
+
+        <Button
+          variant="outline"
+          color="#6d543e"
+          onClick={signup}
           className="mt-5 mb-6"
           rightSection={loading && <Loader size="sm" color="#6d543e" />}
         >
