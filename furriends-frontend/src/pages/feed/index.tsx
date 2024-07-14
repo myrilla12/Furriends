@@ -2,11 +2,13 @@ import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
-import { Button } from '@mantine/core';
+import { Button, Flex } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import ServicePostCreationModal from '@/components/feed/servicePostCreationModal';
+import Feed from '@/components/feed/feed';
+import { Post } from '@/utils/definitions';
 
 /**
  * Page component for displaying the feed.
@@ -15,7 +17,7 @@ import ServicePostCreationModal from '@/components/feed/servicePostCreationModal
  * @param {User} props.user - The user object containing user information.
  * @returns {JSX.Element} The FeedPage component.
  */
-export default function FeedPage({ user }: { user: User }) {
+export default function FeedPage({ user, posts }: { user: User; posts: Post[];}) {
     const [opened, setOpened] = useState(false);
 
     return (
@@ -36,7 +38,13 @@ export default function FeedPage({ user }: { user: User }) {
                     </Button>
                 </div>
                 <ServicePostCreationModal user={user} opened={opened} setOpened={setOpened} service={false}/>
-                <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed - this is a mockup.</h1>
+                <Flex direction="row">
+                    <div>
+                        <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
+                        <h2 className="mb-7">Share your pet adventures</h2>
+                    </div>
+                    <Feed user={user} posts={posts} service={false}/>
+                </Flex>
             </div>
         </Layout >
     )
@@ -65,9 +73,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
+    const { data: postData, error: postError } = await supabase
+        .from('community_posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (postError) {
+        console.error('Error fetching post data', postError);
+    }
+
     return {
         props: {
             user: data.user,
+            posts: postData,
         },
     }
 }

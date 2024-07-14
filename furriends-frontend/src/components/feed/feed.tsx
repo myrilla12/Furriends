@@ -6,6 +6,7 @@ import { User } from "@supabase/supabase-js";
 type FeedProps = {
     user: User,
     posts: Post[],
+    service: boolean
 }
 
 /**
@@ -14,12 +15,12 @@ type FeedProps = {
  * @param {Post[]} props.posts - All freelancer post information. 
  * @returns {JSX.Element} The Feed component.
  */
-export default function Feed({ user, posts }: FeedProps) {
+export default function Feed({ user, posts, service }: FeedProps) {
     return (
         <ScrollArea.Autosize mah={600} w={400} mx="auto" scrollbars="y">
             <Stack gap="md">
                 {posts?.map((post) => (
-                    <ServicePost user={user} post={post} />
+                    <ServicePost user={user} post={post} service={service}/>
                 ))}
             </Stack>
         </ScrollArea.Autosize>

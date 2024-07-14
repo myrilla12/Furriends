@@ -10,6 +10,7 @@ import printTimestamp from "@/utils/printTimestamp";
 type ServicePostProps = {
     user: User,
     post: Post,
+    service: boolean,
 }
 
 /**
@@ -19,7 +20,7 @@ type ServicePostProps = {
  * @param {Post} props.post - The service post data.
  * @returns {JSX.Element} The rendered ServicePost component.
  */
-export default function ServicePost({ user, post }: ServicePostProps) {
+export default function ServicePost({ user, post, service }: ServicePostProps) {
     const supabase = createClient();
     const [username, setUsername] = useState<string>('');
     const [avatar_url, setAvatarUrl] = useState<string>('');
@@ -83,13 +84,16 @@ export default function ServicePost({ user, post }: ServicePostProps) {
 
         <Group justify="space-between" mt="sm">
             <Text fw={700} size="xl" c="#6d543e">{post.post_title}</Text>
-            {post.post_pricing[0] === post.post_pricing[1] ?
-                <Badge size="md" color="#6d543e">
-                    ${post.post_pricing[0]} 
-                </Badge> :
-                <Badge size="md" color="#6d543e">
-                    ${post.post_pricing[0]} - {post.post_pricing[1]}
-                </Badge>
+            {post.post_pricing && 
+                (service &&
+                (post.post_pricing[0] === post.post_pricing[1]) ?
+                    <Badge size="md" color="#6d543e">
+                        ${post.post_pricing[0]} 
+                    </Badge> :
+                    <Badge size="md" color="#6d543e">
+                        ${post.post_pricing[0]} - {post.post_pricing[1]}
+                    </Badge>
+                )
             }
         </Group>
 
@@ -103,7 +107,7 @@ export default function ServicePost({ user, post }: ServicePostProps) {
             {post.post_content}
         </Text>
         
-        {user.id !== post.post_author && <ChatButton owner_id={post.post_author} button_color="white" feed={true}/>}
+        {(user.id !== post.post_author) && service && <ChatButton owner_id={post.post_author} button_color="white" feed={true}/>}
         </Card>
     );
 }

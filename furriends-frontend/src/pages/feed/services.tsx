@@ -53,7 +53,7 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
                         <h2 className="mb-7">For all your pet&apos;s needs</h2>
                     </div>
-                    <Feed user={user} posts={posts} />
+                    <Feed user={user} posts={posts} service={true}/>
                 </Flex>
    
             </div>
