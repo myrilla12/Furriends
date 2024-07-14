@@ -6,7 +6,7 @@ import { Button, Flex } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import ServicePostCreationModal from '@/components/feed/servicePostCreationModal';
+import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 import { Post } from '@/utils/definitions';
 
@@ -15,6 +15,7 @@ import { Post } from '@/utils/definitions';
  *
  * @param {{ user: User }} props - The component props.
  * @param {User} props.user - The user object containing user information.
+ * @param {Post[]} props.posts - The community feed post data. 
  * @returns {JSX.Element} The FeedPage component.
  */
 export default function FeedPage({ user, posts }: { user: User; posts: Post[];}) {
@@ -37,7 +38,7 @@ export default function FeedPage({ user, posts }: { user: User; posts: Post[];})
                         Create a post
                     </Button>
                 </div>
-                <ServicePostCreationModal user={user} opened={opened} setOpened={setOpened} service={false}/>
+                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false}/>
                 <Flex direction="row">
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>

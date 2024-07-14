@@ -7,20 +7,21 @@ import { createClient } from "@/utils/supabase/component";
 import { useEffect, useState } from "react";
 import printTimestamp from "@/utils/printTimestamp";
 
-type ServicePostProps = {
+type PostCardProps = {
     user: User,
     post: Post,
     service: boolean,
 }
 
 /**
- * Renders a service post card displaying details of a freelancer's service post.
+ * Renders a post card displaying details of a post.
  * 
- * @param {ServicePostProps} props - The props for the component.
- * @param {Post} props.post - The service post data.
- * @returns {JSX.Element} The rendered ServicePost component.
+ * @param {PostCardProps} props - The props for the component.
+ * @param {Post} props.post - The post data.
+ * @param {boolean} props.service - Whether post is a service or community post.
+ * @returns {JSX.Element} The rendered PostCard component.
  */
-export default function ServicePost({ user, post, service }: ServicePostProps) {
+export default function PostCard({ user, post, service }: PostCardProps) {
     const supabase = createClient();
     const [username, setUsername] = useState<string>('');
     const [avatar_url, setAvatarUrl] = useState<string>('');

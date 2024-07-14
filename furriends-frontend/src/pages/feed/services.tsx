@@ -7,7 +7,7 @@ import FeedLinks from '@/components/feed/feedLinks';
 import { Button, Flex } from '@mantine/core';
 import { Post, Profile } from '@/utils/definitions';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import ServicePostCreationModal from '@/components/feed/servicePostCreationModal';
+import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 
 type ServicesPageProps = {
@@ -47,7 +47,7 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
                         </Button>
                     }
                 </div>
-                <ServicePostCreationModal user={user} opened={opened} setOpened={setOpened} service={true}/>
+                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={true}/>
                 <Flex direction="row">
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>

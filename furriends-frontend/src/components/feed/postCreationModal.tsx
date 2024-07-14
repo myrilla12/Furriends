@@ -6,7 +6,7 @@ import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/component";
 
-type ServicePostCreationModalProps = {
+type PostCreationModalProps = {
     user: User | null;
     opened: boolean;
     setOpened: (open: boolean) => void;
@@ -14,16 +14,17 @@ type ServicePostCreationModalProps = {
 }
 
 /**
- * Component for creating a service post.
+ * Component for creating a post.
  *
- * @param {ServicePostCreationModalProps} props - The component props.
+ * @param {PostCreationModalProps} props - The component props.
  * @param {User | null} props.user - The current user.
  * @param {boolean} props.opened - Indicates whether the modal is open.
  * @param {function} props.setOpened - Function to set the modal open state.
+ * @param {boolean} props.service - Whether post is created by freelancer or not. 
  * @param {Partial<DropzoneProps>} props.props - Additional dropzone properties.
- * @returns {JSX.Element} The ServicePostCreationModal component.
+ * @returns {JSX.Element} The PostCreationModal component.
  */
-export default function ServicePostCreationModal({user, opened, setOpened, service}: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
+export default function PostCreationModal({user, opened, setOpened, service}: PostCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
     const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);

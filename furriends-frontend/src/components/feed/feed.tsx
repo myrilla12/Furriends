@@ -1,6 +1,6 @@
 import { Post } from "@/utils/definitions";
 import { ScrollArea, Stack } from "@mantine/core";
-import ServicePost from "./servicePost";
+import PostCard from "./post";
 import { User } from "@supabase/supabase-js";
 
 type FeedProps = {
@@ -12,7 +12,9 @@ type FeedProps = {
 /**
  * Feed component for displaying freelancer posts.
  *
+ * @param {User} user - Authenticated user information
  * @param {Post[]} props.posts - All freelancer post information. 
+ * @param {boolean} props.service - Whether Feed is in service or community page. 
  * @returns {JSX.Element} The Feed component.
  */
 export default function Feed({ user, posts, service }: FeedProps) {
@@ -20,7 +22,7 @@ export default function Feed({ user, posts, service }: FeedProps) {
         <ScrollArea.Autosize mah={600} w={400} mx="auto" scrollbars="y">
             <Stack gap="md">
                 {posts?.map((post) => (
-                    <ServicePost user={user} post={post} service={service}/>
+                    <PostCard user={user} post={post} service={service}/>
                 ))}
             </Stack>
         </ScrollArea.Autosize>
