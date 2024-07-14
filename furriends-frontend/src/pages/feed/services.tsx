@@ -19,7 +19,7 @@ import ServicePost from '@/components/feed/servicePost';
  * @param {Profile} props.profile - The profile object containing user profile information.
  * @returns {JSX.Element} The ServicesPage component.
  */
-export default function ServicesPage({ user, profile }: { user: User; profile: Profile; }) {
+export default function ServicesPage({ user, profile, posts }: { user: User; profile: Profile; posts: FreelancerPost;}) {
     const [opened, setOpened] = useState(false);
     const example = {
         photo: "https://gratisography.com/wp-content/uploads/2024/01/gratisography-cyber-kitty-800x525.jpg",
@@ -91,10 +91,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error('Error fetching user profile', profileError);
     }
 
+    const { data: postData, error: postError } = await supabase
+        .from('freelancer_posts')
+        .select('*')
+        .order('created_at', { ascending: true });
+
     return {
         props: {
             user: data.user,
             profile: profileData, 
+            posts: postData,
         },
     }
 }

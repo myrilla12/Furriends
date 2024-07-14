@@ -37,6 +37,7 @@ export type Chats = {
 }[]
 
 export type FreelancerPost = {
+    id: string;
     photo: string;
     title: string;
     content: string;
