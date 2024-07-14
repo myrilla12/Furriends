@@ -14,9 +14,12 @@ import { createClient } from '@/utils/supabase/server-props'
 export default function EditAccountPage({ user }: { user: User }) {
     return (
         <Layout user={user}>
-            <main className="flex flex-grow items-center justify-center h-full flex-col p-6">
+            <div className="flex-grow p-6">
+                <h1 className="mb-7 text-2xl font-bold text-amber-950">Edit Profile</h1>
+            </div>
+            <div className="flex flex-grow items-center justify-center flex-col p-6">
                 <AccountForm user={user} />
-            </main>
+            </div>
         </Layout >
     )
 }

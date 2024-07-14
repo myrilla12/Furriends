@@ -1,7 +1,7 @@
 import React from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import type { GetServerSidePropsContext } from 'next'
-import { createClient } from '../utils/supabase/server-props'
+import { createClient } from '@/utils/supabase/server-props'
 
 const containerStyle = {
   width: '100%',

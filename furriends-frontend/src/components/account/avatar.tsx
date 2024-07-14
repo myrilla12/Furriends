@@ -1,4 +1,3 @@
-// adapted from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
 'use client'
 
 import React, { useEffect, useState } from 'react';
@@ -8,6 +7,7 @@ import { Button } from '@mantine/core';
 
 /**
  * Component for displaying and uploading an avatar image.
+ * Adapted from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
  *
  * @param {{ uid: string | null, url: string | null, size: number, onUpload: (url: string) => void }} props - The component props.
  * @param {string | null} props.uid - The user ID.
@@ -47,6 +47,7 @@ export default function Avatar({ uid, url, size, onUpload, }: {
 
     /**
      * Handles the avatar upload process.
+     * Adapted from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
      *
      * @async
      * @function uploadAvatar
@@ -85,7 +86,7 @@ export default function Avatar({ uid, url, size, onUpload, }: {
 
     return (
         <div className="flex flex-col items-center">
-            <div className="border-2 border-gray-300 flex items-center justify-center" style={{ height: size, width: size }}>
+            <div className="flex border-2 rounded-sm border-gray-300 items-center justify-center" style={{ height: size, width: size }}>
                 {avatarUrl ? (
                     <Image
                         width={size}
@@ -99,8 +100,8 @@ export default function Avatar({ uid, url, size, onUpload, }: {
                     <div className="avatar no-image" style={{ height: size, width: size }} />
                 )}
             </div>
-            <div className="p-3" style={{ width: size }}>
-                <Button component="label" htmlFor="single" className="block" variant="default" color="gray" size="xs" disabled={uploading}>
+            <div className="mt-5" style={{ width: size }}>
+                <Button component="label" htmlFor="single" className="block" variant="outline" color="#6d543e" disabled={uploading}>
                     {uploading ? 'Uploading ...' : 'Upload'}
                     <input
                         style={{ display: 'none', }}

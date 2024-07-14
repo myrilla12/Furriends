@@ -1,5 +1,5 @@
 import React from 'react';
-import Map from '@/components/map';
+import Map from '@/components/map/map';
 import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'

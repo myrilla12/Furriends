@@ -1,30 +1,34 @@
-// from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
 'use client'
 
 import { useCallback, useEffect, useState } from 'react';
-import { createClient } from '../../utils/supabase/component';
+import { createClient } from '@/utils/supabase/component';
 import { type User } from '@supabase/supabase-js';
 import Avatar from './avatar'
 import { Button, Switch, Text, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import FreelancerDetailsModal from './freelancerDetailsModal';
+import LocationInput from '@/components/account/locationInput';
 
 /**
  * Component for rendering and managing the account form.
+ * Adapted from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
  *
  * @param {{ user: User | null }} props - The component props.
  * @param {User | null} props.user - The user object.
  * @returns {JSX.Element} The account form component.
  */
-
 export default function AccountForm({ user }: { user: User | null }) {
     const supabase = createClient();
     const [loading, setLoading] = useState(true);
     const [username, setUsername] = useState<string | null>(null);
+    const [address, setAddress] = useState<string>('');
+    const [latitude, setLatitude] = useState<number | null>(null);
+    const [longtitude, setLongtitude] = useState<number | null>(null);
     const [avatar_url, setAvatarUrl] = useState<string | null>(null);
     const [freelancer, setFreelancer] = useState<boolean>(false);
+    const [message, setMessage] = useState('');
     const [opened, { open, close }] = useDisclosure(false);
-    const [checked, setChecked] = useState(false); 
+    const [checked, setChecked] = useState(false);
 
     /**
      * Fetches and sets the user profile data.
@@ -39,7 +43,7 @@ export default function AccountForm({ user }: { user: User | null }) {
 
             const { data, error, status } = await supabase
                 .from('profiles')
-                .select(`username, avatar_url, freelancer`)
+                .select(`username, address, avatar_url, freelancer`)
                 .eq('id', user?.id)
                 .single();
 
@@ -51,6 +55,7 @@ export default function AccountForm({ user }: { user: User | null }) {
             if (data) {
                 setUsername(data.username);
                 setAvatarUrl(data.avatar_url);
+                setAddress(data.address);
                 setFreelancer(data.freelancer);
             }
         } catch (error) {
@@ -69,12 +74,11 @@ export default function AccountForm({ user }: { user: User | null }) {
      * @function updateProfile
      * @param {{ username: string | null, avatar_url: string | null }} profileData - The profile data to update.
      */
-    async function updateProfile({
-        username,
-        avatar_url,
-    }: {
+    async function updateProfile({ username, address, latitude, longtitude }: {
         username: string | null
-        avatar_url: string | null
+        address: string
+        latitude: number | null
+        longtitude: number | null
     }) {
         try {
             setLoading(true);
@@ -85,60 +89,126 @@ export default function AccountForm({ user }: { user: User | null }) {
                 username = defaultUsername;
                 setUsername(defaultUsername);
             }
-            
-            const { error } = await supabase.from('profiles').upsert({
-                id: user?.id as string,
-                username,
-                avatar_url,
-            });
+
+            const { error } = await supabase.from('profiles')
+                .update({
+                    username,
+                    address,
+                    location: latitude && longtitude ? `SRID=4326;POINT(${longtitude} ${latitude})` : null,
+                })
+                .eq('id', user?.id);
             if (error) throw error;
             alert('Profile updated!');
         } catch (error) {
-            alert('Error updating the data!');
+            alert('Error updating profile!');
+            console.error(error);
         } finally {
             setLoading(false);
         }
     }
 
+    /**
+     * Updates the user avatar url.
+     * 
+     * @async
+     * @function updateAvatar
+     * @param {{ avatar_url: string | null }} avatarData - The avatar url to update.
+     */
+    async function updateAvatar({ url }: {
+        url: string | null
+    }) {
+        try {
+            setLoading(true);
+            const { error } = await supabase.from('profiles').update({ avatar_url: url }).eq('id', user?.id);
+            if (error) throw error;
+            alert('Profile photo updated!');
+        } catch (error) {
+            alert('Error updating profile photo!');
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    /**
+     * Validates the form to ensure all required fields are filled.
+     *
+     * @function validateForm
+     * @returns {boolean} - Returns true if the form is valid, otherwise false.
+     */
+    // can be further refined to show error message below relevant fields instead of using alert
+    const validateForm = () => {
+        if (!address) {
+            setMessage('Please fill in your address.');
+            return false;
+        }
+        return true;
+    };
+
     return (
-        <div className="flex items-center justify-center">
-            <div className="form-widget grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-6 items-center">
-                <div className="col-span-1 md:col-span-2 flex justify-left">
-                    <h1 className="font-bold text-lg">Edit Profile</h1>
-                </div>
-                <div className="space-y-4">
-                    <div className="pb-2">
-                        <TextInput disabled label="Email" placeholder={user?.email} />
+        <div className="flex flex-col items-center justify-center">
+            <div className="form-widget grid grid-cols-1 md:grid-cols-3 gap-x-28 gap-y-6 items-center w-full max-w-xl">
+
+                <div className="col-span-1 md:col-span-2 space-y-4">
+                    <TextInput
+                        label="Email"
+                        placeholder={user?.email}
+                        disabled
+                    />
+
+                    <TextInput
+                        label="Username"
+                        placeholder="Username"
+                        value={username || ''}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+
+                    <LocationInput
+                        onSelectAddress={(address, latitude, longtitude) => {
+                            setAddress(address);
+                            setLatitude(latitude);
+                            setLongtitude(longtitude);
+                        }}
+                        defaultValue={address}
+                    />
+                    {message && <Text c="red" size="xs" fw={700}>{message}</Text>}
+
+                    <div className="flex justify-center">
+                        <Button variant="outline" color="#6d543e"
+                            onClick={() => {
+                                if (validateForm()) {
+                                    updateProfile({ username, address, latitude, longtitude })
+                                }
+                            }}
+                            disabled={loading}
+                            fullWidth
+                            className="mt-3"
+                        >
+                            {loading ? 'Loading ...' : 'Update'}
+                        </Button>
                     </div>
-                    <div className="pb-2">
-                        <TextInput
-                            variant="filled"
-                            label="Username"
-                            placeholder="Username"
-                            value={username || ''}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                    </div>
                 </div>
-                <div className="flex justify-center md:justify-start">
+
+                <div className="flex col-span-1 justify-center md:justify-start">
                     <Avatar
                         uid={user?.id ?? null}
                         url={avatar_url}
-                        size={150}
+                        size={160}
                         onUpload={(url) => {
                             setAvatarUrl(url)
-                            updateProfile({ username, avatar_url: url })
+                            updateAvatar({ url: url })
                         }}
                     />
                 </div>
-                <div className="col-span-1 md:col-span-2 mt-2 flex justify-center">
-                    <Text size='sm' c='dimmed' mr='md'>
-                        Promote pet-related services on Furriends as a freelancer? 
+
+                <div className="flex col-span-1 md:col-span-3 mt-6 justify-center">
+                    <Text size='sm' c='dimmed' fw={500} mr='md'>
+                        Promote pet-related services on furriends as a freelancer?
                     </Text>
                     <Switch
-                        labelPosition="left"
+                        size="md"
                         color="#6d543e"
-                        onLabel="Yes" 
+                        onLabel="Yes"
                         offLabel="No"
                         checked={freelancer ? true : checked} // if user is freelancer switch is checked by default
                         onChange={(event) => {
@@ -151,23 +221,16 @@ export default function AccountForm({ user }: { user: User | null }) {
                         disabled={freelancer}
                     />
                 </div>
-                <FreelancerDetailsModal 
+                <FreelancerDetailsModal
                     user={user}
-                    opened={opened} 
+                    opened={opened}
                     // if modal is closed without agreeing to terms and conditions, reverse switch
                     onClose={() => {
                         setChecked(false);
-                        close(); 
-                    }} 
+                        close();
+                    }}
                 />
-                <div className="col-span-1 md:col-span-2 mt-2 flex justify-center">
-                    <Button variant="default" color="gray"
-                        onClick={() => updateProfile({ username, avatar_url })}
-                        disabled={loading}
-                    >
-                        {loading ? 'Loading ...' : 'Update'}
-                    </Button>
-                </div>
+
             </div>
         </div>
     )
