@@ -72,7 +72,7 @@ export default function AccountForm({ user }: { user: User | null }) {
      * 
      * @async
      * @function updateProfile
-     * @param {{ username: string | null, avatar_url: string | null }} profileData - The profile data to update.
+     * @param {{ username: string | null, address: string, latitude: number | null, longtitude: number | null}} profileData - The profile data to update.
      */
     async function updateProfile({ username, address, latitude, longtitude }: {
         username: string | null

@@ -4,7 +4,7 @@ import { Text, TextInput, PasswordInput, Button, Box, Group, Loader } from '@man
 import router from 'next/router';
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/component';
-
+import { setCookie } from 'nookies';
 
 /**
  * Component for the login box.
@@ -34,6 +34,7 @@ export default function LoginBox() {
       setError('Invalid email or password. Please try again.');
       setLoading(false);
     } else {
+      const user = data.user;
       // fetch username for checking whether default username needs to be set
       const { data: profileData, error: profileError, status } = await supabase
         .from('profiles')
@@ -54,11 +55,17 @@ export default function LoginBox() {
         const defaultUsername = usernamePrefix + '***';
 
         const { error: usernameError } = await supabase.from('profiles').update({ username: defaultUsername }).eq('id', data.user?.id);
-        if (usernameError) { 
-          console.log(usernameError); 
-          setLoading(false); // throw error
+        if (usernameError) {
+          console.log(usernameError); // throw error
+          setLoading(false);
         }
       }
+
+      // set session cookie to show location input modal
+      setCookie(null, 'showLocationModal', 'true', {
+        maxAge: 60 * 15, // 15 minutes
+        path: '/',
+      });
 
       router.push('/dashboard');
     }
@@ -92,11 +99,11 @@ export default function LoginBox() {
           </>
         )}
 
-        <Button 
-          variant="outline" 
-          color="#6d543e" 
+        <Button
+          variant="outline"
+          color="#6d543e"
           rightSection={loading && <Loader size="sm" color="#6d543e" />}
-          className="mt-6" 
+          className="mt-6"
           onClick={login}
         >
           Sign in
@@ -120,5 +127,6 @@ export default function LoginBox() {
       </Group>
 
     </Box>
+
   );
 }

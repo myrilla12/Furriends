@@ -1,6 +1,3 @@
-// adapted from: https://github.com/leighhalliday/house-course/blob/main/src/components/searchBox.tsx
-// heavily edited to suit React 18 and GMaps API for React
-
 import React, { useState, useEffect } from "react";
 import { useJsApiLoader, StandaloneSearchBox } from "@react-google-maps/api";
 import { TextInput } from "@mantine/core";
@@ -16,6 +13,16 @@ type LocationInputProps = {
 
 const libraries: ("places")[] = ['places'];
 
+/**
+ * Component to render a location input using Google Maps API.
+ * Adapted from: https://github.com/leighhalliday/house-course/blob/main/src/components/searchBox.tsx
+ * Heavily edited to suit React 18 and Google Maps Javascript API for React
+ * 
+ * @param {LocationInputProps} props - The props for the component.
+ * @param {string} props.defaultValue - The default value for the address input.
+ * @param {(address: string, latitude: number | null, longtitude: number | null) => void} props.onSelectAddress - Function to handle the selected address.
+ * @returns {JSX.Element} The rendered LocationInput component.
+ */
 export default function LocationInput({ onSelectAddress, defaultValue }: LocationInputProps) {
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
@@ -38,6 +45,14 @@ export default function LocationInput({ onSelectAddress, defaultValue }: Locatio
     );
 }
 
+/**
+ * Component to render the search box once the Google Maps API is loaded.
+ * 
+ * @param {LocationInputProps} props - The props for the component.
+ * @param {string} props.defaultValue - The default value for the address input.
+ * @param {(address: string, latitude: number | null, longtitude: number | null) => void} props.onSelectAddress - Function to handle the selected address.
+ * @returns {JSX.Element} The rendered ReadySearchBox component.
+ */
 function ReadySearchBox({ onSelectAddress, defaultValue }: LocationInputProps) {
     useEffect(() => {
         setValue(defaultValue);
@@ -47,10 +62,18 @@ function ReadySearchBox({ onSelectAddress, defaultValue }: LocationInputProps) {
     const [places, setPlaces] = useState<google.maps.places.PlaceResult[]>([]);
     const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
 
+    /**
+     * Handles the load event for the search box.
+     * 
+     * @param {google.maps.places.SearchBox} ref - The reference to the search box.
+     */
     const onLoad = (ref: google.maps.places.SearchBox) => {
         setSearchBox(ref);
     };
 
+    /**
+     * Handles the places changed event for the search box.
+     */
     const onPlacesChanged = () => {
         if (searchBox) {
             const places = searchBox.getPlaces();
@@ -69,8 +92,11 @@ function ReadySearchBox({ onSelectAddress, defaultValue }: LocationInputProps) {
         }
     };
 
+    /**
+     * Handles the blur event for the address input.
+     * Clears the input field once it loses focus if the current address is invalid.
+     */
     const handleBlur = () => {
-        // Clear the input field once it loses focus if the current address is invalid
         if (!places.find(place => place.formatted_address === value)) {
             setValue("");
             onSelectAddress("", null, null);
