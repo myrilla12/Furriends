@@ -77,6 +77,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const { data: postData, error: postError } = await supabase
         .from('community_posts')
         .select('*')
+        .is('community_id', null)
         .order('created_at', { ascending: false });
 
     if (postError) {
