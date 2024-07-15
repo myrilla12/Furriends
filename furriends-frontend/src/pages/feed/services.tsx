@@ -4,12 +4,17 @@ import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../utils/supabase/server-props'
 import FeedLinks from '@/components/feed/feedLinks';
-import { Button, Text } from '@mantine/core';
-import { FreelancerPost, Profile } from '@/utils/definitions';
+import { Button, Flex } from '@mantine/core';
+import { Post, Profile } from '@/utils/definitions';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import { useDisclosure } from '@mantine/hooks';
-import ServicePostCreationModal from '@/components/feed/servicePostCreationModal';
-import ServicePost from '@/components/feed/servicePost';
+import PostCreationModal from '@/components/feed/postCreationModal';
+import Feed from '@/components/feed/feed';
+
+type ServicesPageProps = {
+    user: User,
+    profile: Profile, 
+    posts: Post[],
+}
 
 /**
  * Page component for displaying and managing pet services.
@@ -17,19 +22,11 @@ import ServicePost from '@/components/feed/servicePost';
  * @param {ServicesPageProps} props - The component props.
  * @param {User} props.user - The user object containing user information.
  * @param {Profile} props.profile - The profile object containing user profile information.
+ * @param {Post[]} props.posts - All freelancer post information. 
  * @returns {JSX.Element} The ServicesPage component.
  */
-export default function ServicesPage({ user, profile }: { user: User; profile: Profile; }) {
+export default function ServicesPage({ user, profile, posts }: ServicesPageProps) {
     const [opened, setOpened] = useState(false);
-    const example = {
-        photo: "https://gratisography.com/wp-content/uploads/2024/01/gratisography-cyber-kitty-800x525.jpg",
-        title: "Test post",
-        content: "Hello, this is a tester post to see if the post UI looks good iowj djiwj djioqj djiojd iwo jdiow jdiwojd iwjodijw jdiojd iwoqjidojwoiqj djiwoq djiwo djiwo djiwoq djiowq jdiwoq jdiowq djiwoq jdiwoq jwdioq djiwoq djwioq djwioq djwioqd jiwoq dw jiodwj iodjwioq djiwoq djiow djwiqo djiow djiow jdoi djiow djio jdoiw djiow djo djoiq djiow djoi djioq ",
-        location: "Tampines",
-        pricing: [10, 15],
-        author_id: user.id,
-        created_at: "2024-07-13 16:51:24.103749+00",
-    } as FreelancerPost;
     
     return (
         <Layout user={user}>
@@ -50,22 +47,29 @@ export default function ServicesPage({ user, profile }: { user: User; profile: P
                         </Button>
                     }
                 </div>
-                <ServicePostCreationModal user={user} opened={opened} setOpened={setOpened}/>
-                <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
-                <h2 className="mb-7">For all your pet&apos;s needs</h2>
-                <ServicePost user={user} post={example}/>
+                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={true}/>
+                <Flex direction="row">
+                    <div>
+                        <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
+                        <h2 className="mb-7">For all your pet&apos;s needs</h2>
+                    </div>
+                    <Feed user={user} posts={posts} service={true}/>
+                </Flex>
+   
             </div>
         </Layout >
     )
 }
 
 /**
- * Server-side function to handle user authentication and fetch user and profile data.
+ * Server-side function to handle user authentication and fetch user, profile data and freelancer posts.
  *
  * @async
  * @function getServerSideProps
  * @param {GetServerSidePropsContext} context - The server-side context.
- * @returns {Promise<{redirect?: {destination: string, permanent: boolean}, props?: {user: User, profile: Profile}}>} The redirection object for unauthenticated users or the user and profile data for authenticated users.
+ * @returns {Promise<{redirect?: {destination: string, permanent: boolean}, 
+ *      props?: {user: User, profile: Profile, posts: FreelancerPost[]}}>}  
+ *      - The redirection object for unauthenticated users or the user, profile data for authenticated users and freelancer post information.
  */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const supabase = createClient(context)
@@ -91,10 +95,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error('Error fetching user profile', profileError);
     }
 
+    const { data: postData, error: postError } = await supabase
+        .from('freelancer_posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (postError) {
+        console.error('Error fetching post data', postError);
+    }
+
     return {
         props: {
             user: data.user,
             profile: profileData, 
+            posts: postData,
         },
     }
 }

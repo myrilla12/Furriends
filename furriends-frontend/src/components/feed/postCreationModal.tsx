@@ -1,31 +1,32 @@
-import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Image, Loader } from "@mantine/core";
+import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon, FaceSmileIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/component";
 
-type ServicePostCreationModalProps = {
+type PostCreationModalProps = {
     user: User | null;
     opened: boolean;
     setOpened: (open: boolean) => void;
+    service: boolean
 }
 
 /**
- * Component for creating a service post.
+ * Component for creating a post.
  *
- * @param {ServicePostCreationModalProps} props - The component props.
+ * @param {PostCreationModalProps} props - The component props.
  * @param {User | null} props.user - The current user.
  * @param {boolean} props.opened - Indicates whether the modal is open.
  * @param {function} props.setOpened - Function to set the modal open state.
+ * @param {boolean} props.service - Whether post is created by freelancer or not. 
  * @param {Partial<DropzoneProps>} props.props - Additional dropzone properties.
- * @returns {JSX.Element} The ServicePostCreationModal component.
+ * @returns {JSX.Element} The PostCreationModal component.
  */
-export default function ServicePostCreationModal({user, opened, setOpened}: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
+export default function PostCreationModal({user, opened, setOpened, service}: PostCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
-    const[uploading, setUploading] = useState(false);
     const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');
@@ -84,7 +85,37 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                     post_location: location,
                     post_pricing: pricing,
                     post_author: user?.id, 
-                })
+                });
+
+            if (error) {
+                console.error('Error inserting post information', error);
+            }
+        } catch (error) {
+            alert('Unable to add post!');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    /**
+     * Adds a new community post to the Supabase database.
+     *
+     * @async
+     */
+    async function addCommunityPost() {
+        try {
+            setLoading(true);
+
+            // insert new post data into 'freelancer_posts'
+            const { error } = await supabase 
+                .from('community_posts')
+                .insert({
+                    post_image: photo_url,
+                    post_title: title,
+                    post_content: content,
+                    post_location: location,
+                    post_author: user?.id, 
+                });
 
             if (error) {
                 console.error('Error inserting post information', error);
@@ -102,12 +133,19 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
      * @returns {boolean} True if the form is valid, otherwise false.
      */
     const validate = () => {
-        if (!photo_path || !title || !content || !location || !pricing || !photo_url) {
-            alert('Please fill in all required fields: Image upload, Title, Description, Location and Pricing!');
-            return false;
+        if (service) {
+            if (!photo_path || !title || !content || !location || !pricing || !photo_url) {
+                alert('Please fill in all required fields: Image upload, Title, Description, Location and Pricing!');
+                return false;
+            } 
+        } else {
+            if (!photo_path || !title || !content || !location || !photo_url) {
+                alert('Please fill in all required fields: Image upload, Title, Description and Location!');
+                return false;
+            } 
         }
         return true;
-    }
+    }   
 
     return (
         <Modal 
@@ -163,9 +201,12 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                         </Dropzone.Reject>
                         <Dropzone.Idle>
                             {photo_path ?
-                                <Text size="xl" inline>
+                                <Flex direction='row' gap='md' align='center'>
+                                    <FaceSmileIcon className="w-12"/>
+                                    <Text size="xl" inline>
                                     Image successfully uploaded!
-                                </Text>
+                                    </Text>
+                                </Flex>
                                 :
                                 <Flex direction='row' gap='md' align='center'>
                                 <PhotoIcon className="w-12"/>
@@ -214,23 +255,25 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                     required
                 />
 
-                {/* Service price range input */}
-                <Box m='md' w={500}>
-                    <Text size='sm' fw={500} mb='xs' inline>Price range <span style={{ color: 'red' }}>*</span></Text>
-                    <RangeSlider 
-                        minRange={0} 
-                        min={0} 
-                        max={500} 
-                        step={1} 
-                        label={(value) => `$ ${value}`} 
-                        defaultValue={[50, 150]}
-                        marks={[
-                            { value: 0, label: '$0' },
-                            { value: 500, label: '$500' }
-                        ]} 
-                        onChangeEnd={setPricing}
-                    />
-                </Box>
+                {/* Service price range input for service modal */}
+                {service && 
+                    <Box m='md' w={500}>
+                        <Text size='sm' fw={500} mb='xs' inline>Price range <span style={{ color: 'red' }}>*</span></Text>
+                        <RangeSlider 
+                            minRange={0} 
+                            min={0} 
+                            max={500} 
+                            step={1} 
+                            label={(value) => `$ ${value}`} 
+                            defaultValue={[50, 150]}
+                            marks={[
+                                { value: 0, label: '$0' },
+                                { value: 500, label: '$500' }
+                            ]} 
+                            onChangeEnd={setPricing}
+                        />
+                    </Box>
+                }
 
                 {/* Button to publish post */}
                 <Button 
@@ -239,7 +282,11 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                     color='#6d543e'
                     onClick={async () => {
                         if (validate()) {
-                            await addFreelancerPost();
+                            if (service) {
+                                await addFreelancerPost();
+                            } else {
+                                await addCommunityPost();
+                            }
                             setOpened(false);
                             setPhotoPath(null);
                             setTitle('');

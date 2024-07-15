@@ -1,36 +1,51 @@
 import Layout from '@/components/layout';
-import Image from 'next/image';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
-import { Button, Group } from '@mantine/core';
+import { Button, Flex } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
+import PostCreationModal from '@/components/feed/postCreationModal';
+import Feed from '@/components/feed/feed';
+import { Post } from '@/utils/definitions';
 
 /**
  * Page component for displaying the feed.
  *
  * @param {{ user: User }} props - The component props.
  * @param {User} props.user - The user object containing user information.
+ * @param {Post[]} props.posts - The community feed post data. 
  * @returns {JSX.Element} The FeedPage component.
  */
-export default function FeedPage({ user }: { user: User }) {
-    
+export default function FeedPage({ user, posts }: { user: User; posts: Post[];}) {
+    const [opened, setOpened] = useState(false);
+
     return (
         <Layout user={user}>
-            <div className='flex-grow p-6'>
+            <div className='relative flex-grow p-6'>
                 <FeedLinks />
-                <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed - this is a mockup.</h1>
-            </div>
-            <div className='flex justify-center items-center'>
-
-                <Image
-                    width={0}
-                    height={0}
-                    src='/feed-placeholder.png'
-                    alt='Feed Mockup'
-                    sizes="100vw"
-                    style={{ width: '64%', height: 'auto' }}
-                />
+                <div className="absolute top-6 right-6">
+                    <Button 
+                        leftSection={<PlusCircleIcon className='w-6'/>} 
+                        m='md' 
+                        size='md' 
+                        variant='light' 
+                        color='#6d543e' 
+                        radius='md'
+                        onClick={() => setOpened(true)}
+                    >
+                        Create a post
+                    </Button>
+                </div>
+                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false}/>
+                <Flex direction="row">
+                    <div>
+                        <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
+                        <h2 className="mb-7">Share your pet adventures</h2>
+                    </div>
+                    <Feed user={user} posts={posts} service={false}/>
+                </Flex>
             </div>
         </Layout >
     )
@@ -59,9 +74,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
+    const { data: postData, error: postError } = await supabase
+        .from('community_posts')
+        .select('*')
+        .is('community_id', null)
+        .order('created_at', { ascending: false });
+
+    if (postError) {
+        console.error('Error fetching post data', postError);
+    }
+
     return {
         props: {
             user: data.user,
+            posts: postData,
         },
     }
 }
