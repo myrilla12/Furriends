@@ -4,6 +4,12 @@ import { useState } from "react";
 import CommunityCreationModal from "./communitiesCreationModal";
 import { User } from "@supabase/supabase-js";
 
+/**
+ * My Communities component for displaying communities that user is a member of.
+ *
+ * @param {User} user - Authenticated user information
+ * @returns {JSX.Element} The My Communities component.
+ */
 export default function MyCommunities({ user }: {user: User;}) {
     const [opened, setOpened] = useState(false);
     

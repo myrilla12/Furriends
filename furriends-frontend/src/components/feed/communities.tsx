@@ -1,5 +1,10 @@
 import { Box } from "@mantine/core";
 
+/**
+ * Communities component for displaying communties that user is not a member of.
+ *
+ * @returns {JSX.Element} The Communities component.
+ */
 export default function Communities() {
     return (
         <Box w={350}>
