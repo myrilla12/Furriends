@@ -9,6 +9,8 @@ import { useState } from 'react';
 import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 import { Post } from '@/utils/definitions';
+import MyCommunities from '@/components/feed/myCommunities';
+import Communities from '@/components/feed/communities';
 
 /**
  * Page component for displaying the feed.
@@ -43,8 +45,10 @@ export default function FeedPage({ user, posts }: { user: User; posts: Post[];})
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                         <h2 className="mb-7">Share your pet adventures</h2>
+                        <MyCommunities user={user}/>
                     </div>
                     <Feed user={user} posts={posts} service={false}/>
+                    <Communities />
                 </Flex>
             </div>
         </Layout >
