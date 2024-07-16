@@ -8,6 +8,9 @@ module.exports = {
       colors: {
         brown: '#6d543e',
       },
+      spacing: {
+        '75': '500px',
+      },
     },
   },
   plugins: [],

@@ -1,4 +1,4 @@
-import { Modal, ScrollArea, Title, Flex, Image, TextInput, Button, Loader } from "@mantine/core";
+import { Modal, ScrollArea, Title, Flex, Image, TextInput, Button, Loader, Textarea } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
@@ -25,9 +25,9 @@ type CommunityCreationModalProps = {
 export default function CommunityCreationModal({user, opened, setOpened}: CommunityCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
-    const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);
     const [avatar_url, setAvatarUrl] = useState<string>('');
     const [name, setName] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
 
     /**
      * Uploads a photo to the Supabase storage.
@@ -61,13 +61,55 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
         }
     }
 
+    /**
+     * Adds a new community to the Supabase database.
+     *
+     * @async
+     */
+    async function addCommunity() {
+        try {
+            setLoading(true);
+
+            // insert new community into 'communities'
+            const { error } = await supabase 
+                .from('communities')
+                .insert({
+                    avatar_url: avatar_url,
+                    name: name,
+                    description: description,
+                });
+
+            if (error) {
+                console.error('Error inserting community information', error);
+            }
+        } catch (error) {
+            alert('Unable to add community!');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    /**
+     * Validates the form inputs.
+     *
+     * @returns {boolean} True if the form is valid, otherwise false.
+     */
+    const validate = () => {
+        if (!avatar_url || !name || !description) {
+            alert('Please fill in all fields: Image upload, Name and Description!');
+            return false;
+        } 
+        return true;
+    }   
+
     return (
         <Modal 
             opened={opened} 
             onClose={() => {
                 setOpened(false);
-                setPhotoPath(null);
                 setAvatarUrl('');
+                setName('');
+                setDescription('');
             }} 
             scrollAreaComponent={ScrollArea.Autosize} 
             size='lg' 
@@ -78,12 +120,12 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
 
                 {/* Dropzone for photo upload */}
                 <Dropzone
+                    className="w-75 h-75 rounded-full overflow-hidden border-2 flex items-center"
                     loading={loading}
                     onDrop={async (files) => {
                         const uploadedUrl = await uploadPhoto(files[0]);
                         if (uploadedUrl) {
                             setAvatarUrl(uploadedUrl);
-                            setPhotoPath(files[0]);
                         }
                     }}
                     onReject={(files) => console.log('rejected files', files)}
@@ -111,17 +153,16 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
                         </Dropzone.Reject>
                         <Dropzone.Idle>
                             {avatar_url ?
-                                <Flex direction='row' gap='md' align='center'>
-                                    <Image
-                                        src={avatar_url}
-                                    />
-                                </Flex>
+                                <Image
+                                    src={avatar_url}
+                                    className="w-75 h-75 rounded-full flex items-center justify-center"
+                                />
                                 :
                                 <Flex direction='row' gap='md' align='center'>
                                 <PhotoIcon className="w-12"/>
                                 <div>
                                     <Text size="xl" inline>
-                                        Drag images here or click to select files
+                                        Drag images here or click to select files <span style={{ color: 'red' }}>*</span>
                                     </Text>
                                     <Text size="sm" c="dimmed" inline mt={7}>
                                         Attach community avatar image, the file should not exceed 5mb
@@ -136,9 +177,18 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
                 {/* Community name input */}
                 <TextInput
                     label="Name"
-                    placeholder="E.g. Turtle community"
+                    placeholder="E.g. British shorthair cats community"
                     w={500}
                     onChange={(e) => setName(e.target.value)}
+                    required
+                />
+
+                {/* Community name input */}
+                <Textarea
+                    label="Description"
+                    placeholder="Short description about this community's interests"
+                    w={500}
+                    onChange={(e) => setDescription(e.target.value)}
                     required
                 />
 
@@ -147,6 +197,15 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
                     m='sm' 
                     size='md' 
                     color='#6d543e'
+                    onClick={async () => {
+                        if (validate()) {
+                            await addCommunity();
+                            setOpened(false);
+                            setAvatarUrl('');
+                            setName('');
+                            setDescription('');
+                        }
+                    }}
                 >
                     Add community
                     {loading && <Loader size="xs" color="#6d543e" />}
