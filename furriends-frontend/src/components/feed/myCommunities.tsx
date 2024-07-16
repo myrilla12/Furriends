@@ -1,5 +1,5 @@
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { Box, Button, Flex } from "@mantine/core";
+import { Avatar, Box, Button, Flex } from "@mantine/core";
 import { useState } from "react";
 import CommunityCreationModal from "./communitiesCreationModal";
 import { User } from "@supabase/supabase-js";
