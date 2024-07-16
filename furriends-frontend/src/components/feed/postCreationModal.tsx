@@ -1,4 +1,4 @@
-import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader } from "@mantine/core";
+import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader, Image } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
@@ -200,12 +200,11 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                             </Flex>
                         </Dropzone.Reject>
                         <Dropzone.Idle>
-                            {photo_path ?
+                            {photo_url ?
                                 <Flex direction='row' gap='md' align='center'>
-                                    <FaceSmileIcon className="w-12"/>
-                                    <Text size="xl" inline>
-                                    Image successfully uploaded!
-                                    </Text>
+                                    <Image 
+                                        src={photo_url}
+                                    />
                                 </Flex>
                                 :
                                 <Flex direction='row' gap='md' align='center'>
