@@ -1,4 +1,4 @@
-import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader } from "@mantine/core";
+import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader, Image } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
@@ -200,19 +200,18 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                             </Flex>
                         </Dropzone.Reject>
                         <Dropzone.Idle>
-                            {photo_path ?
+                            {photo_url ?
                                 <Flex direction='row' gap='md' align='center'>
-                                    <FaceSmileIcon className="w-12"/>
-                                    <Text size="xl" inline>
-                                    Image successfully uploaded!
-                                    </Text>
+                                    <Image 
+                                        src={photo_url}
+                                    />
                                 </Flex>
                                 :
                                 <Flex direction='row' gap='md' align='center'>
                                 <PhotoIcon className="w-12"/>
                                 <div>
                                     <Text size="xl" inline>
-                                        Drag images here or click to select files
+                                        Drag images here or click to select files <span style={{ color: 'red' }}>*</span>
                                     </Text>
                                     <Text size="sm" c="dimmed" inline mt={7}>
                                         Attach only 1 image, each file should not exceed 5mb

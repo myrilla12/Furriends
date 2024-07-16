@@ -2,10 +2,11 @@ import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
+import { createClient as CC } from '@/utils/supabase/component';
 import { Button, Flex } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 import { Post } from '@/utils/definitions';
@@ -21,7 +22,38 @@ import Communities from '@/components/feed/communities';
  * @returns {JSX.Element} The FeedPage component.
  */
 export default function FeedPage({ user, posts }: { user: User; posts: Post[];}) {
+    const supabase = CC();
     const [opened, setOpened] = useState(false);
+    const [feed, setFeed] = useState<Post[]>(posts);
+
+    // make changes to 'community_posts' table realtime
+    useEffect(() => {
+
+        const communityPostsChannel = supabase
+            .channel('community-posts-changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'community_posts',
+                },
+                (payload) => {
+                    const eventType = payload.eventType;
+                    
+                    // if new post is inserted, add it to feed
+                    if (eventType === 'INSERT') {
+                        const newPost = payload.new as Post;
+                        setFeed((prevPosts) => [newPost, ...prevPosts]);
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(communityPostsChannel);
+        };
+    }, [supabase])
 
     return (
         <Layout user={user}>
@@ -47,7 +79,7 @@ export default function FeedPage({ user, posts }: { user: User; posts: Post[];})
                         <h2 className="mb-7">Share your pet adventures</h2>
                         <MyCommunities user={user}/>
                     </div>
-                    <Feed user={user} posts={posts} service={false}/>
+                    <Feed user={user} posts={feed} service={false}/>
                     <Communities />
                 </Flex>
             </div>

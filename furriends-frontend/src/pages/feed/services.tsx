@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../utils/supabase/server-props'
+import { createClient as CC } from '@/utils/supabase/component';
 import FeedLinks from '@/components/feed/feedLinks';
 import { Button, Flex } from '@mantine/core';
 import { Post, Profile } from '@/utils/definitions';
@@ -26,7 +27,38 @@ type ServicesPageProps = {
  * @returns {JSX.Element} The ServicesPage component.
  */
 export default function ServicesPage({ user, profile, posts }: ServicesPageProps) {
+    const supabase = CC();
     const [opened, setOpened] = useState(false);
+    const [feed, setFeed] = useState<Post[]>(posts);
+
+    // make changes to 'freelancer_posts' table realtime
+    useEffect(() => {
+
+        const freelancerPostsChannel = supabase
+            .channel('freelancer-posts-changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'freelancer_posts',
+                },
+                (payload) => {
+                    const eventType = payload.eventType;
+                    
+                    // if new post is inserted, add it to feed
+                    if (eventType === 'INSERT') {
+                        const newPost = payload.new as Post;
+                        setFeed((prevPosts) => [newPost, ...prevPosts]);
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(freelancerPostsChannel);
+        };
+    }, [supabase])
     
     return (
         <Layout user={user}>
@@ -53,7 +85,7 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
                         <h2 className="mb-7">For all your pet&apos;s needs</h2>
                     </div>
-                    <Feed user={user} posts={posts} service={true}/>
+                    <Feed user={user} posts={feed} service={true}/>
                 </Flex>
    
             </div>

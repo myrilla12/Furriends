@@ -83,8 +83,8 @@ export default function PostCard({ user, post, service }: PostCardProps) {
             />
         </Card.Section>
 
-        <Group justify="space-between" mt="sm">
-            <Text fw={700} size="xl" c="#6d543e">{post.post_title}</Text>
+        <Group justify="space-between" mt="sm" style={{ display: 'flex', alignItems: 'center' }}>
+            <Text fw={700} size="xl" c="#6d543e" style={{ flex: 1, overflowWrap: 'anywhere' }}>{post.post_title}</Text>
             {post.post_pricing && 
                 (service &&
                 (post.post_pricing[0] === post.post_pricing[1]) ?
