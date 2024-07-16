@@ -2,7 +2,7 @@ import { Modal, ScrollArea, Title, Flex, Image, TextInput, Button, Loader, Texta
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon, FaceSmileIcon } from "@heroicons/react/24/outline";
+import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/component";
 
@@ -62,7 +62,7 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
     }
 
     /**
-     * Adds a new community to the Supabase database.
+     * Adds a new community to the Supabase database and user as community_user.
      *
      * @async
      */
@@ -70,18 +70,33 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
         try {
             setLoading(true);
 
-            // insert new community into 'communities'
-            const { error } = await supabase 
+            // insert new community into 'communities' and fetch community id
+            const { data, error } = await supabase 
                 .from('communities')
                 .insert({
                     avatar_url: avatar_url,
                     name: name,
                     description: description,
-                });
+                })
+                .select('id')
+                .single();
 
             if (error) {
                 console.error('Error inserting community information', error);
             }
+
+            // add user as member into their created community
+            const { error: communityUserError } = await supabase 
+                .from('community_users')
+                .insert({
+                    community_id: data.id,
+                    user_id: user?.id,
+                });
+
+            if (communityUserError) {
+                console.error('Error inserting community member', communityUserError);
+            }
+
         } catch (error) {
             alert('Unable to add community!');
         } finally {
