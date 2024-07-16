@@ -22,7 +22,7 @@ import { Post } from '@/utils/definitions';
 export default function FeedPage({ user, posts }: { user: User; posts: Post[];}) {
     const supabase = CC();
     const [opened, setOpened] = useState(false);
-    const [feed, setFeed] = useState<Post[]>(posts)
+    const [feed, setFeed] = useState<Post[]>(posts);
 
     // make changes to 'community_posts' table realtime
     useEffect(() => {
