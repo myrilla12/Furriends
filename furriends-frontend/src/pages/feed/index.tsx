@@ -110,6 +110,15 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         }
     };
 
+    /**
+     * Updates MyCommunities state upon adding new community.
+     *
+     * @param {Community} community - The community being added.
+     */
+    const addNewCommunity = (community: Community) => {
+        setMyCommunities(prev => [...prev, community]);
+    };
+
     return (
         <Layout user={user}>
             <div className='relative flex-grow p-6'>
@@ -132,8 +141,8 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                         <h2 className="mb-7">Share your pet adventures</h2>
-                        <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity}/>
-                        <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity}/>
+                        <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity}/>
+                        <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity}/>
                     </div>
                     <Feed user={user} posts={feed} service={false}/>
                 </Flex>

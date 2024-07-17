@@ -5,11 +5,13 @@ import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine
 import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/component";
+import { Community } from "@/utils/definitions";
 
 type CommunityCreationModalProps = {
     user: User | null;
     opened: boolean;
     setOpened: (open: boolean) => void;
+    addNewCommunity: (community: Community) => void;
 }
 
 /**
@@ -19,10 +21,11 @@ type CommunityCreationModalProps = {
  * @param {User | null} props.user - The current user.
  * @param {boolean} props.opened - Indicates whether the modal is open.
  * @param {function} props.setOpened - Function to set the modal open state. 
+ * @param {function} props.addNewCommunity - Function to update state upon adding new community. 
  * @param {Partial<DropzoneProps>} props.props - Additional dropzone properties.
  * @returns {JSX.Element} The PostCreationModal component.
  */
-export default function CommunityCreationModal({user, opened, setOpened}: CommunityCreationModalProps, props: Partial<DropzoneProps>) {
+export default function CommunityCreationModal({user, opened, setOpened, addNewCommunity}: CommunityCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
     const [avatar_url, setAvatarUrl] = useState<string>('');
@@ -78,7 +81,7 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
                     name: name,
                     description: description,
                 })
-                .select('id')
+                .select('*')
                 .single();
 
             if (error) {
@@ -95,6 +98,8 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
 
             if (communityUserError) {
                 console.error('Error inserting community member', communityUserError);
+            } else {
+                addNewCommunity(data);
             }
 
         } catch (error) {
@@ -212,6 +217,7 @@ export default function CommunityCreationModal({user, opened, setOpened}: Commun
                     m='sm' 
                     size='md' 
                     color='#6d543e'
+                    rightSection={loading && <Loader size="xs" color='#6d543e'/>}
                     onClick={async () => {
                         if (validate()) {
                             await addCommunity();
