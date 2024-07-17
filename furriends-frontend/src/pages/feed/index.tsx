@@ -85,9 +85,9 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                         <h2 className="mb-7">Share your pet adventures</h2>
                         <Communities user={user} communities={myCommunities} mine={true}/>
+                        <Communities user={user} communities={otherCommunities} mine={false}/>
                     </div>
                     <Feed user={user} posts={feed} service={false}/>
-                    <Communities user={user} communities={otherCommunities} mine={false}/>
                 </Flex>
             </div>
         </Layout >

@@ -42,7 +42,7 @@ export default function Communities({ user, communities, mine }: {user: User; co
                 }
                 <CommunityCreationModal user={user} opened={opened} setOpened={setOpened}/>
             </Flex>
-            <CommunityList communities={communities} mine={mine}/>
+            <CommunityList user={user} communities={communities} mine={mine}/>
         </Box>
     );
 }
