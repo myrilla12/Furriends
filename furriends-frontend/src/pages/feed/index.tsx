@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 import { Community, Post } from '@/utils/definitions';
-import MyCommunities from '@/components/feed/myCommunities';
 import Communities from '@/components/feed/communities';
 
 type FeedPageProps = {
@@ -85,10 +84,10 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                         <h2 className="mb-7">Share your pet adventures</h2>
-                        <MyCommunities user={user} communities={myCommunities}/>
+                        <Communities user={user} communities={myCommunities} mine={true}/>
                     </div>
                     <Feed user={user} posts={feed} service={false}/>
-                    <Communities communities={otherCommunities}/>
+                    <Communities user={user} communities={otherCommunities} mine={false}/>
                 </Flex>
             </div>
         </Layout >
