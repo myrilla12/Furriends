@@ -33,6 +33,8 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     const supabase = CC();
     const [opened, setOpened] = useState(false);
     const [feed, setFeed] = useState<Post[]>(posts);
+    const [myCommunitiesState, setMyCommunities] = useState<Community[]>(myCommunities);
+    const [otherCommunitiesState, setOtherCommunities] = useState<Community[]>(otherCommunities);
 
     // make changes to 'community_posts' table realtime
     useEffect(() => {
@@ -63,6 +65,51 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         };
     }, [supabase])
 
+    /**
+     * Adds user as member of the community.
+     *
+     * @async
+     * @param {string} id - The community id of the community being joined.
+     */
+    const joinCommunity = async (id: string) => {
+        const { error: communityUserError } = await supabase
+            .from('community_users')
+            .insert({ community_id: id, user_id: user.id });
+
+        if (communityUserError) {
+            console.error('Error inserting community member: ', communityUserError);
+        } else {
+            const community = otherCommunitiesState.find(c => c.id === id);
+            if (community) {
+                setOtherCommunities(prev => prev.filter(c => c.id !== id));
+                setMyCommunities(prev => [community, ...prev]);
+            }
+        }
+    };
+
+    /**
+     * Removes user as member of the community.
+     *
+     * @async
+     * @param {string} id - The community id of the community being left.
+     */
+    const leaveCommunity = async (id: string) => {
+        const { error: removeError } = await supabase
+            .from('community_users')
+            .delete()
+            .match({ community_id: id, user_id: user.id });
+
+        if (removeError) {
+            console.error('Error removing community member: ', removeError);
+        } else {
+            const community = myCommunitiesState.find(c => c.id === id);
+            if (community) {
+                setMyCommunities(prev => prev.filter(c => c.id !== id));
+                setOtherCommunities(prev => [...prev, community]);
+            }
+        }
+    };
+
     return (
         <Layout user={user}>
             <div className='relative flex-grow p-6'>
@@ -85,8 +132,8 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                         <h2 className="mb-7">Share your pet adventures</h2>
-                        <Communities user={user} communities={myCommunities} mine={true}/>
-                        <Communities user={user} communities={otherCommunities} mine={false}/>
+                        <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity}/>
+                        <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity}/>
                     </div>
                     <Feed user={user} posts={feed} service={false}/>
                 </Flex>

@@ -7,6 +7,8 @@ type CommunityListProps = {
     user: User;
     communities: Community[];
     mine: boolean;
+    joinCommunity: (id: string) => void;
+    leaveCommunity: (id: string) => void;
 }
 
 /**
@@ -16,49 +18,11 @@ type CommunityListProps = {
  * @param {User} props.user - The user object containing user information.
  * @param {Community[]} props.myCommunities - Communities that have been fetched from index.
  * @param {boolean} props.mine - True if user is a member of the communities. 
+ * @param {function} props.joinCommunity - Function to join a community.
+ * @param {function} props.leaveCommunity - Function to leave a community.
  * @returns {JSX.Element} The Communities component.
  */
-export default function CommunityList({ user, communities, mine }: CommunityListProps) {
-    const supabase = createClient();
-
-    /**
-     * Adds user as member of the community.
-     *
-     * @async
-     * @param {string} id - The community id of the community being joined.
-     */
-    async function joinCommunity(id: string) {
-        // add user as member into the community
-        const { error: communityUserError } = await supabase 
-            .from('community_users')
-            .insert({
-                community_id: id,
-                user_id: user.id,
-            });
-
-        if (communityUserError) {
-            console.error('Error inserting community member: ', communityUserError);
-        }
-    }
-
-    /**
-     * Removes user as member of the community.
-     *
-     * @async
-     * @param {string} id - The community id of the community being left.
-     */
-    async function leaveCommunity(id: string) {
-        // delete user from community member list
-        const { error: removeError } = await supabase 
-            .from('community_users')
-            .delete()
-            .match({ community_id: id, user_id: user.id });
-            
-
-        if (removeError) {
-            console.error('Error removing community member: ', removeError);
-        }
-    }
+export default function CommunityList({ user, communities, mine, joinCommunity, leaveCommunity }: CommunityListProps) {
 
     function AccordionLabel({ id ,name, avatar_url }: Community) {
         return (

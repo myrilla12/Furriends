@@ -10,6 +10,8 @@ type CommunitiesProps = {
     user: User;
     communities: Community[];
     mine: boolean;
+    joinCommunity: (id: string) => void;
+    leaveCommunity: (id: string) => void;
 }
 
 /**
@@ -19,9 +21,11 @@ type CommunitiesProps = {
  * @param {User} props.user - The user object containing user information.
  * @param {Community[]} props.myCommunities - Communities that have been fetched from index.
  * @param {boolean} props.mine - True if user is a member of the communities. 
+ * @param {function} props.joinCommunity - Function to join a community.
+ * @param {function} props.leaveCommunity - Function to leave a community.
  * @returns {JSX.Element} The Communities component.
  */
-export default function Communities({ user, communities, mine }: CommunitiesProps) {
+export default function Communities({ user, communities, mine, joinCommunity, leaveCommunity }: CommunitiesProps) {
     const [opened, setOpened] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
@@ -52,7 +56,7 @@ export default function Communities({ user, communities, mine }: CommunitiesProp
                 }
                 <CommunityCreationModal user={user} opened={opened} setOpened={setOpened}/>
             </Flex>
-            <CommunityList user={user} communities={communities} mine={mine}/>
+            <CommunityList user={user} communities={communities} mine={mine} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity}/>
         </Box>
     );
 }
