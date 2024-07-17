@@ -1,7 +1,7 @@
 import { Community } from "@/utils/definitions";
-import { createClient } from "@/utils/supabase/component";
-import { Accordion, Avatar, Button, Group, Text } from "@mantine/core";
+import { Accordion, Avatar, Button, Group, Loader, Text } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
+import { useState } from "react";
 
 type CommunityListProps = {
     user: User;
@@ -23,6 +23,7 @@ type CommunityListProps = {
  * @returns {JSX.Element} The Communities component.
  */
 export default function CommunityList({ user, communities, mine, joinCommunity, leaveCommunity }: CommunityListProps) {
+    const [loading, setLoading] = useState<string | null>(null);
 
     function AccordionLabel({ id ,name, avatar_url }: Community) {
         return (
@@ -34,9 +35,12 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
                         size='xs'
                         variant='light' 
                         color='rgba(255, 5, 5, 1)'
+                        rightSection={loading === id && <Loader size="xs" color='rgba(255, 5, 5, 1)'/>}
                         onClick={async (e) => {
                             e.stopPropagation();
+                            setLoading(id);
                             await leaveCommunity(id);
+                            setLoading(null);
                         }}
                     >
                         Leave
@@ -45,9 +49,12 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
                         size='xs'
                         variant='light' 
                         color='rgba(17, 120, 25, 1)'
+                        rightSection={loading === id && <Loader size="xs" color='rgba(17, 120, 25, 1)'/>}
                         onClick={async (e) => {
                             e.stopPropagation();
+                            setLoading(id);
                             await joinCommunity(id);
+                            setLoading(null);
                         }}
                     >
                         Join
