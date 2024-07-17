@@ -46,3 +46,12 @@ export type Post = {
     post_pricing: number[];
     post_author: string;
 }
+
+export type Community = {
+    id: string;
+    created_at: string;
+    avatar_url: string;
+    name: string;
+    description: string;
+    updated_at: string;
+}

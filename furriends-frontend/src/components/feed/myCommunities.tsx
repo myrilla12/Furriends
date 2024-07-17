@@ -1,9 +1,10 @@
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { Avatar, Box, Button, Flex } from "@mantine/core";
+import { Accordion, Avatar, Box, Button, Flex, Group, Text } from "@mantine/core";
 import { useState } from "react";
 import CommunityCreationModal from "./communitiesCreationModal";
 import { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/component";
+import { Community } from "@/utils/definitions";
 
 /**
  * My Communities component for displaying communities that user is a member of.
@@ -11,34 +12,35 @@ import { createClient } from "@/utils/supabase/component";
  * @param {User} user - Authenticated user information
  * @returns {JSX.Element} The My Communities component.
  */
-export default function MyCommunities({ user }: {user: User;}) {
-    const supabase = createClient();
+export default function MyCommunities({ user, communities }: {user: User; communities: Community[]}) {
     const [opened, setOpened] = useState(false);
 
-    async function getCommunityData() {
-        const { data: CommunityIdsData, error: CommunityIdsError } = await supabase
-            .from('community_users')
-            .select(`community_id`)
-            .eq('user_id', user.id);
-
-        if (CommunityIdsError) {
-            console.error("Error fetching my community ids: ", CommunityIdsData);
-        }
-
-        const ids = CommunityIdsData.map((community : { community_id: string; }) => community.community_id);
-
-        const { data: CommunityData, error: CommunityError } = await supabase
-            .from('communities')
-            .select('*')
-            .in('id', ids)
-            .order('updated_at', { ascending: false });
-
-        if (CommunityError) {
-            console.error("Error fetching my community data: ", CommunityError);
-        }
-
-        return CommunityData;
+    function AccordionLabel({ name, avatar_url }: Community) {
+        return (
+            <Group wrap="nowrap">
+            <Avatar src={avatar_url} radius="xl" size="md" />
+            <Text className="flex-grow" c="#6d543e" fw={600} size="md">{name}</Text>
+            <Button 
+                size='xs'
+                variant='light' 
+                color='rgba(255, 5, 5, 1)'
+            >
+                Leave
+            </Button>
+            </Group>
+        );
     }
+    
+    const list = communities?.map((community) => (
+        <Accordion.Item value={community.id} key={community.name}>
+            <Accordion.Control>
+                <AccordionLabel {...community} />
+            </Accordion.Control>
+            <Accordion.Panel>
+                <Text size="sm">{community.description}</Text>
+            </Accordion.Panel>
+        </Accordion.Item>
+    ));
 
     return (
         <Box w={400}>
@@ -58,6 +60,9 @@ export default function MyCommunities({ user }: {user: User;}) {
                 </Button>
                 <CommunityCreationModal user={user} opened={opened} setOpened={setOpened}/>
             </Flex>
+            <Accordion chevronPosition="left" variant="contained">
+                {list}
+            </Accordion>
         </Box>
     );
 }

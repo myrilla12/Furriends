@@ -9,9 +9,15 @@ import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
-import { Post } from '@/utils/definitions';
+import { Community, Post } from '@/utils/definitions';
 import MyCommunities from '@/components/feed/myCommunities';
 import Communities from '@/components/feed/communities';
+
+type FeedPageProps = {
+    user: User;
+    posts: Post[];
+    myCommunities: Community[];
+}
 
 /**
  * Page component for displaying the feed.
@@ -21,7 +27,7 @@ import Communities from '@/components/feed/communities';
  * @param {Post[]} props.posts - The community feed post data. 
  * @returns {JSX.Element} The FeedPage component.
  */
-export default function FeedPage({ user, posts }: { user: User; posts: Post[];}) {
+export default function FeedPage({ user, posts, myCommunities }: FeedPageProps) {
     const supabase = CC();
     const [opened, setOpened] = useState(false);
     const [feed, setFeed] = useState<Post[]>(posts);
@@ -77,7 +83,7 @@ export default function FeedPage({ user, posts }: { user: User; posts: Post[];})
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                         <h2 className="mb-7">Share your pet adventures</h2>
-                        <MyCommunities user={user}/>
+                        <MyCommunities user={user} communities={myCommunities}/>
                     </div>
                     <Feed user={user} posts={feed} service={false}/>
                     <Communities />
@@ -110,6 +116,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
+    // get general community posts
     const { data: postData, error: postError } = await supabase
         .from('community_posts')
         .select('*')
@@ -120,10 +127,33 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error('Error fetching post data', postError);
     }
 
+    // get 'My communities' 
+    const { data: CommunityIdsData, error: CommunityIdsError } = await supabase
+        .from('community_users')
+        .select(`community_id`)
+        .eq('user_id', data.user.id);
+    
+    if (CommunityIdsError) {
+        console.error("Error fetching my community ids: ", CommunityIdsError);
+    }
+
+    const ids = CommunityIdsData.map((community : { community_id: string; }) => community.community_id);
+
+    const { data: CommunityData, error: CommunityError } = await supabase
+        .from('communities')
+        .select('*')
+        .in('id', ids)
+        .order('updated_at', { ascending: false });
+
+    if (CommunityError) {
+        console.error("Error fetching my community information: ", CommunityError);
+    }
+
     return {
         props: {
             user: data.user,
             posts: postData,
+            myCommunities: CommunityData,
         },
     }
 }
