@@ -1,5 +1,5 @@
 import { Community } from "@/utils/definitions";
-import { Box, Button, Flex } from "@mantine/core";
+import { Box, Button, Flex, ScrollArea } from "@mantine/core";
 import CommunityList from "./communityList";
 import { User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
@@ -58,7 +58,9 @@ export default function Communities({ user, communities, mine, joinCommunity, le
                 }
                 <CommunityCreationModal user={user} opened={opened} setOpened={setOpened} addNewCommunity={addNewCommunity}/>
             </Flex>
-            <CommunityList user={user} communities={communities} mine={mine} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity}/>
+            <ScrollArea.Autosize mah={230} w={400} mx="auto" scrollbars="y">
+                <CommunityList user={user} communities={communities} mine={mine} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity}/>
+            </ScrollArea.Autosize>
         </Box>
     );
 }
