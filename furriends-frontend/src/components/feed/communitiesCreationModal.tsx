@@ -229,7 +229,6 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                     }}
                 >
                     Add community
-                    {loading && <Loader size="xs" color="#6d543e" />}
                 </Button>
             </Flex>
         </Modal>
