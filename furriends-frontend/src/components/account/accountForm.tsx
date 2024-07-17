@@ -24,6 +24,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     const [address, setAddress] = useState<string>('');
     const [latitude, setLatitude] = useState<number | null>(null);
     const [longtitude, setLongtitude] = useState<number | null>(null);
+    const [location, setLocation] = useState<string>('');
     const [avatar_url, setAvatarUrl] = useState<string | null>(null);
     const [freelancer, setFreelancer] = useState<boolean>(false);
     const [message, setMessage] = useState('');
@@ -43,7 +44,7 @@ export default function AccountForm({ user }: { user: User | null }) {
 
             const { data, error, status } = await supabase
                 .from('profiles')
-                .select(`username, address, avatar_url, freelancer`)
+                .select(`username, address, location, avatar_url, freelancer`)
                 .eq('id', user?.id)
                 .single();
 
@@ -56,6 +57,7 @@ export default function AccountForm({ user }: { user: User | null }) {
                 setUsername(data.username);
                 setAvatarUrl(data.avatar_url);
                 setAddress(data.address);
+                setLocation(data.location);
                 setFreelancer(data.freelancer);
             }
         } catch (error) {
@@ -94,7 +96,7 @@ export default function AccountForm({ user }: { user: User | null }) {
                 .update({
                     username,
                     address,
-                    location: latitude && longtitude ? `SRID=4326;POINT(${longtitude} ${latitude})` : null,
+                    location: latitude && longtitude ? `SRID=4326;POINT(${longtitude} ${latitude})` : location,
                 })
                 .eq('id', user?.id);
             if (error) throw error;

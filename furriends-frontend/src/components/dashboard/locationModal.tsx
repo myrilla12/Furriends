@@ -51,11 +51,9 @@ export default function LocationModal({ opened, onClose, user }: LocationModalPr
                 throw error;
             }
 
-            if (data) {
-                setAddress(data.address);
-            }
+            setAddress(data.address);
         } catch (error) {
-            alert('Error loading user address!');
+            setMessage('Error loading user address!');
         } finally {
             setLoading(false);
         }
@@ -68,7 +66,6 @@ export default function LocationModal({ opened, onClose, user }: LocationModalPr
      * 
      * @async
      * @function updateAddress
-     * @param {{ address: string, latitude: number | null, longtitude: number | null }} addressData - The address data to update.
      */
     async function updateAddress() {
         try {
@@ -77,15 +74,14 @@ export default function LocationModal({ opened, onClose, user }: LocationModalPr
             const { error } = await supabase.from('profiles')
                 .update({
                     address: address,
-                    location: latitude && longtitude ? `SRID=4326;POINT(${longtitude} ${latitude})` : null,
+                    location: `SRID=4326;POINT(${longtitude} ${latitude})`
                 })
                 .eq('id', user?.id);
             if (error) throw error;
         } catch (error) {
-            alert('Error updating address!');
+            setMessage('Error updating address!');
             console.error(error);
-        } finally {
-            setLoading(false);
+            throw error;
         }
     }
 
@@ -108,15 +104,24 @@ export default function LocationModal({ opened, onClose, user }: LocationModalPr
      * Handles the form submission.
      * Checks that user has keyed in a valid input.
      * Clears the form and closes the modal upon successful submission.
+     * If update address fails, modal does not close.
      * 
      * @function handleSubmit
      */
     const handleSubmit = async () => {
         if (validateForm()) {
             setLoading(true);
-            await updateAddress();
-            setLoading(false);
-            onClose();
+            setMessage('');
+            try {
+                if (address && latitude && longtitude) { // only update if changes are made, ie. lat & long are present
+                    await updateAddress();
+                }
+                onClose(); // close modal only if update is successful
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
         }
     };
 

@@ -48,9 +48,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
+    // select user address
+    const { data: addressData, error: addressError } = await supabase
+        .from('profiles')
+        .select('location')
+        .eq('id', data.user.id);
+
     return {
         props: {
             user: data.user,
+            address: addressData.location
         },
     }
 }
