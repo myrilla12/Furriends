@@ -12,7 +12,8 @@ type FeedProps = {
 /**
  * Feed component for displaying freelancer posts.
  *
- * @param {User} user - Authenticated user information
+ * @param {FeedProps} props - The component props
+ * @param {User} props.user - Authenticated user information
  * @param {Post[]} props.posts - All freelancer post information. 
  * @param {boolean} props.service - Whether Feed is in service or community page. 
  * @returns {JSX.Element} The Feed component.

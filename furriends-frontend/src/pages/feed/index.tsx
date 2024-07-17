@@ -22,10 +22,11 @@ type FeedPageProps = {
 /**
  * Page component for displaying the feed.
  *
- * @param {{ user: User }} props - The component props.
+ * @param {FeedPageProps} props - The component props.
  * @param {User} props.user - The user object containing user information.
  * @param {Post[]} props.posts - The community feed post data. 
  * @param {Community[]} props.myCommunities - Communities that the user is a member of. 
+ * @param {Community[]} props.otherCommunities - Communities that the user is not a member of. 
  * @returns {JSX.Element} The FeedPage component.
  */
 export default function FeedPage({ user, posts, myCommunities, otherCommunities }: FeedPageProps) {

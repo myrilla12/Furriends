@@ -3,9 +3,30 @@ import { createClient } from "@/utils/supabase/component";
 import { Accordion, Avatar, Button, Group, Text } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 
-export default function CommunityList({ user, communities, mine }: { user: User; communities: Community[]; mine: boolean;}) {
+type CommunityListProps = {
+    user: User;
+    communities: Community[];
+    mine: boolean;
+}
+
+/**
+ * CommunityList component for displaying accordion of communities.
+ *
+ * @param {CommunityListProps} props - The component props.
+ * @param {User} props.user - The user object containing user information.
+ * @param {Community[]} props.myCommunities - Communities that have been fetched from index.
+ * @param {boolean} props.mine - True if user is a member of the communities. 
+ * @returns {JSX.Element} The Communities component.
+ */
+export default function CommunityList({ user, communities, mine }: CommunityListProps) {
     const supabase = createClient();
 
+    /**
+     * Adds user as member of the community.
+     *
+     * @async
+     * @param {string} id - The community id of the community being joined.
+     */
     async function joinCommunity(id: string) {
         // add user as member into the community
         const { error: communityUserError } = await supabase 
@@ -20,6 +41,12 @@ export default function CommunityList({ user, communities, mine }: { user: User;
         }
     }
 
+    /**
+     * Removes user as member of the community.
+     *
+     * @async
+     * @param {string} id - The community id of the community being left.
+     */
     async function leaveCommunity(id: string) {
         // delete user from community member list
         const { error: removeError } = await supabase 

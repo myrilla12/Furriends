@@ -6,12 +6,22 @@ import { useEffect, useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import CommunityCreationModal from "./communitiesCreationModal";
 
+type CommunitiesProps = {
+    user: User;
+    communities: Community[];
+    mine: boolean;
+}
+
 /**
- * Communities component for displaying communties that user is not a member of.
+ * Communities component for displaying communties.
  *
+ * @param {CommunitiesProps} props - The component props.
+ * @param {User} props.user - The user object containing user information.
+ * @param {Community[]} props.myCommunities - Communities that have been fetched from index.
+ * @param {boolean} props.mine - True if user is a member of the communities. 
  * @returns {JSX.Element} The Communities component.
  */
-export default function Communities({ user, communities, mine }: {user: User; communities: Community[]; mine: boolean;}) {
+export default function Communities({ user, communities, mine }: CommunitiesProps) {
     const [opened, setOpened] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
