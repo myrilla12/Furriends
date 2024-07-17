@@ -17,6 +17,7 @@ type FeedPageProps = {
     user: User;
     posts: Post[];
     myCommunities: Community[];
+    otherCommunities: Community[];
 }
 
 /**
@@ -25,9 +26,10 @@ type FeedPageProps = {
  * @param {{ user: User }} props - The component props.
  * @param {User} props.user - The user object containing user information.
  * @param {Post[]} props.posts - The community feed post data. 
+ * @param {Community[]} props.myCommunities - Communities that the user is a member of. 
  * @returns {JSX.Element} The FeedPage component.
  */
-export default function FeedPage({ user, posts, myCommunities }: FeedPageProps) {
+export default function FeedPage({ user, posts, myCommunities, otherCommunities }: FeedPageProps) {
     const supabase = CC();
     const [opened, setOpened] = useState(false);
     const [feed, setFeed] = useState<Post[]>(posts);
@@ -86,7 +88,7 @@ export default function FeedPage({ user, posts, myCommunities }: FeedPageProps) 
                         <MyCommunities user={user} communities={myCommunities}/>
                     </div>
                     <Feed user={user} posts={feed} service={false}/>
-                    <Communities />
+                    <Communities communities={otherCommunities}/>
                 </Flex>
             </div>
         </Layout >
@@ -149,11 +151,34 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error("Error fetching my community information: ", CommunityError);
     }
 
+    // get 'Discover communities'
+    const { data: allCommunityIdsData, error: allCommunityIdsError } = await supabase
+        .from('communities')
+        .select(`id`);
+    
+    if (allCommunityIdsError) {
+        console.error("Error fetching all community ids: ", allCommunityIdsError);
+    }
+
+    const allIds = allCommunityIdsData.map((community : { id: string; }) => community.id);
+    const otherIds = allIds.filter((id: string) => !ids.includes(id));
+
+    const { data: otherCommunityData, error: otherCommunityError } = await supabase
+        .from('communities')
+        .select('*')
+        .in('id', otherIds)
+        .order('updated_at', { ascending: false });
+
+    if (otherCommunityError) {
+        console.error("Error fetching other communities information: ", otherCommunityError);
+    }
+
     return {
         props: {
             user: data.user,
             posts: postData,
             myCommunities: CommunityData,
+            otherCommunities: otherCommunityData,
         },
     }
 }
