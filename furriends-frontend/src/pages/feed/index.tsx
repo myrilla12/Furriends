@@ -9,22 +9,32 @@ import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
-import { Post } from '@/utils/definitions';
-import MyCommunities from '@/components/feed/myCommunities';
+import { Community, Post } from '@/utils/definitions';
 import Communities from '@/components/feed/communities';
+
+type FeedPageProps = {
+    user: User;
+    posts: Post[];
+    myCommunities: Community[];
+    otherCommunities: Community[];
+}
 
 /**
  * Page component for displaying the feed.
  *
- * @param {{ user: User }} props - The component props.
+ * @param {FeedPageProps} props - The component props.
  * @param {User} props.user - The user object containing user information.
  * @param {Post[]} props.posts - The community feed post data. 
+ * @param {Community[]} props.myCommunities - Communities that the user is a member of. 
+ * @param {Community[]} props.otherCommunities - Communities that the user is not a member of. 
  * @returns {JSX.Element} The FeedPage component.
  */
-export default function FeedPage({ user, posts }: { user: User; posts: Post[];}) {
+export default function FeedPage({ user, posts, myCommunities, otherCommunities }: FeedPageProps) {
     const supabase = CC();
     const [opened, setOpened] = useState(false);
     const [feed, setFeed] = useState<Post[]>(posts);
+    const [myCommunitiesState, setMyCommunities] = useState<Community[]>(myCommunities);
+    const [otherCommunitiesState, setOtherCommunities] = useState<Community[]>(otherCommunities);
 
     // make changes to 'community_posts' table realtime
     useEffect(() => {
@@ -55,6 +65,60 @@ export default function FeedPage({ user, posts }: { user: User; posts: Post[];})
         };
     }, [supabase])
 
+    /**
+     * Adds user as member of the community.
+     *
+     * @async
+     * @param {string} id - The community id of the community being joined.
+     */
+    const joinCommunity = async (id: string) => {
+        const { error: communityUserError } = await supabase
+            .from('community_users')
+            .insert({ community_id: id, user_id: user.id });
+
+        if (communityUserError) {
+            console.error('Error inserting community member: ', communityUserError);
+        } else {
+            const community = otherCommunitiesState.find(c => c.id === id);
+            if (community) {
+                setOtherCommunities(prev => prev.filter(c => c.id !== id));
+                setMyCommunities(prev => [community, ...prev]);
+            }
+        }
+    };
+
+    /**
+     * Removes user as member of the community.
+     *
+     * @async
+     * @param {string} id - The community id of the community being left.
+     */
+    const leaveCommunity = async (id: string) => {
+        const { error: removeError } = await supabase
+            .from('community_users')
+            .delete()
+            .match({ community_id: id, user_id: user.id });
+
+        if (removeError) {
+            console.error('Error removing community member: ', removeError);
+        } else {
+            const community = myCommunitiesState.find(c => c.id === id);
+            if (community) {
+                setMyCommunities(prev => prev.filter(c => c.id !== id));
+                setOtherCommunities(prev => [...prev, community]);
+            }
+        }
+    };
+
+    /**
+     * Updates MyCommunities state upon adding new community.
+     *
+     * @param {Community} community - The community being added.
+     */
+    const addNewCommunity = (community: Community) => {
+        setMyCommunities(prev => [...prev, community]);
+    };
+
     return (
         <Layout user={user}>
             <div className='relative flex-grow p-6'>
@@ -77,10 +141,10 @@ export default function FeedPage({ user, posts }: { user: User; posts: Post[];})
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                         <h2 className="mb-7">Share your pet adventures</h2>
-                        <MyCommunities user={user}/>
+                        <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity}/>
+                        <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity}/>
                     </div>
                     <Feed user={user} posts={feed} service={false}/>
-                    <Communities />
                 </Flex>
             </div>
         </Layout >
@@ -110,6 +174,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         }
     }
 
+    // get general community posts
     const { data: postData, error: postError } = await supabase
         .from('community_posts')
         .select('*')
@@ -120,10 +185,56 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error('Error fetching post data', postError);
     }
 
+    // get 'My communities' 
+    const { data: CommunityIdsData, error: CommunityIdsError } = await supabase
+        .from('community_users')
+        .select(`community_id`)
+        .eq('user_id', data.user.id);
+    
+    if (CommunityIdsError) {
+        console.error("Error fetching my community ids: ", CommunityIdsError);
+    }
+
+    const ids = CommunityIdsData.map((community : { community_id: string; }) => community.community_id);
+
+    const { data: CommunityData, error: CommunityError } = await supabase
+        .from('communities')
+        .select('*')
+        .in('id', ids)
+        .order('updated_at', { ascending: false });
+
+    if (CommunityError) {
+        console.error("Error fetching my community information: ", CommunityError);
+    }
+
+    // get 'Discover communities'
+    const { data: allCommunityIdsData, error: allCommunityIdsError } = await supabase
+        .from('communities')
+        .select(`id`);
+    
+    if (allCommunityIdsError) {
+        console.error("Error fetching all community ids: ", allCommunityIdsError);
+    }
+
+    const allIds = allCommunityIdsData.map((community : { id: string; }) => community.id);
+    const otherIds = allIds.filter((id: string) => !ids.includes(id));
+
+    const { data: otherCommunityData, error: otherCommunityError } = await supabase
+        .from('communities')
+        .select('*')
+        .in('id', otherIds)
+        .order('updated_at', { ascending: false });
+
+    if (otherCommunityError) {
+        console.error("Error fetching other communities information: ", otherCommunityError);
+    }
+
     return {
         props: {
             user: data.user,
             posts: postData,
+            myCommunities: CommunityData,
+            otherCommunities: otherCommunityData,
         },
     }
 }

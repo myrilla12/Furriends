@@ -17,6 +17,7 @@ type PostCardProps = {
  * Renders a post card displaying details of a post.
  * 
  * @param {PostCardProps} props - The props for the component.
+ * @param {User} props.user - The user object containing user information.
  * @param {Post} props.post - The post data.
  * @param {boolean} props.service - Whether post is a service or community post.
  * @returns {JSX.Element} The rendered PostCard component.
