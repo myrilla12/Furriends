@@ -21,6 +21,7 @@ type FeedProps = {
  * @param {Post[]} props.posts - All freelancer post information. 
  * @param {boolean} props.service - Whether Feed is in service or community page. 
  * @param {Community | null} props.community - The community feed is displaying at the moment, null if it is on general feed.
+ * @param {function} returnToGeneralFeed - Resets feed to general posts upon clicking return to general feed. 
  * @returns {JSX.Element} The Feed component.
  */
 export default function Feed({ user, posts, service, community, returnToGeneralFeed }: FeedProps) {

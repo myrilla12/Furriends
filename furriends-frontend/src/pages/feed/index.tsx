@@ -130,6 +130,10 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         setCurrentCommunity(currentCommunity);
     }
 
+    /**
+     * Updates feed to general feed upon clicking return to general feed.
+     *
+     */
     const returnToGeneralFeed = () => {
         setFeed(posts);
         setCurrentCommunity(null);
