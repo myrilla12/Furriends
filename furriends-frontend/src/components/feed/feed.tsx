@@ -28,9 +28,9 @@ export default function Feed({ user, posts, service, community, returnToGeneralF
     return (
         <ScrollArea.Autosize mah={600} mx="auto" scrollbars="y">
             {community &&
-                <Box mb="md" pb="sm" className="border-b-2">
+                <Box mb="md" pb="sm" className="relative border-b-2">
                     <Button 
-                        className="absolute top right-0.5" 
+                        className="absolute top-0 right-0"
                         leftSection={<ArrowLeftIcon className="h-5 w-5"/>} 
                         variant="transparent" 
                         c="black" 
@@ -39,7 +39,7 @@ export default function Feed({ user, posts, service, community, returnToGeneralF
                     >
                         Return to general feed
                     </Button>
-                    <Flex direction="row" align="center" gap="lg">
+                    <Flex direction="row" align="center" gap="lg" p="xs">
                         <Avatar src={community.avatar_url} radius="xl" size="xl" />
                         <Title>{community.name}</Title>
                     </Flex>
