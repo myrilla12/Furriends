@@ -1,5 +1,5 @@
 import { Post } from "@/utils/definitions";
-import { ScrollArea, Stack } from "@mantine/core";
+import { Image, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import PostCard from "./post";
 import { User } from "@supabase/supabase-js";
 
@@ -21,6 +21,19 @@ type FeedProps = {
 export default function Feed({ user, posts, service }: FeedProps) {
     return (
         <ScrollArea.Autosize mah={600} w={400} mx="auto" scrollbars="y">
+            {posts.length === 0 &&
+                <Stack
+                    align="center"
+                >
+                <Image
+                    src="/sadface.png"
+                    w={400}
+                    alt="Picture of a sad dog"
+                />
+    
+                <Title order={2}>No posts yet</Title>
+            </Stack>
+            }
             <Stack gap="md">
                 {posts?.map((post) => (
                     <PostCard user={user} post={post} service={service}/>
