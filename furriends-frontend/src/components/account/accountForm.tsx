@@ -23,7 +23,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     const [username, setUsername] = useState<string | null>(null);
     const [address, setAddress] = useState<string>('');
     const [latitude, setLatitude] = useState<number | null>(null);
-    const [longtitude, setLongtitude] = useState<number | null>(null);
+    const [longitude, setLongitude] = useState<number | null>(null);
     const [location, setLocation] = useState<string>('');
     const [avatar_url, setAvatarUrl] = useState<string | null>(null);
     const [freelancer, setFreelancer] = useState<boolean>(false);
@@ -74,13 +74,13 @@ export default function AccountForm({ user }: { user: User | null }) {
      * 
      * @async
      * @function updateProfile
-     * @param {{ username: string | null, address: string, latitude: number | null, longtitude: number | null}} profileData - The profile data to update.
+     * @param {{ username: string | null, address: string, latitude: number | null, longitude: number | null}} profileData - The profile data to update.
      */
-    async function updateProfile({ username, address, latitude, longtitude }: {
+    async function updateProfile({ username, address, latitude, longitude }: {
         username: string | null
         address: string
         latitude: number | null
-        longtitude: number | null
+        longitude: number | null
     }) {
         try {
             setLoading(true);
@@ -96,7 +96,7 @@ export default function AccountForm({ user }: { user: User | null }) {
                 .update({
                     username,
                     address,
-                    location: latitude && longtitude ? `SRID=4326;POINT(${longtitude} ${latitude})` : location,
+                    location: latitude && longitude ? `SRID=4326;POINT(${longitude} ${latitude})` : location,
                 })
                 .eq('id', user?.id);
             if (error) throw error;
@@ -166,10 +166,10 @@ export default function AccountForm({ user }: { user: User | null }) {
                     />
 
                     <LocationInput
-                        onSelectAddress={(address, latitude, longtitude) => {
+                        onSelectAddress={(address, latitude, longitude) => {
                             setAddress(address);
                             setLatitude(latitude);
-                            setLongtitude(longtitude);
+                            setLongitude(longitude);
                         }}
                         defaultValue={address}
                     />
@@ -179,7 +179,7 @@ export default function AccountForm({ user }: { user: User | null }) {
                         <Button variant="outline" color="#6d543e"
                             onClick={() => {
                                 if (validateForm()) {
-                                    updateProfile({ username, address, latitude, longtitude })
+                                    updateProfile({ username, address, latitude, longitude })
                                 }
                             }}
                             disabled={loading}

@@ -1,16 +1,18 @@
-import React from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import type { GetServerSidePropsContext } from 'next'
-import { createClient } from '@/utils/supabase/server-props'
+import React, { useState, useEffect } from 'react';
+import { useJsApiLoader, GoogleMap, Marker } from '@react-google-maps/api';
+import { createClient } from '@/utils/supabase/component'
+import type { User } from '@supabase/supabase-js'
+
 
 const containerStyle = {
-  width: '100%',
-  height: '550px'
+    width: '100%',
+    height: '550px'
 };
 
-const center = {
-  lat: 1.3521,
-  lng: 103.8198
+const libraries: ("places")[] = ['places'];
+
+type MapComponentProps = {
+    user: User
 };
 
 /**
@@ -18,41 +20,52 @@ const center = {
  *
  * @returns {JSX.Element} The Map component.
  */
-export default function Map() {
-  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
-  return (
-    <LoadScript googleMapsApiKey={googleMapsApiKey}>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={11.5}
-      >
-        <Marker position={center} />
-      </GoogleMap>
-    </LoadScript>
-  )
-}
+export default function Map({ user }: MapComponentProps) {
+    const [latitude, setLatitude] = useState<number>(1.3521);
+    const [longitude, setLongitude] = useState<number>(103.8198);
+    const { isLoaded, loadError } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+        libraries: libraries
+    });
 
-/**
- * Server-side function to handle user authentication and redirection.
- *
- * @async
- * @function getServerSideProps
- * @param {GetServerSidePropsContext} context - The server-side context.
- * @returns {Promise<{redirect?: {destination: string, permanent: boolean}}>} The redirection object for unauthenticated users.
- */
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const supabase = createClient(context)
+    useEffect(() => {
+        const fetchLocations = async () => {
+            const supabase = createClient();
 
-  const { data, error } = await supabase.auth.getUser()
+            // get user latitude and longtitude
+            const { data, error } = await supabase
+                .rpc('get_user_lat_lng', {
+                    user_id: user.id,
+                });
 
-  // redirect unauthenticated users to home page
-  if (error || !data) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
+            if (error) {
+                console.error('Error fetching locations:', error);
+                return;
+            }
+
+            setLatitude(data[0].latitude)
+            setLongitude(data[0].longitude);
+        };
+
+        fetchLocations();
+    }, [user]);
+
+    if (loadError) {
+        return <div>Error loading Google Maps! Please try again.</div>;
     }
-  }
+
+    if (!isLoaded) {
+        return <div>Loading...</div>;
+    }
+    
+    return (
+        <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={{ lat: latitude, lng: longitude }}
+            zoom={16}
+        >
+            <Marker key="user" position={{ lat: latitude, lng: longitude }} />
+        </GoogleMap>
+    )
 }

@@ -6,7 +6,7 @@ type LocationInputProps = {
     onSelectAddress: (
         address: string,
         latitude: number | null,
-        longtitude: number | null
+        longitude: number | null
     ) => void;
     defaultValue: string;
 };
@@ -20,11 +20,12 @@ const libraries: ("places")[] = ['places'];
  * 
  * @param {LocationInputProps} props - The props for the component.
  * @param {string} props.defaultValue - The default value for the address input.
- * @param {(address: string, latitude: number | null, longtitude: number | null) => void} props.onSelectAddress - Function to handle the selected address.
+ * @param {(address: string, latitude: number | null, longitude: number | null) => void} props.onSelectAddress - Function to handle the selected address.
  * @returns {JSX.Element} The rendered LocationInput component.
  */
 export default function LocationInput({ onSelectAddress, defaultValue }: LocationInputProps) {
     const { isLoaded, loadError } = useJsApiLoader({
+        id: 'google-map-script',
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
         libraries,
     });
@@ -50,7 +51,7 @@ export default function LocationInput({ onSelectAddress, defaultValue }: Locatio
  * 
  * @param {LocationInputProps} props - The props for the component.
  * @param {string} props.defaultValue - The default value for the address input.
- * @param {(address: string, latitude: number | null, longtitude: number | null) => void} props.onSelectAddress - Function to handle the selected address.
+ * @param {(address: string, latitude: number | null, longitude: number | null) => void} props.onSelectAddress - Function to handle the selected address.
  * @returns {JSX.Element} The rendered ReadySearchBox component.
  */
 function ReadySearchBox({ onSelectAddress, defaultValue }: LocationInputProps) {

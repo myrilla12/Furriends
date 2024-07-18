@@ -26,7 +26,7 @@ export default function LocationModal({ opened, onClose, user }: LocationModalPr
     const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState<string | null>(null);
     const [latitude, setLatitude] = useState<number | null>(null);
-    const [longtitude, setLongtitude] = useState<number | null>(null);
+    const [longitude, setLongitude] = useState<number | null>(null);
     const [message, setMessage] = useState('');
 
     /**
@@ -74,7 +74,7 @@ export default function LocationModal({ opened, onClose, user }: LocationModalPr
             const { error } = await supabase.from('profiles')
                 .update({
                     address: address,
-                    location: `SRID=4326;POINT(${longtitude} ${latitude})`
+                    location: `SRID=4326;POINT(${longitude} ${latitude})`
                 })
                 .eq('id', user?.id);
             if (error) throw error;
@@ -113,7 +113,7 @@ export default function LocationModal({ opened, onClose, user }: LocationModalPr
             setLoading(true);
             setMessage('');
             try {
-                if (address && latitude && longtitude) { // only update if changes are made, ie. lat & long are present
+                if (address && latitude && longitude) { // only update if changes are made, ie. lat & long are present
                     await updateAddress();
                 }
                 onClose(); // close modal only if update is successful
@@ -137,10 +137,10 @@ export default function LocationModal({ opened, onClose, user }: LocationModalPr
         >
             <div className="mb-5">
                 <LocationInput
-                    onSelectAddress={(address, latitude, longtitude) => {
+                    onSelectAddress={(address, latitude, longitude) => {
                         setAddress(address);
                         setLatitude(latitude);
-                        setLongtitude(longtitude);
+                        setLongitude(longitude);
                     }}
                     defaultValue={address || ""}
                 />
