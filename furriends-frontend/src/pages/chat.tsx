@@ -4,7 +4,7 @@ import Layout from '@/components/layout';
 import { useEffect, useState, useRef } from "react";
 import type { User } from '@supabase/supabase-js'
 import { createClient } from '../utils/supabase/server-props'
-import { createClient as CC } from '@/utils/supabase/component';
+import { createClient as componentCreateClient } from '@/utils/supabase/component';
 import type { GetServerSidePropsContext } from 'next'
 import { Box } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
@@ -27,7 +27,7 @@ type ChatProps = {
  * @returns {JSX.Element} The rendered ChatPage component.
  */
 export default function ChatPage({ user, chatIds, otherUsers, notifications }: ChatProps) {
-    const supabase = CC();
+    const supabase = componentCreateClient();
     const router = useRouter();
     const id = router.query;
 

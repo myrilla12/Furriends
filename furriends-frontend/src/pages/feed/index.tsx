@@ -2,7 +2,7 @@ import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
-import { createClient as CC } from '@/utils/supabase/component';
+import { createClient as componentCreateClient } from '@/utils/supabase/component';
 import { Button, Flex } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
@@ -30,7 +30,7 @@ type FeedPageProps = {
  * @returns {JSX.Element} The FeedPage component.
  */
 export default function FeedPage({ user, posts, myCommunities, otherCommunities }: FeedPageProps) {
-    const supabase = CC();
+    const supabase = componentCreateClient();
     const [opened, setOpened] = useState(false);
     const [feed, setFeed] = useState<Post[]>(posts);
     const [myCommunitiesState, setMyCommunities] = useState<Community[]>(myCommunities);

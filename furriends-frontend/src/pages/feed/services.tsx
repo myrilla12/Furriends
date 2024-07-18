@@ -3,7 +3,7 @@ import Layout from '@/components/layout';
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../utils/supabase/server-props'
-import { createClient as CC } from '@/utils/supabase/component';
+import { createClient as componentCreateClient } from '@/utils/supabase/component';
 import FeedLinks from '@/components/feed/feedLinks';
 import { Button, Flex } from '@mantine/core';
 import { Post, Profile } from '@/utils/definitions';
@@ -27,7 +27,7 @@ type ServicesPageProps = {
  * @returns {JSX.Element} The ServicesPage component.
  */
 export default function ServicesPage({ user, profile, posts }: ServicesPageProps) {
-    const supabase = CC();
+    const supabase = componentCreateClient();
     const [opened, setOpened] = useState(false);
     const [feed, setFeed] = useState<Post[]>(posts);
 
