@@ -132,7 +132,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         <Layout user={user}>
             <div className='relative flex-grow p-6'>
                 <FeedLinks />
-                <div className="absolute top-6 right-6">
+                <div className="absolute top-1 right-1">
                     <Button 
                         leftSection={<PlusCircleIcon className='w-6'/>} 
                         m='md' 

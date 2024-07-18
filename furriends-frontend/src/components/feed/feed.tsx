@@ -20,7 +20,7 @@ type FeedProps = {
  */
 export default function Feed({ user, posts, service }: FeedProps) {
     return (
-        <ScrollArea.Autosize mah={600} w={400} mx="auto" scrollbars="y">
+        <ScrollArea.Autosize mt="lg" mah={600} mx="auto" scrollbars="y">
             {posts.length === 0 &&
                 <Stack
                     align="center"

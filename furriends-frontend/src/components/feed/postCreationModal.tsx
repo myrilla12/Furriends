@@ -12,7 +12,7 @@ type PostCreationModalProps = {
     opened: boolean;
     setOpened: (open: boolean) => void;
     service: boolean;
-    myCommunities: Community[];
+    myCommunities: Community[] | null;
 }
 
 /**
@@ -287,12 +287,12 @@ export default function PostCreationModal({user, opened, setOpened, service, myC
                         w={500}
                         label="Community"
                         placeholder="Choose a community"
-                        data={myCommunities.map((community) => ({
+                        data={myCommunities?.map((community) => ({
                             value: community.id,
                             label: community.name
                         }))}
                         onChange={(e) => {
-                            const selectedCommunity = myCommunities.find((community) => community.id === e);
+                            const selectedCommunity = myCommunities?.find((community) => community.id === e);
                             
                             if (selectedCommunity) {
                                 setCommunity(selectedCommunity);
