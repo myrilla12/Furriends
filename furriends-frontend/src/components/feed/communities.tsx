@@ -13,7 +13,7 @@ type CommunitiesProps = {
     joinCommunity: (id: string) => void;
     leaveCommunity: (id: string) => void;
     addNewCommunity: (community: Community) => void;
-    handleCommunityPosts: (fetchedPosts: SetStateAction<Post[]>) => void;
+    handleCommunityPosts: (fetchedPosts: SetStateAction<Post[]>, currentCommunity: Community) => void;
 }
 
 /**

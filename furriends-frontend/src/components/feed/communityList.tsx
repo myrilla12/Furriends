@@ -10,7 +10,7 @@ type CommunityListProps = {
     mine: boolean;
     joinCommunity: (id: string) => void;
     leaveCommunity: (id: string) => void;
-    handleCommunityPosts: (fetchedPosts: SetStateAction<Post[]>) => void;
+    handleCommunityPosts: (fetchedPosts: SetStateAction<Post[]>, currentCommunity: Community) => void;
 }
 
 /**
@@ -47,7 +47,11 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
                 console.error("Error fetching posts belonging to this community: ", error);
             }
 
-            handleCommunityPosts(data);
+            const currCommunity = communities.find(community => community.id === id)
+
+            if (currCommunity) {
+                handleCommunityPosts(data, currCommunity);
+            }
         } catch (error) {
             console.error("Error fetching posts belonging to this community: ", error);
         }

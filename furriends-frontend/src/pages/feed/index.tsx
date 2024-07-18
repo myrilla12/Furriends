@@ -35,6 +35,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     const [feed, setFeed] = useState<Post[]>(posts);
     const [myCommunitiesState, setMyCommunities] = useState<Community[]>(myCommunities);
     const [otherCommunitiesState, setOtherCommunities] = useState<Community[]>(otherCommunities);
+    const [currentCommunity, setCurrentCommunity] = useState<Community | null>(null);
 
     // make changes to 'community_posts' table realtime
     useEffect(() => {
@@ -120,12 +121,13 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     };
 
     /**
-     * Updates feed to show community posts upon clicking one of 'My Communities'.
+     * Updates feed to show community posts upon clicking one of 'My Communities' and save current community.
      *
      * @param {SetStateAction<Post[]>} fetchedPosts - The posts belonging to the community.
      */
-    const handleCommunityPosts = (fetchedPosts: SetStateAction<Post[]>) => {
+    const handleCommunityPosts = (fetchedPosts: SetStateAction<Post[]>, currentCommunity: Community) => {
         setFeed(fetchedPosts);
+        setCurrentCommunity(currentCommunity);
     }
     
     return (
@@ -153,7 +155,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                         <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
                         <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
                     </div>
-                    <Feed user={user} posts={feed} service={false}/>
+                    <Feed user={user} posts={feed} service={false} community={currentCommunity}/>
                 </Flex>
             </div>
         </Layout >
