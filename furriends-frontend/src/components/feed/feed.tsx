@@ -1,13 +1,16 @@
 import { Community, Post } from "@/utils/definitions";
-import { Avatar, Box, Flex, Image, ScrollArea, Stack, Title } from "@mantine/core";
+import { Avatar, Box, Button, Flex, Image, ScrollArea, Stack, Title } from "@mantine/core";
 import PostCard from "./post";
 import { User } from "@supabase/supabase-js";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 
 type FeedProps = {
-    user: User,
-    posts: Post[],
-    service: boolean,
-    community: Community | null,
+    user: User;
+    posts: Post[];
+    service: boolean;
+    community: Community | null;
+    returnToGeneralFeed: () => void;
 }
 
 /**
@@ -20,12 +23,22 @@ type FeedProps = {
  * @param {Community | null} props.community - The community feed is displaying at the moment, null if it is on general feed.
  * @returns {JSX.Element} The Feed component.
  */
-export default function Feed({ user, posts, service, community }: FeedProps) {
+export default function Feed({ user, posts, service, community, returnToGeneralFeed }: FeedProps) {
     
     return (
         <ScrollArea.Autosize mah={600} mx="auto" scrollbars="y">
             {community &&
                 <Box mb="md" pb="sm" className="border-b-2">
+                    <Button 
+                        className="absolute top right-0.5" 
+                        leftSection={<ArrowLeftIcon className="h-5 w-5"/>} 
+                        variant="transparent" 
+                        c="black" 
+                        size="compact"
+                        onClick={returnToGeneralFeed}
+                    >
+                        Return to general feed
+                    </Button>
                     <Flex direction="row" align="center" gap="lg">
                         <Avatar src={community.avatar_url} radius="xl" size="xl" />
                         <Title>{community.name}</Title>

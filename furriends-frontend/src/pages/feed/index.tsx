@@ -129,6 +129,11 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         setFeed(fetchedPosts);
         setCurrentCommunity(currentCommunity);
     }
+
+    const returnToGeneralFeed = () => {
+        setFeed(posts);
+        setCurrentCommunity(null);
+    }
     
     return (
         <Layout user={user}>
@@ -155,7 +160,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                         <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
                         <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
                     </div>
-                    <Feed user={user} posts={feed} service={false} community={currentCommunity}/>
+                    <Feed user={user} posts={feed} service={false} community={currentCommunity} returnToGeneralFeed={returnToGeneralFeed}/>
                 </Flex>
             </div>
         </Layout >
