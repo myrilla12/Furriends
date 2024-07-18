@@ -1,8 +1,8 @@
-import { Community } from "@/utils/definitions";
+import { Community, Post } from "@/utils/definitions";
 import { Box, Button, Flex, ScrollArea } from "@mantine/core";
 import CommunityList from "./communityList";
 import { User } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import CommunityCreationModal from "./communitiesCreationModal";
 
@@ -13,6 +13,7 @@ type CommunitiesProps = {
     joinCommunity: (id: string) => void;
     leaveCommunity: (id: string) => void;
     addNewCommunity: (community: Community) => void;
+    handleCommunityPosts: (fetchedPosts: SetStateAction<Post[]>) => void;
 }
 
 /**
@@ -27,7 +28,7 @@ type CommunitiesProps = {
  * @param {function} props.addNewCommunity - Function to update state upon adding new community.
  * @returns {JSX.Element} The Communities component.
  */
-export default function Communities({ user, communities, mine, joinCommunity, leaveCommunity, addNewCommunity }: CommunitiesProps) {
+export default function Communities({ user, communities, mine, joinCommunity, leaveCommunity, addNewCommunity, handleCommunityPosts }: CommunitiesProps) {
     const [opened, setOpened] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
@@ -59,7 +60,7 @@ export default function Communities({ user, communities, mine, joinCommunity, le
                 <CommunityCreationModal user={user} opened={opened} setOpened={setOpened} addNewCommunity={addNewCommunity}/>
             </Flex>
             <ScrollArea.Autosize mah={230} w={400} mx="auto" scrollbars="y">
-                <CommunityList user={user} communities={communities} mine={mine} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity}/>
+                <CommunityList user={user} communities={communities} mine={mine} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} handleCommunityPosts={handleCommunityPosts}/>
             </ScrollArea.Autosize>
         </Box>
     );

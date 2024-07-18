@@ -1,7 +1,8 @@
-import { Community } from "@/utils/definitions";
+import { Community, Post } from "@/utils/definitions";
+import { createClient } from "@/utils/supabase/component";
 import { Accordion, Avatar, Button, Group, Loader, Text } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 
 type CommunityListProps = {
     user: User;
@@ -9,6 +10,7 @@ type CommunityListProps = {
     mine: boolean;
     joinCommunity: (id: string) => void;
     leaveCommunity: (id: string) => void;
+    handleCommunityPosts: (fetchedPosts: SetStateAction<Post[]>) => void;
 }
 
 /**
@@ -22,20 +24,52 @@ type CommunityListProps = {
  * @param {function} props.leaveCommunity - Function to leave a community.
  * @returns {JSX.Element} The Communities component.
  */
-export default function CommunityList({ user, communities, mine, joinCommunity, leaveCommunity }: CommunityListProps) {
+export default function CommunityList({ user, communities, mine, joinCommunity, leaveCommunity, handleCommunityPosts }: CommunityListProps) {
+    const supabase = createClient();
     const [loading, setLoading] = useState<string | null>(null);
+    const [loadingCommunity, setLoadingCommunity] = useState<string | null>(null);
 
-    function AccordionLabel({ id ,name, avatar_url }: Community) {
+    async function fetchCommunityPosts(id: string) {
+        try {
+            const { data, error } = await supabase
+                .from("community_posts")
+                .select("*")
+                .eq("community_id", id);
+
+            handleCommunityPosts(data);
+        } catch (error) {
+            console.error("Error fetching posts belonging to this community: ", error);
+        }
+    };
+
+    function AccordionLabel({ id , name, avatar_url }: Community) {
         return (
             <Group wrap="nowrap">
                 <Avatar src={avatar_url} radius="xl" size="md" />
-                <Text className="flex-grow" c="#6d543e" fw={600} size="md">{name}</Text>
+                <Text 
+                    className="flex-grow" 
+                    c="#6d543e"
+                    fw={600} 
+                    size="md"
+                    onClick={async (e) => {
+                        e.stopPropagation();
+                        if (mine) {
+                            setLoadingCommunity(id);
+                            await fetchCommunityPosts(id);
+                            setLoadingCommunity(null);
+                        }
+                    }}
+                >
+                    {name}
+                </Text>
+                {loadingCommunity === id && <Loader size="xs" color="#6d543e"/>}
+
                 {mine ?
                     <Button 
-                        size='xs'
-                        variant='light' 
-                        color='rgba(255, 5, 5, 1)'
-                        rightSection={loading === id && <Loader size="xs" color='rgba(255, 5, 5, 1)'/>}
+                        size="xs"
+                        variant="light"
+                        color="rgba(255, 5, 5, 1)"
+                        rightSection={loading === id && <Loader size="xs" color="rgba(255, 5, 5, 1)"/>}
                         onClick={async (e) => {
                             e.stopPropagation();
                             setLoading(id);
@@ -46,10 +80,10 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
                         Leave
                     </Button> :
                     <Button 
-                        size='xs'
-                        variant='light' 
-                        color='rgba(17, 120, 25, 1)'
-                        rightSection={loading === id && <Loader size="xs" color='rgba(17, 120, 25, 1)'/>}
+                        size="xs"
+                        variant="light" 
+                        color="rgba(17, 120, 25, 1)"
+                        rightSection={loading === id && <Loader size="xs" color="rgba(17, 120, 25, 1)"/>}
                         onClick={async (e) => {
                             e.stopPropagation();
                             setLoading(id);

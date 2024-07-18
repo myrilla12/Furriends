@@ -22,7 +22,8 @@ type PostCreationModalProps = {
  * @param {User | null} props.user - The current user.
  * @param {boolean} props.opened - Indicates whether the modal is open.
  * @param {function} props.setOpened - Function to set the modal open state.
- * @param {boolean} props.service - Whether post is created by freelancer or not. 
+ * @param {boolean} props.service - Whether post is created by freelancer or not.
+ * @param {Community[]} props.myCommunities - Communities that user is a member of.  
  * @param {Partial<DropzoneProps>} props.props - Additional dropzone properties.
  * @returns {JSX.Element} The PostCreationModal component.
  */

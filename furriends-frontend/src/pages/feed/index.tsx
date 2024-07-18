@@ -6,7 +6,7 @@ import { createClient as componentCreateClient } from '@/utils/supabase/componen
 import { Button, Flex } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 import { Community, Post } from '@/utils/definitions';
@@ -119,6 +119,10 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         setMyCommunities(prev => [...prev, community]);
     };
 
+    const handleCommunityPosts = (fetchedPosts: SetStateAction<Post[]>) => {
+        setFeed(fetchedPosts);
+    }
+    
     return (
         <Layout user={user}>
             <div className='relative flex-grow p-6'>
@@ -141,8 +145,8 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                         <h2 className="mb-7">Share your pet adventures</h2>
-                        <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity}/>
-                        <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity}/>
+                        <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
+                        <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
                     </div>
                     <Feed user={user} posts={feed} service={false}/>
                 </Flex>
