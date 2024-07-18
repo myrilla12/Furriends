@@ -22,6 +22,7 @@ type CommunityListProps = {
  * @param {boolean} props.mine - True if user is a member of the communities. 
  * @param {function} props.joinCommunity - Function to join a community.
  * @param {function} props.leaveCommunity - Function to leave a community.
+ * @param {function} props.handleCommunityPosts - Updates feed upon selecting a community.
  * @returns {JSX.Element} The Communities component.
  */
 export default function CommunityList({ user, communities, mine, joinCommunity, leaveCommunity, handleCommunityPosts }: CommunityListProps) {
@@ -29,6 +30,12 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
     const [loading, setLoading] = useState<string | null>(null);
     const [loadingCommunity, setLoadingCommunity] = useState<string | null>(null);
 
+    /**
+     * Fetches the posts under the selected community.
+     *
+     * @async
+     * @param {string} id - Community id.
+     */
     async function fetchCommunityPosts(id: string) {
         try {
             const { data, error } = await supabase
@@ -36,12 +43,26 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
                 .select("*")
                 .eq("community_id", id);
 
+            if (error) {
+                console.error("Error fetching posts belonging to this community: ", error);
+            }
+
             handleCommunityPosts(data);
         } catch (error) {
             console.error("Error fetching posts belonging to this community: ", error);
         }
     };
 
+    /**
+     * Renders an accordion label component for a community.
+     *
+     * @param {Object} props - The properties object.
+     * @param {string} props.id - The unique identifier of the community.
+     * @param {string} props.name - The name of the community.
+     * @param {string} props.avatar_url - The URL of the community's avatar.
+     *
+     * @returns {JSX.Element} The rendered AccordionLabel component.
+     */
     function AccordionLabel({ id , name, avatar_url }: Community) {
         return (
             <Group wrap="nowrap">

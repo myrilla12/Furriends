@@ -26,6 +26,7 @@ type CommunitiesProps = {
  * @param {function} props.joinCommunity - Function to join a community.
  * @param {function} props.leaveCommunity - Function to leave a community.
  * @param {function} props.addNewCommunity - Function to update state upon adding new community.
+ * @param {function} props.handleCommunityPosts - Updates feed upon selecting a community.
  * @returns {JSX.Element} The Communities component.
  */
 export default function Communities({ user, communities, mine, joinCommunity, leaveCommunity, addNewCommunity, handleCommunityPosts }: CommunitiesProps) {

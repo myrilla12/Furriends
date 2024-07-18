@@ -119,6 +119,11 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         setMyCommunities(prev => [...prev, community]);
     };
 
+    /**
+     * Updates feed to show community posts upon clicking one of 'My Communities'.
+     *
+     * @param {SetStateAction<Post[]>} fetchedPosts - The posts belonging to the community.
+     */
     const handleCommunityPosts = (fetchedPosts: SetStateAction<Post[]>) => {
         setFeed(fetchedPosts);
     }
