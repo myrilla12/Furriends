@@ -38,8 +38,6 @@ export default function PostCreationModal({user, opened, setOpened, service, myC
     const [photo_url, setPhotoUrl] = useState<string>('');
     const [community, setCommunity] = useState<Community | null>(null);
 
-    console.log("community", community);
-
     /**
      * Uploads a photo to the Supabase storage.
      *
@@ -127,6 +125,24 @@ export default function PostCreationModal({user, opened, setOpened, service, myC
             if (error) {
                 console.error('Error inserting post information', error);
             }
+
+            if (community) {
+                console.log("Community id", community?.id)
+                // update updated_at value for the community post was inserted into
+                const currentTimestamp = new Date().toISOString();
+                console.log("Current timestamp", currentTimestamp)
+            
+                const { error: UpdateError } = await supabase
+                    .from('communities')
+                    .update({ updated_at: currentTimestamp })
+                    .eq('id', community.id)
+                    .single();
+
+                if (UpdateError) {
+                    console.error('Error updating updated_at value for communities: ', UpdateError);
+                }
+            }
+
         } catch (error) {
             alert('Unable to add post!');
         } finally {
