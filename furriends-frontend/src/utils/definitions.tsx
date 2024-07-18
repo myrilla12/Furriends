@@ -45,6 +45,7 @@ export type Post = {
     post_location: string;
     post_pricing: number[];
     post_author: string;
+    community_id: string;
 }
 
 export type Community = {

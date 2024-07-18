@@ -1,16 +1,18 @@
-import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader, Image } from "@mantine/core";
+import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader, Image, Select } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon, FaceSmileIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/component";
+import { Community } from "@/utils/definitions";
 
 type PostCreationModalProps = {
     user: User | null;
     opened: boolean;
     setOpened: (open: boolean) => void;
-    service: boolean
+    service: boolean;
+    myCommunities: Community[];
 }
 
 /**
@@ -24,7 +26,7 @@ type PostCreationModalProps = {
  * @param {Partial<DropzoneProps>} props.props - Additional dropzone properties.
  * @returns {JSX.Element} The PostCreationModal component.
  */
-export default function PostCreationModal({user, opened, setOpened, service}: PostCreationModalProps, props: Partial<DropzoneProps>) {
+export default function PostCreationModal({user, opened, setOpened, service, myCommunities}: PostCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
     const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);
@@ -33,6 +35,9 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
     const [location, setLocation] = useState<string>('');
     const [pricing, setPricing] = useState<number[]>([50, 150]);
     const [photo_url, setPhotoUrl] = useState<string>('');
+    const [community, setCommunity] = useState<Community | null>(null);
+
+    console.log("community", community);
 
     /**
      * Uploads a photo to the Supabase storage.
@@ -115,6 +120,7 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                     post_content: content,
                     post_location: location,
                     post_author: user?.id, 
+                    community_id: community?.id,
                 });
 
             if (error) {
@@ -158,6 +164,7 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                 setLocation('');
                 setPricing([50, 150]);
                 setPhotoUrl('');
+                setCommunity(null);
             }} 
             scrollAreaComponent={ScrollArea.Autosize} 
             size='lg' 
@@ -274,6 +281,27 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                     </Box>
                 }
 
+                {!service &&
+                    <Select
+                        w={500}
+                        label="Community"
+                        placeholder="Choose a community"
+                        data={myCommunities.map((community) => ({
+                            value: community.id,
+                            label: community.name
+                        }))}
+                        onChange={(e) => {
+                            const selectedCommunity = myCommunities.find((community) => community.id === e);
+                            
+                            if (selectedCommunity) {
+                                setCommunity(selectedCommunity);
+                            } else {
+                                setCommunity(null);
+                            }
+                        }}
+                    />
+                }
+
                 {/* Button to publish post */}
                 <Button 
                     m='sm' 
@@ -293,6 +321,7 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                             setLocation('');
                             setPricing([50, 150]);
                             setPhotoUrl('');
+                            setCommunity(null);
                         }
                     }}
                 >

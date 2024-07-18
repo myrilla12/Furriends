@@ -136,7 +136,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                         Create a post
                     </Button>
                 </div>
-                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false}/>
+                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false} myCommunities={myCommunitiesState}/>
                 <Flex direction="row">
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
