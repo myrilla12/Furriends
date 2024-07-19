@@ -12,7 +12,6 @@ import { calculateAge, getAgeString } from '@/utils/calculateAge';
 import { calculateImageBrightness } from '@/utils/calculateImageBrightness';
 import ChatButton from '@/components/chat/chatButton';
 
-
 type PetCardProps = {
     pet: Pet;
     editable: boolean;

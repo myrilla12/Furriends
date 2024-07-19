@@ -36,12 +36,22 @@ export type Chats = {
     notification: number; 
 }[]
 
-export type FreelancerPost = {
-    photo: string;
-    title: string;
-    content: string;
-    location: string;
-    pricing: number[];
-    author_id: string;
+export type Post = {
+    id: string;
     created_at: string;
+    post_image: string;
+    post_title: string;
+    post_content: string;
+    post_location: string;
+    post_pricing: number[];
+    post_author: string;
+}
+
+export type Community = {
+    id: string;
+    created_at: string;
+    avatar_url: string;
+    name: string;
+    description: string;
+    updated_at: string;
 }

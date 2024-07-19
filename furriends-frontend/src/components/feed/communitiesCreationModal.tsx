@@ -1,37 +1,36 @@
-import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Image, Loader } from "@mantine/core";
+import { Modal, ScrollArea, Title, Flex, Image, TextInput, Button, Loader, Textarea } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/component";
+import { Community } from "@/utils/definitions";
 
-type ServicePostCreationModalProps = {
+type CommunityCreationModalProps = {
     user: User | null;
     opened: boolean;
     setOpened: (open: boolean) => void;
+    addNewCommunity: (community: Community) => void;
 }
 
 /**
- * Component for creating a service post.
+ * Component for creating a community.
  *
- * @param {ServicePostCreationModalProps} props - The component props.
+ * @param {CommunityCreationModalProps} props - The component props.
  * @param {User | null} props.user - The current user.
  * @param {boolean} props.opened - Indicates whether the modal is open.
- * @param {function} props.setOpened - Function to set the modal open state.
+ * @param {function} props.setOpened - Function to set the modal open state. 
+ * @param {function} props.addNewCommunity - Function to update state upon adding new community. 
  * @param {Partial<DropzoneProps>} props.props - Additional dropzone properties.
- * @returns {JSX.Element} The ServicePostCreationModal component.
+ * @returns {JSX.Element} The PostCreationModal component.
  */
-export default function ServicePostCreationModal({user, opened, setOpened}: ServicePostCreationModalProps, props: Partial<DropzoneProps>) {
+export default function CommunityCreationModal({user, opened, setOpened, addNewCommunity}: CommunityCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
-    const[uploading, setUploading] = useState(false);
-    const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);
-    const [title, setTitle] = useState<string>('');
-    const [content, setContent] = useState<string>('');
-    const [location, setLocation] = useState<string>('');
-    const [pricing, setPricing] = useState<number[]>([50, 150]);
-    const [photo_url, setPhotoUrl] = useState<string>('');
+    const [avatar_url, setAvatarUrl] = useState<string>('');
+    const [name, setName] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
 
     /**
      * Uploads a photo to the Supabase storage.
@@ -46,13 +45,13 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
             const fileExt = file.name.split('.').pop();
             const filePath = `${user?.id}-${Math.random()}.${fileExt}`;
 
-            const { error: uploadError } = await supabase.storage.from('post_images').upload(filePath, file);
+            const { error: uploadError } = await supabase.storage.from('community_avatars').upload(filePath, file);
             if (uploadError) {
                 throw uploadError;
             }
 
             const { data: urlData } = await supabase.storage
-                .from('post_images')
+                .from('community_avatars')
                 .getPublicUrl(filePath);
 
             return urlData.publicUrl;
@@ -66,31 +65,45 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
     }
 
     /**
-     * Adds a new freelancer post to the Supabase database.
+     * Adds a new community to the Supabase database and user as community_user.
      *
      * @async
      */
-    async function addFreelancerPost() {
+    async function addCommunity() {
         try {
             setLoading(true);
 
-            // insert new post data into 'freelancer_posts'
-            const { error } = await supabase 
-                .from('freelancer_posts')
+            // insert new community into 'communities' and fetch community id
+            const { data, error } = await supabase 
+                .from('communities')
                 .insert({
-                    post_image: photo_url,
-                    post_title: title,
-                    post_content: content,
-                    post_location: location,
-                    post_pricing: pricing,
-                    post_author: user?.id, 
+                    avatar_url: avatar_url,
+                    name: name,
+                    description: description,
                 })
+                .select('*')
+                .single();
 
             if (error) {
-                console.error('Error inserting post information', error);
+                console.error('Error inserting community information', error);
             }
+
+            // add user as member into their created community
+            const { error: communityUserError } = await supabase 
+                .from('community_users')
+                .insert({
+                    community_id: data.id,
+                    user_id: user?.id,
+                });
+
+            if (communityUserError) {
+                console.error('Error inserting community member', communityUserError);
+            } else {
+                addNewCommunity(data);
+            }
+
         } catch (error) {
-            alert('Unable to add post!');
+            alert('Unable to add community!');
         } finally {
             setLoading(false);
         }
@@ -102,40 +115,37 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
      * @returns {boolean} True if the form is valid, otherwise false.
      */
     const validate = () => {
-        if (!photo_path || !title || !content || !location || !pricing || !photo_url) {
-            alert('Please fill in all required fields: Image upload, Title, Description, Location and Pricing!');
+        if (!avatar_url || !name || !description) {
+            alert('Please fill in all fields: Image upload, Name and Description!');
             return false;
-        }
+        } 
         return true;
-    }
+    }   
 
     return (
         <Modal 
             opened={opened} 
             onClose={() => {
                 setOpened(false);
-                setPhotoPath(null);
-                setTitle('');
-                setContent('');
-                setLocation('');
-                setPricing([50, 150]);
-                setPhotoUrl('');
+                setAvatarUrl('');
+                setName('');
+                setDescription('');
             }} 
             scrollAreaComponent={ScrollArea.Autosize} 
             size='lg' 
             centered
         >
             <Flex justify='center' align='center' direction='column' gap='md'>
-                <Title c='#6d543e'>Create your post</Title>
+                <Title c='#6d543e'>Create a community</Title>
 
                 {/* Dropzone for photo upload */}
                 <Dropzone
+                    className="w-75 h-75 rounded-full overflow-hidden border-2 flex items-center"
                     loading={loading}
                     onDrop={async (files) => {
                         const uploadedUrl = await uploadPhoto(files[0]);
                         if (uploadedUrl) {
-                            setPhotoUrl(uploadedUrl);
-                            setPhotoPath(files[0]);
+                            setAvatarUrl(uploadedUrl);
                         }
                     }}
                     onReject={(files) => console.log('rejected files', files)}
@@ -162,19 +172,20 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                             </Flex>
                         </Dropzone.Reject>
                         <Dropzone.Idle>
-                            {photo_path ?
-                                <Text size="xl" inline>
-                                    Image successfully uploaded!
-                                </Text>
+                            {avatar_url ?
+                                <Image
+                                    src={avatar_url}
+                                    className="w-75 h-75 rounded-full flex items-center justify-center"
+                                />
                                 :
                                 <Flex direction='row' gap='md' align='center'>
                                 <PhotoIcon className="w-12"/>
                                 <div>
                                     <Text size="xl" inline>
-                                        Drag images here or click to select files
+                                        Drag images here or click to select files <span style={{ color: 'red' }}>*</span>
                                     </Text>
                                     <Text size="sm" c="dimmed" inline mt={7}>
-                                        Attach only 1 image, each file should not exceed 5mb
+                                        Attach community avatar image, the file should not exceed 5mb
                                     </Text>
                                 </div>    
                                 </Flex>
@@ -183,79 +194,43 @@ export default function ServicePostCreationModal({user, opened, setOpened}: Serv
                     </Group>
                 </Dropzone>
                 
-                {/* Post title input */}
-                <Textarea
-                    label="Title"
-                    placeholder="Name this post"
+                {/* Community name input */}
+                <TextInput
+                    label="Name"
+                    placeholder="E.g. British shorthair cats community"
                     w={500}
-                    autosize
-                    minRows={1}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                     required
                 />
 
-                {/* Post description input */}
+                {/* Community name input */}
                 <Textarea
                     label="Description"
-                    placeholder="Tell us more about the pet services you're offering!"
+                    placeholder="Short description about this community's interests"
                     w={500}
-                    autosize
-                    minRows={2}
-                    onChange={(e) => setContent(e.target.value)}
+                    onChange={(e) => setDescription(e.target.value)}
                     required
                 />
-
-                {/* Service location input */}
-                <TextInput
-                    label="Located at"
-                    placeholder="E.g. Tampines"
-                    w={500}
-                    onChange={(e) => setLocation(e.target.value)}
-                    required
-                />
-
-                {/* Service price range input */}
-                <Box m='md' w={500}>
-                    <Text size='sm' fw={500} mb='xs' inline>Price range <span style={{ color: 'red' }}>*</span></Text>
-                    <RangeSlider 
-                        minRange={0} 
-                        min={0} 
-                        max={500} 
-                        step={1} 
-                        label={(value) => `$ ${value}`} 
-                        defaultValue={[50, 150]}
-                        marks={[
-                            { value: 0, label: '$0' },
-                            { value: 500, label: '$500' }
-                        ]} 
-                        onChangeEnd={setPricing}
-                    />
-                </Box>
 
                 {/* Button to publish post */}
                 <Button 
                     m='sm' 
                     size='md' 
                     color='#6d543e'
+                    rightSection={loading && <Loader size="xs" color='#6d543e'/>}
                     onClick={async () => {
                         if (validate()) {
-                            await addFreelancerPost();
+                            await addCommunity();
                             setOpened(false);
-                            setPhotoPath(null);
-                            setTitle('');
-                            setContent('');
-                            setLocation('');
-                            setPricing([50, 150]);
-                            setPhotoUrl('');
+                            setAvatarUrl('');
+                            setName('');
+                            setDescription('');
                         }
                     }}
                 >
-                    Publish
-                    {loading && <Loader size="xs" color="#6d543e" />}
+                    Add community
                 </Button>
-
             </Flex>
-            
         </Modal>
     );
 }

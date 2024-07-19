@@ -24,6 +24,7 @@
     "dayjs": "^1.11.11",
     "embla-carousel-react": "^7.1.0",
     "next": "^14.2.4",
+    "nookies": "^2.5.2",
     "react": "^18",
     "react-dom": "^18"
   },
