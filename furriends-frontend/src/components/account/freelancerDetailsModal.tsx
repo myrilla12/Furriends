@@ -46,7 +46,7 @@ export default function FreelancerDetailsModal({ user, opened, onClose }: Freela
         <Modal opened={opened} onClose={onClose} scrollAreaComponent={ScrollArea.Autosize} size='xl' centered>
             <div className="space-y-4">
                     {/* terms and conditions of freelancer profile */}
-                    <Title>Furriends Freelancer Profile Terms and Conditions</Title>
+                    <Title>Terms & Conditions For Freelancer Profile </Title>
                     <Text c='dimmed' fw={600}>Effective Date: 9 July 2024</Text>
 
                     <Text>By toggling your profile to a freelancer profile on Furriends, you agree to the following terms and conditions:</Text>
@@ -113,20 +113,20 @@ export default function FreelancerDetailsModal({ user, opened, onClose }: Freela
                     </Text>
 
                     <Text
-                        c='rgba(255, 0, 0, 1)'
+                        c='red'
                         fw={700}
                     >
                         Once you toggle freelancer mode, this change will be made permanent.
                     </Text>
                     <Group justify='center'>
                         <Text c='dimmed' fw={500}>I agree to these terms and conditions.</Text>
-                        <Button color="#6d543e"
+                        <Button color='#6d543e' variant='outline'
                             onClick={async () => {
                                 await toggleFreelancer();
                                 onClose();
                             }}
                         >
-                            Toggle freelancer profile
+                            Switch to freelancer profile
                         </Button>
                     </Group>
             </div>

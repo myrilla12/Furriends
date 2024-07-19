@@ -92,7 +92,7 @@ export default function BusinessForm() {
 
     return (
         <footer className="flex mt-auto py-5 justify-center">
-            <p>Own a pet business? Apply to add it to our map{" "}
+            <p>Know a pet-friendly business or hangout spot? Apply to add it to our map{" "}
                 <button className="text-brown underline" onClick={open}>
                     here
                 </button>!
@@ -167,7 +167,7 @@ export default function BusinessForm() {
                         label="Description"
                         name="description"
                         value={description || ""}
-                        placeholder="Tell us more about your business"
+                        placeholder="Tell us more about this location!"
                         onChange={(e) => setDescription(e.target.value)}
                     />
                     <div>

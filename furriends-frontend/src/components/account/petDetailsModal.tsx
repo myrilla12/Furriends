@@ -1,5 +1,4 @@
 // modal that opens on click to show stored pet details
-import { createClient } from '../../utils/supabase/component';
 import { Modal, Text, ScrollArea } from '@mantine/core';
 import Image from 'next/image';
 import { Pet } from '@/utils/definitions';
@@ -22,8 +21,6 @@ type PetDetailsModalProps = {
  * @returns {JSX.Element} The pet details modal component.
  */
 export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModalProps) {
-    const supabase = createClient();
-
     return (
         <Modal opened={opened} onClose={onClose} title={pet.name} scrollAreaComponent={ScrollArea.Autosize} size='lg' centered>
             <div className="space-y-4">

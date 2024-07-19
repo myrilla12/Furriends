@@ -1,12 +1,13 @@
-import Layout from '@/components/layout';
-
-import type { User } from '@supabase/supabase-js'
+import { useState, useEffect } from 'react';
+import { parseCookies, destroyCookie } from 'nookies';
 import type { GetServerSidePropsContext } from 'next'
-import { createClient } from '../utils/supabase/server-props'
+import { createClient } from '@/utils/supabase/server-props'
+import type { User } from '@supabase/supabase-js'
+import { Pet } from '@/utils/definitions';
+import Layout from '@/components/layout';
 import Filters from '@/components/dashboard/filters';
 import PetCarousel from '@/components/dashboard/petCarousel';
-import { Pet } from '@/utils/definitions';
-import { useState } from 'react';
+import LocationModal from '@/components/dashboard/locationModal';
 import NoPetsFound from '@/components/dashboard/noPetsFound';
 
 /**
@@ -16,12 +17,14 @@ import NoPetsFound from '@/components/dashboard/noPetsFound';
  * @property {string} username - The username of the user.
  * @property {React.ReactNode} children - Children components to render within the layout.
  * @property {Pet[]} pets - Array of pet objects.
+ * @property {boolean} showLocationModal - Flag to indicate if the location modal should be shown.
  */
 type DashboardProps = {
     user: User;
     username: string;
     children: React.ReactNode;
-    pets: Pet[]
+    pets: Pet[];
+    showLocationModal: boolean;
 };
 
 /**
@@ -30,9 +33,15 @@ type DashboardProps = {
  * @param {DashboardProps} props - The props for the component.
  * @returns {JSX.Element} The rendered DashboardPage component.
  */
-export default function DashboardPage({ user, username, pets, children }: DashboardProps) {
-
+export default function DashboardPage({ user, username, pets, children, showLocationModal }: DashboardProps) {
+    const [isLocationModalOpen, setIsLocationModalOpen] = useState(showLocationModal);
     const [filteredPets, setFilteredPets] = useState<Pet[]>(pets);
+
+    useEffect(() => {
+        if (showLocationModal) {
+            setIsLocationModalOpen(true);
+        }
+    }, [showLocationModal]);
 
     return (
         <Layout user={user}>
@@ -46,6 +55,15 @@ export default function DashboardPage({ user, username, pets, children }: Dashbo
                 {filteredPets.length > 0 ? (<PetCarousel pets={filteredPets} />) : (<NoPetsFound />)}
                 {children}
             </div>
+
+            <LocationModal
+                opened={isLocationModalOpen}
+                onClose={() => {
+                    setIsLocationModalOpen(false);
+                    destroyCookie(null, 'showLocationModal', { path: '/' });
+                }}
+                user={user}
+            />
         </Layout>
     );
 }
@@ -54,10 +72,11 @@ export default function DashboardPage({ user, username, pets, children }: Dashbo
  * Fetches user data (username, profile photo) and pet data by getting server props.
  *
  * @param {GetServerSidePropsContext} context - The server-side context.
- * @returns {Promise<{ props: { user: User, username: string, pets: Pet[] } }>} The server-side props.
+ * @returns {Promise<{ props: { user: User, username: string, pets: Pet[], showLocationModal: boolean } }>} The server-side props.
  */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const supabase = createClient(context)
+    const supabase = createClient(context);
+    const cookies = parseCookies(context);
 
     const { data, error } = await supabase.auth.getUser()
 
@@ -91,6 +110,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 pets: [],
                 user: data.user,
                 username: profileData?.username || '',
+                showLocationModal: cookies.showLocationModal === 'true'
             },
         };
     }
@@ -111,6 +131,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             user: data.user,
             username: profileData?.username || '',
             pets: petsWithPhotoUrlArray,
+            showLocationModal: cookies.showLocationModal === 'true'
         },
     };
 }
