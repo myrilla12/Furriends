@@ -27,7 +27,7 @@ type FeedProps = {
 export default function Feed({ user, posts, service, community, returnToGeneralFeed }: FeedProps) {
     
     return (
-        <ScrollArea.Autosize mah={600} mx="auto" scrollbars="y">
+        <ScrollArea.Autosize mah={630} mx="auto" scrollbars="y">
             {community &&
                 <Box mb="md" pb="sm" className="relative border-b-2">
                     <Button 
