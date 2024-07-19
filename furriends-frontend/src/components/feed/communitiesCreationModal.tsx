@@ -176,6 +176,7 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                                 <Image
                                     src={avatar_url}
                                     className="w-75 h-75 rounded-full flex items-center justify-center"
+                                    alt="Community avatar"
                                 />
                                 :
                                 <Flex direction='row' gap='md' align='center'>

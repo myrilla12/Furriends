@@ -55,7 +55,7 @@ export default function PostCard({ user, post, service }: PostCardProps) {
     }
     useEffect(() => { 
         getProfileData(); 
-    }, [user, post.post_author]);
+    }, [user, post.post_author, getProfileData]);
 
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder w={400}>

@@ -204,6 +204,7 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                                 <Flex direction='row' gap='md' align='center'>
                                     <Image 
                                         src={photo_url}
+                                        alt="Post image"
                                     />
                                 </Flex>
                                 :

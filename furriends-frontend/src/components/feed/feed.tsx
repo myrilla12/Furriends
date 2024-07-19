@@ -22,8 +22,8 @@ export default function Feed({ user, posts, service }: FeedProps) {
     return (
         <ScrollArea.Autosize mah={600} w={400} mx="auto" scrollbars="y">
             <Stack gap="md">
-                {posts?.map((post) => (
-                    <PostCard user={user} post={post} service={service}/>
+                {posts?.map((post, index) => (
+                    <PostCard key={post.id || index} user={user} post={post} service={service}/>
                 ))}
             </Stack>
         </ScrollArea.Autosize>
