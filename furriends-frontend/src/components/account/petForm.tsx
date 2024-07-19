@@ -162,7 +162,7 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
                 setLikes(null);
                 setPhotoUrls(null);
             }}
-            title="Create pet profile"
+            title={<span className="font-bold text-lg text-brown">Create pet profile</span>}
             scrollAreaComponent={ScrollArea.Autosize}
         >
             <div className="space-y-4">
@@ -242,7 +242,7 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
                         setPhotoUrls(urls)
                     }}
                 />
-                <Button variant="default" color="gray"
+                <Button variant="outline" color="#6d543e"
                     onClick={async () => {
                         if (validateForm()) {
                             await addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });

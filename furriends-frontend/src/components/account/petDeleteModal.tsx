@@ -47,7 +47,7 @@ export default function PetDeleteModal({ opened, onClose, pet, deletePetFromStat
 
     return (
         <>
-            <Modal opened={opened} onClose={onClose} title="Warning!" size="auto" centered>
+            <Modal opened={opened} onClose={onClose} title={<span className="font-bold text-lg text-red-600">Warning!</span>} size="auto" centered>
                 <p className="font-bold text-red-600">
                     Are you sure you want to remove <span className="underline">{pet.name}</span> from your profile?</p>
                 <p className="text-red-600 pt-2">This action is irreversible.</p>

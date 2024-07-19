@@ -140,7 +140,7 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
                 setLikes(pet.likes);
                 setPhotoUrls(pet.photos);
             }}
-            title={`Edit ${pet.name}'s pet profile`}
+            title={<span className="font-bold text-lg text-brown">{`Edit ${pet.name}'s pet profile`}</span>}
             centered
             scrollAreaComponent={ScrollArea.Autosize}
         >
@@ -222,7 +222,7 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
                     }}
                 />
                 <SortablePhotoArray photoUrls={photo_urls} setPhotoUrls={setPhotoUrls} />
-                <Button variant="default" color="gray"
+                <Button variant="outline" color="#6d543e"
                     onClick={async () => {
                         if (validateForm()) {
                             await updatePetProfile();
