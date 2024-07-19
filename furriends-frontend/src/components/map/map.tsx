@@ -18,6 +18,8 @@ type MapComponentProps = {
 /**
  * Component for displaying a Google Map with a marker.
  *
+ * @param {Object} props - The component props.
+ * @param {User} props.user - The user object.
  * @returns {JSX.Element} The Map component.
  */
 export default function Map({ user }: MapComponentProps) {

@@ -114,7 +114,7 @@ export default function AccountForm({ user }: { user: User | null }) {
      * 
      * @async
      * @function updateAvatar
-     * @param {{ avatar_url: string | null }} avatarData - The avatar url to update.
+     * @param {{ url: string | null }} avatarData - The avatar url to update.
      */
     async function updateAvatar({ url }: {
         url: string | null
