@@ -93,7 +93,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // select tuple corresponding to user, expecting a single result
     const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('username')
+        .select('avatar_url, username')
         .eq('id', data.user.id)
         .single();
 
