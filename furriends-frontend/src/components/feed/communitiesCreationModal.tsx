@@ -136,7 +136,7 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
             centered
         >
             <Flex justify='center' align='center' direction='column' gap='md'>
-                <Title c='#6d543e'>Create a community</Title>
+                <Title order={2} c='#6d543e'>Create a community</Title>
 
                 {/* Dropzone for photo upload */}
                 <Dropzone

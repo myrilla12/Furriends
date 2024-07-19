@@ -164,7 +164,7 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
             centered
         >
             <Flex justify='center' align='center' direction='column' gap='md'>
-                <Title c='#6d543e'>Create your post</Title>
+                <Title order={2} c='#6d543e'>Create your post</Title>
 
                 {/* Dropzone for photo upload */}
                 <Dropzone

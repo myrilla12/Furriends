@@ -1,6 +1,6 @@
 // modal that opens on click to show stored pet details
 import { createClient } from '../../utils/supabase/component';
-import { Modal, Text, ScrollArea } from '@mantine/core';
+import { Modal, Text, ScrollArea, Title } from '@mantine/core';
 import Image from 'next/image';
 import { Pet } from '@/utils/definitions';
 import { calculateAge, getAgeString } from '@/utils/calculateAge';
@@ -25,7 +25,7 @@ export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModa
     const supabase = createClient();
 
     return (
-        <Modal opened={opened} onClose={onClose} title={pet.name} scrollAreaComponent={ScrollArea.Autosize} size='lg' centered>
+        <Modal opened={opened} onClose={onClose} title={(<Title order={3}>{pet.name}</Title>)} scrollAreaComponent={ScrollArea.Autosize} size='lg' centered>
             <div className="space-y-4">
 
                 <div className="flex space-x-4">
