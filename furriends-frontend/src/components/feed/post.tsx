@@ -58,7 +58,7 @@ export default function PostCard({ user, post, service }: PostCardProps) {
     }, [user, post.post_author, getProfileData]);
 
     return (
-        <Card shadow="sm" padding="lg" radius="md" withBorder w={400}>
+        <Card shadow="sm" padding="lg" radius="md" withBorder w={600}>
         <Card.Section className="bg-amber-900 bg-opacity-10">
             <Group m="xs">
                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-700 ml-4 mr-1">
@@ -77,7 +77,7 @@ export default function PostCard({ user, post, service }: PostCardProps) {
         <Card.Section>
             <Image
                 src={post.post_image}
-                h={350}
+                h={400}
                 fit="contain"
                 alt="Not loading..."
                 className="bg-slate-950"

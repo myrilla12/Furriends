@@ -64,7 +64,7 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
         <Layout user={user}>
             <div className="relative flex-grow px-6 pt-6">
                 <FeedLinks />
-                <div className="absolute top-6 right-6">
+                <div className="absolute top-1 right-1">
                     {profile.freelancer && 
                         <Button 
                             leftSection={<PlusCircleIcon className="w-6"/>} 
@@ -79,13 +79,13 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
                         </Button>
                     }
                 </div>
-                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={true}/>
+                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={true} myCommunities={null}/>
                 <Flex direction="row">
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
                         <h2 className="mb-7">For all your pet&apos;s needs</h2>
                     </div>
-                    <Feed user={user} posts={feed} service={true}/>
+                    <Feed user={user} posts={feed} service={true} community={null}/>
                 </Flex>
    
             </div>

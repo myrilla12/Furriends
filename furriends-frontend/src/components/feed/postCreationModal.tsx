@@ -1,16 +1,18 @@
-import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader, Image } from "@mantine/core";
+import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader, Image, Select } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
 import { Group, Text, rem } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon, FaceSmileIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/component";
+import { Community } from "@/utils/definitions";
 
 type PostCreationModalProps = {
     user: User | null;
     opened: boolean;
     setOpened: (open: boolean) => void;
-    service: boolean
+    service: boolean;
+    myCommunities: Community[] | null;
 }
 
 /**
@@ -20,11 +22,12 @@ type PostCreationModalProps = {
  * @param {User | null} props.user - The current user.
  * @param {boolean} props.opened - Indicates whether the modal is open.
  * @param {function} props.setOpened - Function to set the modal open state.
- * @param {boolean} props.service - Whether post is created by freelancer or not. 
+ * @param {boolean} props.service - Whether post is created by freelancer or not.
+ * @param {Community[]} props.myCommunities - Communities that user is a member of.  
  * @param {Partial<DropzoneProps>} props.props - Additional dropzone properties.
  * @returns {JSX.Element} The PostCreationModal component.
  */
-export default function PostCreationModal({user, opened, setOpened, service}: PostCreationModalProps, props: Partial<DropzoneProps>) {
+export default function PostCreationModal({user, opened, setOpened, service, myCommunities}: PostCreationModalProps, props: Partial<DropzoneProps>) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
     const [photo_path, setPhotoPath] = useState<FileWithPath | null>(null);
@@ -33,6 +36,7 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
     const [location, setLocation] = useState<string>('');
     const [pricing, setPricing] = useState<number[]>([50, 150]);
     const [photo_url, setPhotoUrl] = useState<string>('');
+    const [community, setCommunity] = useState<Community | null>(null);
 
     /**
      * Uploads a photo to the Supabase storage.
@@ -115,11 +119,30 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                     post_content: content,
                     post_location: location,
                     post_author: user?.id, 
+                    community_id: community?.id,
                 });
 
             if (error) {
                 console.error('Error inserting post information', error);
             }
+
+            if (community) {
+                console.log("Community id", community?.id)
+                // update updated_at value for the community post was inserted into
+                const currentTimestamp = new Date().toISOString();
+                console.log("Current timestamp", currentTimestamp)
+            
+                const { error: UpdateError } = await supabase
+                    .from('communities')
+                    .update({ updated_at: currentTimestamp })
+                    .eq('id', community.id)
+                    .single();
+
+                if (UpdateError) {
+                    console.error('Error updating updated_at value for communities: ', UpdateError);
+                }
+            }
+
         } catch (error) {
             alert('Unable to add post!');
         } finally {
@@ -158,6 +181,7 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                 setLocation('');
                 setPricing([50, 150]);
                 setPhotoUrl('');
+                setCommunity(null);
             }} 
             scrollAreaComponent={ScrollArea.Autosize} 
             size='lg' 
@@ -275,6 +299,27 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                     </Box>
                 }
 
+                {!service &&
+                    <Select
+                        w={500}
+                        label="Community"
+                        placeholder="Choose a community"
+                        data={myCommunities?.map((community) => ({
+                            value: community.id,
+                            label: community.name
+                        }))}
+                        onChange={(e) => {
+                            const selectedCommunity = myCommunities?.find((community) => community.id === e);
+                            
+                            if (selectedCommunity) {
+                                setCommunity(selectedCommunity);
+                            } else {
+                                setCommunity(null);
+                            }
+                        }}
+                    />
+                }
+
                 {/* Button to publish post */}
                 <Button 
                     m='sm' 
@@ -294,6 +339,7 @@ export default function PostCreationModal({user, opened, setOpened, service}: Po
                             setLocation('');
                             setPricing([50, 150]);
                             setPhotoUrl('');
+                            setCommunity(null);
                         }
                     }}
                 >

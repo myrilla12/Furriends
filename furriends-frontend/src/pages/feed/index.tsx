@@ -6,7 +6,7 @@ import { createClient as componentCreateClient } from '@/utils/supabase/componen
 import { Button, Flex } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 import { Community, Post } from '@/utils/definitions';
@@ -35,6 +35,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     const [feed, setFeed] = useState<Post[]>(posts);
     const [myCommunitiesState, setMyCommunities] = useState<Community[]>(myCommunities);
     const [otherCommunitiesState, setOtherCommunities] = useState<Community[]>(otherCommunities);
+    const [currentCommunity, setCurrentCommunity] = useState<Community | null>(null);
 
     // make changes to 'community_posts' table realtime
     useEffect(() => {
@@ -119,11 +120,30 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         setMyCommunities(prev => [...prev, community]);
     };
 
+    /**
+     * Updates feed to show community posts upon clicking one of 'My Communities' and save current community.
+     *
+     * @param {SetStateAction<Post[]>} fetchedPosts - The posts belonging to the community.
+     */
+    const handleCommunityPosts = (fetchedPosts: SetStateAction<Post[]>, currentCommunity: Community) => {
+        setFeed(fetchedPosts);
+        setCurrentCommunity(currentCommunity);
+    }
+
+    /**
+     * Updates feed to general feed upon clicking return to general feed.
+     *
+     */
+    const returnToGeneralFeed = () => {
+        setFeed(posts);
+        setCurrentCommunity(null);
+    }
+    
     return (
         <Layout user={user}>
             <div className='relative flex-grow p-6'>
                 <FeedLinks />
-                <div className="absolute top-6 right-6">
+                <div className="absolute top-1 right-1">
                     <Button 
                         leftSection={<PlusCircleIcon className='w-6'/>} 
                         m='md' 
@@ -136,15 +156,15 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                         Create a post
                     </Button>
                 </div>
-                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false}/>
+                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false} myCommunities={myCommunitiesState}/>
                 <Flex direction="row">
                     <div>
                         <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                         <h2 className="mb-7">Share your pet adventures</h2>
-                        <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity}/>
-                        <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity}/>
+                        <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
+                        <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
                     </div>
-                    <Feed user={user} posts={feed} service={false}/>
+                    <Feed user={user} posts={feed} service={false} community={currentCommunity} returnToGeneralFeed={returnToGeneralFeed}/>
                 </Flex>
             </div>
         </Layout >
