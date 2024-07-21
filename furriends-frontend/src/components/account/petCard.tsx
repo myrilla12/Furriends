@@ -16,6 +16,7 @@ type PetCardProps = {
     pet: Pet;
     editable: boolean;
     chattable: boolean;
+    distance: string;
     updatePetInState?: (updatedPet: Pet) => void; // optional prop, only defined when pet card is editable
     deletePetFromState?: (deletedPetId: string) => void; // optional prop, only defined when pet card is editable
 };
@@ -32,7 +33,7 @@ type PetCardProps = {
  * @param {function} [props.deletePetFromState] - Callback function to delete the pet from the state.
  * @returns {JSX.Element} The pet card component.
  */
-export default function PetCard({ pet, editable, chattable, updatePetInState, deletePetFromState }: PetCardProps) {
+export default function PetCard({ pet, editable, chattable, distance, updatePetInState, deletePetFromState }: PetCardProps) {
     const [textColor, setTextColor] = useState('white');
     const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false); // controls opening/closing of petDetailsModal
     const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false); // controls opening/closing of petEdit modal
@@ -56,6 +57,7 @@ export default function PetCard({ pet, editable, chattable, updatePetInState, de
         setTextColorBasedOnImage();
     }, [pet.photos]);
 
+
     return (
         <>
             <div
@@ -67,6 +69,7 @@ export default function PetCard({ pet, editable, chattable, updatePetInState, de
                     <h2 className="text-2xl font-bold">{pet.name}</h2>
                     <p>{pet.type},{" "}{pet.breed}</p>
                     <p className="text-sm">{getAgeString(calculateAge(pet))}</p>
+                    <p className="text-sm">{distance} km away</p>
                 </div>
 
                 {editable && updatePetInState && deletePetFromState && (

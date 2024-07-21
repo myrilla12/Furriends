@@ -66,15 +66,16 @@ export default function PetCarousel({ user, pets }: PetCarouselProps) {
         fetchNearbyUsers();
     }, [user, userLocation]);
 
-    const sortedPets = pets.sort((petA, petB) => {
-        const ownerA = nearbyUsers?.find(user => user.id === petA.owner_id);
-        const ownerB = nearbyUsers?.find(user => user.id === petB.owner_id);
-        return (ownerA?.dist_meters || Infinity) - (ownerB?.dist_meters || Infinity);
-    })
+    // sort pets by owners' distance & store distance in pet object
+    const sortedPets = pets.map(pet => {
+        const owner = nearbyUsers?.find(user => user.id === pet.owner_id);
+        const distance = owner?.dist_meters || Infinity;
+        return { ...pet, distance };
+    }).sort((petA, petB) => petA.distance - petB.distance);
 
     const slides = sortedPets.map((pet, index) => (
         <Carousel.Slide key={index}>
-            {<PetCard pet={pet} editable={false} chattable={true} />}
+            {<PetCard pet={pet} editable={false} chattable={true} distance={(pet.distance / 1000).toFixed(1)}/>}
         </Carousel.Slide>
     ));
 

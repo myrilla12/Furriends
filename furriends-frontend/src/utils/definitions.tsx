@@ -10,6 +10,7 @@ export type Pet = {
     description: string | null;
     likes: string | null;
     photos: string[] | null;
+    distance?: number;
 }
 
 export type Profile = {
