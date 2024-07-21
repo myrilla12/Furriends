@@ -56,3 +56,14 @@ export type Community = {
     description: string;
     updated_at: string;
 }
+
+export type Business = {
+    id: string;
+    name: string;
+    type: string;
+    address: string;
+    phone: string;
+    description: string;
+    lat: number;
+    long: number;
+}

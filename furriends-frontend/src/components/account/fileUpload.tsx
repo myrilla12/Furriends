@@ -1,15 +1,12 @@
-// file upload field for pet profile creation form
-// allows users to upload multiple files at once
-// files will be fetched and uploaded from supabase storage bucket `pet_photos`
-// partially adapted from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
-
 import React, { useState } from 'react';
 import { createClient } from '../../utils/supabase/component'
 import { FileInput } from '@mantine/core';
-//import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 
 /**
  * Component for uploading multiple files to Supabase storage.
+ * For users to upload pet photos during pet profile creation/editing
+ * Files are uploaded & fetched from supabase storage bucket `pet_photos`
+ * Partially adapted from: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?language=ts&queryGroups=language
  *
  * @param {{ uid: string | null, urls: string[] | null, onUpload: (urls: string[]) => void }} props - The component props.
  * @param {string | null} props.uid - The user ID.
@@ -91,11 +88,6 @@ export default function FileUpload({ uid, urls, onUpload, }: {
                 onChange={(files) => handleFileChange(Array.from(files))}
                 accept="image/*"
             />
-            {/* This chunk displays the exisiting photos after the fileinput field
-            photo_urls.map((url, index) => (
-                <img key={index} src={url} alt="pet photo" />
-            ))
-            */}
         </div>
     );
 }
