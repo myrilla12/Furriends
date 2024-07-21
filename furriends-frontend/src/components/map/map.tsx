@@ -133,7 +133,8 @@ export default function Map({ user }: MapComponentProps) {
                                     <h1 className='text-sm text-brown font-bold mb-3'>{business.name}</h1>
                                     <p className='mb-2'><span className='font-bold'>Type: </span>{business.type}</p>
                                     <p className='mb-2'><span className='font-bold'>Address: </span>{business.address}</p>
-                                    <p className='mb-1'><span className='font-bold'>Phone: </span>{business.phone}</p>
+                                    <p className='mb-2'><span className='font-bold'>Phone: </span>{business.phone}</p>
+                                    <p className='mb-1'><span className='font-bold'>Description: </span>{business.description}</p>
                                 </div>
                             </InfoWindow>
                         )}

@@ -62,6 +62,7 @@ export type Business = {
     type: string;
     address: string;
     phone: string;
+    description: string;
     lat: number;
     long: number;
 }
