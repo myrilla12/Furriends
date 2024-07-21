@@ -60,6 +60,8 @@ export type Business = {
     id: string;
     name: string;
     type: string;
+    address: string;
+    phone: string;
     lat: number;
     long: number;
 }

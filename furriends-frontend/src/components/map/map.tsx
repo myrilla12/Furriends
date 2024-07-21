@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useJsApiLoader, GoogleMap, Marker } from '@react-google-maps/api';
+import { useJsApiLoader, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { createClient } from '@/utils/supabase/component'
 import type { User } from '@supabase/supabase-js'
 import { Business } from '@/utils/definitions';
@@ -24,6 +24,7 @@ export default function Map({ user }: MapComponentProps) {
     const [userLocation, setUserLocation] = useState<{ lat: number; lng: number }>({ lat: 1.3521, lng: 103.8198 });
     const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 1.3521, lng: 103.8198 });
     const [businesses, setBusinesses] = useState<Business[]>([]);
+    const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null);
     const mapRef = React.useRef<google.maps.Map | null>(null);
     const { isLoaded, loadError } = useJsApiLoader({
         id: 'google-map-script',
@@ -121,7 +122,22 @@ export default function Map({ user }: MapComponentProps) {
                             origin: new google.maps.Point(0, 0),
                             anchor: new google.maps.Point(20, 20)
                         }}
-                    />
+                        onClick={() => setSelectedBusiness(business.id)}
+                    >
+                        {selectedBusiness === business.id && (
+                            <InfoWindow
+                                position={{ lat: business.lat, lng: business.long }}
+                                onCloseClick={() => setSelectedBusiness(null)}
+                            >
+                                <div className='max-w-sm'>
+                                    <h1 className='text-sm text-brown font-bold mb-3'>{business.name}</h1>
+                                    <p className='mb-2'><span className='font-bold'>Type: </span>{business.type}</p>
+                                    <p className='mb-2'><span className='font-bold'>Address: </span>{business.address}</p>
+                                    <p className='mb-1'><span className='font-bold'>Phone: </span>{business.phone}</p>
+                                </div>
+                            </InfoWindow>
+                        )}
+                    </Marker>
                 );
             })}
         </GoogleMap>
