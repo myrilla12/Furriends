@@ -3,7 +3,7 @@ import UserIcon from './userIcon';
 import LogoHeader from './logoHeader';
 import SideNav from '@/components/sidebar/sideNav';
 import { type User } from '@supabase/supabase-js';
-import { Bars3Icon } from '@heroicons/react/24/outline';
+import { IconMenu2 } from '@tabler/icons-react';
 
 // define prop types
 type LayoutProps = {
@@ -55,7 +55,7 @@ export default function Layout({ children, user }: LayoutProps) {
                     {/* sidebar icon & furriends logo on the left */}
                     <div className="flex items-center">
                         <button onClick={toggleSidebar} className="pl-5">
-                            <Bars3Icon className="w-7 h-7" />
+                            <IconMenu2 className="w-7 h-7" />
                         </button>
                         <LogoHeader />
                     </div>

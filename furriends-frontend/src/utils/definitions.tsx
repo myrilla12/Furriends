@@ -55,3 +55,11 @@ export type Community = {
     description: string;
     updated_at: string;
 }
+
+export type Business = {
+    id: string;
+    name: string;
+    type: string;
+    lat: number;
+    long: number;
+}

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useJsApiLoader, GoogleMap, Marker } from '@react-google-maps/api';
 import { createClient } from '@/utils/supabase/component'
 import type { User } from '@supabase/supabase-js'
+import { Business } from '@/utils/definitions';
 
 
 const containerStyle = {
@@ -16,15 +17,19 @@ type MapComponentProps = {
 };
 
 /**
- * Component for displaying a Google Map with a marker.
+ * Component for displaying a Google Map centered on user location.
+ * Other markers on the map are placed to show nearby pet businesses.
+ * A timeout is used to fetch nearby businesses only after the user has finished swiping the map.
  *
  * @param {Object} props - The component props.
  * @param {User} props.user - The user object.
  * @returns {JSX.Element} The Map component.
  */
 export default function Map({ user }: MapComponentProps) {
-    const [latitude, setLatitude] = useState<number>(1.3521);
-    const [longitude, setLongitude] = useState<number>(103.8198);
+    const [userLocation, setUserLocation] = useState<{ lat: number; lng: number }>({ lat: 1.3521, lng: 103.8198 });
+    const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 1.3521, lng: 103.8198 });
+    const [businesses, setBusinesses] = useState<Business[]>([]);
+    const mapRef = React.useRef<google.maps.Map | null>(null);
     const { isLoaded, loadError } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
@@ -45,13 +50,48 @@ export default function Map({ user }: MapComponentProps) {
                 console.error('Error fetching locations:', error);
                 return;
             }
-
-            setLatitude(data[0].latitude)
-            setLongitude(data[0].longitude);
+            
+            setUserLocation({lat: data[0].latitude, lng: data[0].longitude})
+            setCenter({lat: data[0].latitude, lng: data[0].longitude});
         };
 
         fetchLocations();
     }, [user]);
+
+    const fetchBusinesses = useCallback(async (bounds: google.maps.LatLngBounds) => {
+        const supabase = createClient();
+
+        const { data, error } = await supabase
+            .rpc('businesses_in_view', {
+                min_lat: bounds.getSouthWest().lat(),
+                min_long: bounds.getSouthWest().lng(),
+                max_lat: bounds.getNorthEast().lat(),
+                max_long: bounds.getNorthEast().lng()
+            });
+
+        if (error) {
+            console.error('Error fetching businesses:', error);
+            return;
+        }
+
+        setBusinesses(data);
+    }, []);
+
+    const handleBoundsChanged = useCallback(() => {
+        if (mapRef.current) {
+            const bounds = mapRef.current.getBounds();
+            if (bounds) {
+                fetchBusinesses(bounds);
+            }
+        }
+    }, [fetchBusinesses]);
+
+    const handleDragEnd = () => {
+        const newCenter = mapRef.current?.getCenter()?.toJSON();
+        if (newCenter) {
+            setCenter(newCenter);
+        }
+    };
 
     if (loadError) {
         return <div>Error loading Google Maps! Please try again.</div>;
@@ -60,14 +100,20 @@ export default function Map({ user }: MapComponentProps) {
     if (!isLoaded) {
         return <div>Loading...</div>;
     }
-    
+
     return (
         <GoogleMap
             mapContainerStyle={containerStyle}
-            center={{ lat: latitude, lng: longitude }}
+            center={center}
             zoom={16}
+            onLoad={(map) => { mapRef.current = map; }} // set the map instance
+            onIdle={handleBoundsChanged} // trigger fetching businesses on map idle
+            onDragEnd={handleDragEnd}
         >
-            <Marker key="user" position={{ lat: latitude, lng: longitude }} />
+            <Marker key="user" position={userLocation} />
+            {businesses.map((business) => (
+                <Marker key={business.id} position={{ lat: business.lat, lng: business.long }} title={business.name} />
+            ))}
         </GoogleMap>
     )
 }
