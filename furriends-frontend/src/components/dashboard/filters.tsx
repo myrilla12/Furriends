@@ -163,17 +163,6 @@ export default function Filters({ pets, setFilteredPets }: FiltersProps) {
                         searchable
                         onChange={setEnergy}
                     />
-
-                    <Space w='xs' />
-
-                    <Select
-                        w={110}
-                        label='Location'
-                        placeholder='Location'
-                        data={['East', 'West', 'Central', 'North', 'South']}
-                        filter={optionsFilter}
-                        searchable
-                    />
                 </Group>
             </div>
         </Box>
