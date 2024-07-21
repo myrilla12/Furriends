@@ -5,6 +5,7 @@ import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
 import BusinessForm from '@/components/map/businessForm';
+import Legend from '@/components/map/legend';
 
 type MapProps = {
     user: User;
@@ -22,11 +23,12 @@ export default function MapPage({ user}: MapProps) {
     return (
         <Layout user={user}>
             <div className="flex-grow px-6 pt-6">
-                <h1 className="mb-7 text-2xl font-bold text-amber-950">Find some new locations to hang out with your furriends!</h1>
+                <h1 className="text-2xl font-bold text-amber-950">Find some new locations to hang out with your furriends!</h1>
             </div>
-            <div className="flex flex-grow items-center justify-center px-9 pt-3">
+            <div className="flex flex-grow items-center justify-center px-9 pt-4">
                 <Map user={user} />
             </div>
+            <Legend />
             <BusinessForm />
         </Layout >
     )

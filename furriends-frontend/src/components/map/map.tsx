@@ -3,12 +3,7 @@ import { useJsApiLoader, GoogleMap, Marker } from '@react-google-maps/api';
 import { createClient } from '@/utils/supabase/component'
 import type { User } from '@supabase/supabase-js'
 import { Business } from '@/utils/definitions';
-
-
-const containerStyle = {
-    width: '100%',
-    height: '550px'
-};
+import getIconUrl from '@/utils/mapIconUtils';
 
 const libraries: ("places")[] = ['places'];
 
@@ -50,9 +45,9 @@ export default function Map({ user }: MapComponentProps) {
                 console.error('Error fetching locations:', error);
                 return;
             }
-            
-            setUserLocation({lat: data[0].latitude, lng: data[0].longitude})
-            setCenter({lat: data[0].latitude, lng: data[0].longitude});
+
+            setUserLocation({ lat: data[0].latitude, lng: data[0].longitude })
+            setCenter({ lat: data[0].latitude, lng: data[0].longitude });
         };
 
         fetchLocations();
@@ -103,17 +98,32 @@ export default function Map({ user }: MapComponentProps) {
 
     return (
         <GoogleMap
-            mapContainerStyle={containerStyle}
+            options={{ mapId: '6732cc4956028a5d' }}
+            mapContainerStyle={{ width: '100%', height: '550px' }}
             center={center}
             zoom={16}
             onLoad={(map) => { mapRef.current = map; }} // set the map instance
             onIdle={handleBoundsChanged} // trigger fetching businesses on map idle
-            onDragEnd={handleDragEnd}
+            onDragEnd={handleDragEnd} // change the center coordinates of the map
         >
             <Marker key="user" position={userLocation} />
-            {businesses.map((business) => (
-                <Marker key={business.id} position={{ lat: business.lat, lng: business.long }} title={business.name} />
-            ))}
+            {businesses.map((business) => {
+                const iconUrl = getIconUrl(business.type);
+
+                return (
+                    <Marker
+                        key={business.id}
+                        position={{ lat: business.lat, lng: business.long }}
+                        title={business.name}
+                        icon={{
+                            url: iconUrl,
+                            scaledSize: new google.maps.Size(40, 40),
+                            origin: new google.maps.Point(0, 0),
+                            anchor: new google.maps.Point(20, 20)
+                        }}
+                    />
+                );
+            })}
         </GoogleMap>
     )
 }

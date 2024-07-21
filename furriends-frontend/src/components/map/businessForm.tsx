@@ -128,7 +128,7 @@ export default function BusinessForm() {
                         name="business type"
                         value={type}
                         placeholder="Select Business Type"
-                        data={['Pet items', 'Pet shop', 'Pet swimming pool', 'Pet grooming', 'Pet-friendly mall', 'Pet-friendly cafe', 'Pet-friendly park', 'Veterinary clinic', 'Other']}
+                        data={['Pet shop', 'Pet swimming pool', 'Pet grooming', 'Pet-friendly mall', 'Pet-friendly cafe/restaurant', 'Pet-friendly park', 'Veterinary clinic', 'Other']}
                         onChange={(value: string | null) => setType(value || '')}
                         allowDeselect={false}
                         checkIconPosition="right"

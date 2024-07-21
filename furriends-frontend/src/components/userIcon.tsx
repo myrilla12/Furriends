@@ -3,8 +3,8 @@ import Image from 'next/image';
 import { Loader, Menu, MenuItem } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { type User } from '@supabase/supabase-js';
-import { createClient } from '../utils/supabase/component';
-import { PowerIcon, UserIcon as PersonIcon } from '@heroicons/react/24/outline';
+import { createClient } from '@/utils/supabase/component';
+import { IconPaw, IconUserCircle, IconPower } from '@tabler/icons-react';
 
 type UserIconProps = {
     user: User | null;
@@ -66,7 +66,7 @@ export default function UserIcon({ user }: UserIconProps) {
 
             if (data && data.avatar_url) {
                 setAvatarUrl(data.avatar_url)
-            } 
+            }
         } catch (error) {
             alert('Error loading profile photo!')
         } finally {
@@ -96,41 +96,35 @@ export default function UserIcon({ user }: UserIconProps) {
 
                 {/* create dropdown menu on avatar icon */}
                 <Menu.Dropdown>
-                    <MenuItem 
+                    <MenuItem
                         onClick={() => {
                             setEditProfileLoading(true);
                             router.push('/account/edit').finally(() => setEditProfileLoading(false));
                         }}
                     >
                         <div className="flex items-center">
-                            <PersonIcon className="w-4 h-4 mr-2" />
-                            <span>Edit Profile</span>
+                            <IconUserCircle className="w-5 h-5 mr-2" strokeWidth={1.5} />
+                            <span className="whitespace-nowrap">Edit Profile</span>
                             {editProfileLoading && <Loader size="xs" color="#6d543e" />}
                         </div>
                     </MenuItem>
-                    <MenuItem 
+                    <MenuItem
                         onClick={() => {
                             setMyPetsLoading(true);
                             router.push('/account/pets').finally(() => setMyPetsLoading(false));
                         }}
                     >
                         <div className="flex items-center">
-                            <Image
-                                src='/paw-icon.png' // use default avatar if no avatar set
-                                alt="paw icon"
-                                width='18'
-                                height='18'
-                                className='mr-1.5'
-                            />
+                            <IconPaw className="w-5 h-5 mr-2" strokeWidth={1.5} />
                             <span>My Pets</span>
-                            {myPetsLoading && <Loader size="xs" color="#6d543e" />}
+                            {myPetsLoading && <Loader className="ml-2" size="xs" color="#6d543e" />}
                         </div>
                     </MenuItem>
                     <MenuItem onClick={signout}>
                         <div className="flex items-center">
-                            <PowerIcon className="w-4 h-4 mr-2" />
+                            <IconPower className="w-5 h-5 mr-2" strokeWidth={1.5} />
                             <span>Sign Out</span>
-                            {signOutLoading && <Loader size="xs" color="#6d543e" />}
+                            {signOutLoading && <Loader className="ml-1" size="xs" color="#6d543e" />}
                         </div>
                     </MenuItem>
                 </Menu.Dropdown>
