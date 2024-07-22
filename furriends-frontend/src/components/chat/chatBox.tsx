@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Input, Menu, Stack, Text } from "@mantine/core";
+import { Box, Button, Container, Flex, Input, Loader, Menu, Stack, Text } from "@mantine/core";
 import { createClient } from "@/utils/supabase/component";
 import { useEffect, useRef, useState } from "react";
 import { User } from "@supabase/supabase-js";
@@ -13,6 +13,7 @@ type ChatBoxProps = {
   chatId: string | null;
   messages: Message[] | null;
   chatPartner: Profile | null;
+  loading: boolean;
 }
 
 /**
@@ -25,7 +26,7 @@ type ChatBoxProps = {
  * @param {Profile | null} props.chatPartner - The chat partner's profile.
  * @returns {JSX.Element} The chat box component.
  */
-export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBoxProps) {
+export default function ChatBox({ user, chatId, messages, chatPartner, loading }: ChatBoxProps) {
 
     const supabase = createClient();
     const router = useRouter();
@@ -172,6 +173,8 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
     <Container m='md' className={`${styles.chatContainer}`}>
         {/* Display author name, messages, timestamp, read? and edited? in chat bubbles */}
         <Box h={570}>
+            {loading ? 
+            <Flex h={550} align="center" justify="center"><Loader size="xl" color="#6d543e" /></Flex> :
             <Box h={550} pb='md' ref={scrollAreaRef} style={{"overflow": "auto"}}>
                 <div className="mt-5 flex flex-col gap-3">
                     {messages?.map((msg, i) => (
@@ -237,7 +240,7 @@ export default function ChatBox({ user, chatId, messages, chatPartner }: ChatBox
                                 </div>)}
                         </div>))}
                 </div>
-            </Box>
+            </Box>}
         </Box>
         
         {editing ?
