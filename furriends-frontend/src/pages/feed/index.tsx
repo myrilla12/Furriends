@@ -144,10 +144,16 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     const renderMobileVersion = () => (
         <div className='relative flex-grow p-6'>
             <FeedLinks />
-            <div className="absolute top-1 right-1">
+            
+            <Flex direction="row" align="center" wrap="wrap" style={{ justifyContent: 'space-between', width: '100%' }} className="mb-3">
+                <div>
+                    <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
+                    <h2>Share your pet adventures</h2>
+                    {/* <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
+                    <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/> */}
+                </div>
                 <Button 
-                    leftSection={<PlusCircleIcon className='w-6'/>} 
-                    m='md' 
+                    leftSection={<PlusCircleIcon className='w-6'/>}  
                     size='md' 
                     variant='light' 
                     color='#6d543e' 
@@ -156,17 +162,10 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                 >
                     Create a post
                 </Button>
-            </div>
-            <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false} myCommunities={myCommunitiesState}/>
-            <Flex direction="row">
-                <div>
-                    <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
-                    <h2 className="mb-7">Share your pet adventures</h2>
-                    <Feed user={user} posts={feed} service={false} community={currentCommunity} returnToGeneralFeed={returnToGeneralFeed}/>
-                    {/* <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
-                    <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/> */}
-                </div>
+                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false} myCommunities={myCommunitiesState}/>
             </Flex>
+            
+            <Feed user={user} posts={feed} service={false} community={currentCommunity} returnToGeneralFeed={returnToGeneralFeed}/>
         </div>
     );
     
