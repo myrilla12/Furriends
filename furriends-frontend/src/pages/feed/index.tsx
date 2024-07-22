@@ -145,7 +145,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     const renderMobileVersion = () => (
         <div className='relative flex-grow p-6'>
             <FeedLinks />
-            <Flex direction="row" align="center" wrap="wrap" style={{ justifyContent: 'space-between', width: '100%' }} className="mb-3">
+            <Flex direction="row" align="center" wrap="wrap" style={{ justifyContent: 'space-between', width: '100%' }}>
                 <div>
                     <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                     <h2>Share your pet adventures</h2>
