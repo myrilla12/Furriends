@@ -37,6 +37,7 @@ export default function Feed({ user, posts, service, community, returnToGeneralF
                         c="black" 
                         size="compact"
                         onClick={returnToGeneralFeed}
+                        pb="lg"
                     >
                         Return to general feed
                     </Button>
