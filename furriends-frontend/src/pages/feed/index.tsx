@@ -3,7 +3,7 @@ import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
 import { createClient as componentCreateClient } from '@/utils/supabase/component';
-import { Button, Flex, em } from '@mantine/core';
+import { Burger, Button, Drawer, Flex, em } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { SetStateAction, useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 import { Community, Post } from '@/utils/definitions';
 import Communities from '@/components/feed/communities';
-import { useMediaQuery } from '@mantine/hooks';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
 type FeedPageProps = {
     user: User;
@@ -38,6 +38,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     const [otherCommunitiesState, setOtherCommunities] = useState<Community[]>(otherCommunities);
     const [currentCommunity, setCurrentCommunity] = useState<Community | null>(null);
     const isMobile = useMediaQuery(`(max-width: ${em(1050)})`);
+    const [communityOpened, { open, close }] = useDisclosure(false);
 
     // make changes to 'community_posts' table realtime
     useEffect(() => {
@@ -144,13 +145,10 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     const renderMobileVersion = () => (
         <div className='relative flex-grow p-6'>
             <FeedLinks />
-            
             <Flex direction="row" align="center" wrap="wrap" style={{ justifyContent: 'space-between', width: '100%' }} className="mb-3">
                 <div>
                     <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
                     <h2>Share your pet adventures</h2>
-                    {/* <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
-                    <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/> */}
                 </div>
                 <Button 
                     leftSection={<PlusCircleIcon className='w-6'/>}  
@@ -163,6 +161,23 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                     Create a post
                 </Button>
                 <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false} myCommunities={myCommunitiesState}/>
+            </Flex>
+
+            <Flex direction="row" align="center" gap="md" mb="sm">
+                <p className='text-xl font-bold mb-1'>Open community list</p>
+                <Burger opened={communityOpened} onClick={communityOpened ? close : open} aria-label="Toggle navigation" />
+
+                <Drawer
+                    opened={communityOpened}
+                    onClose={close}
+                    size="100%"
+                    className="justify-center"
+                >
+                    <Flex direction="column" justify="center" align="center">
+                    <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
+                    <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
+                    </Flex>
+                </Drawer>
             </Flex>
             
             <Feed user={user} posts={feed} service={false} community={currentCommunity} returnToGeneralFeed={returnToGeneralFeed}/>
