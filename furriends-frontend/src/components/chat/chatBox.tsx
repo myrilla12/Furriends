@@ -14,7 +14,7 @@ type ChatBoxProps = {
   messages: Message[] | null;
   chatPartner: Profile | null;
   loading: boolean;
-  setChats: React.Dispatch<React.SetStateAction<Chats>>
+  setChats: React.Dispatch<React.SetStateAction<Chats>>;
 }
 
 /**
@@ -26,6 +26,7 @@ type ChatBoxProps = {
  * @param {Message[] | null} props.messages - The array of messages in the chat.
  * @param {Profile | null} props.chatPartner - The chat partner's profile.
  * @param {boolean} props.loading - Whether chat box is loading or not. 
+ * @param {React.Dispatch<React.SetStateAction<Chats>>} props.setChats - Function to update state Chats.
  * @returns {JSX.Element} The chat box component.
  */
 export default function ChatBox({ user, chatId, messages, chatPartner, loading, setChats }: ChatBoxProps) {
