@@ -16,7 +16,7 @@ export default function Home() {
                     <LogoHeader />
                     <div className="mt-12 mx-auto w-2/3">
                         <Title order={3} className="mb-3">Welcome to{" "}
-                            <Text span c='#6d543e' inherit>Furriends</Text>
+                            <Text span c='#6d543e' inherit>furriends</Text>
                         </Title>
 
                         <Text component="p" size="md" className="mb-6">

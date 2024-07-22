@@ -13,11 +13,12 @@ export default function LogoHeader() {
             <Image
                 width={70}
                 height={70}
+                style={{ height: "60px", width: "auto" }}
                 src="/logo-icon.png"
                 onClick={() => router.push("/dashboard")}
                 alt="furriends logo"
                 className="cursor-pointer"
-            />   
+            />
         </div>
     );
 }
