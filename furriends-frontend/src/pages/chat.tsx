@@ -45,72 +45,28 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
     }));
 
     useEffect(() => { 
-        setLoading(true);
-        // check if chat id exists 
-        const exists = chatIds.indexOf(String(id.id));
-        
-        // if the id matches up to a user_id instead of chat_id generate user_id info
-        async function checkUserExists() {
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('id, avatar_url, username')
-                    .eq('id', id.id)
-                    .single();
+        /**
+         * Loads chat data based on the current chat ID.
+         * 
+         * @async
+         */
+        const loadChatData = async () => {
+            setLoading(true);
+            // check if chat id exists 
+            const exists = chatIds.indexOf(String(id.id));
 
-                if (error) {
-                    if (error.code === 'PGRST116') { // Code for no matching rows found
-                        return null;
-                    }
-                    console.error('Error fetching user data:', error);
-                    return null;
-                }
-                return data;
-            } catch (error) {
-                console.error('An error has occurred:', error);
-                return null;
-            }
-        }
-
-        if (exists !== -1) {
-            setChatId(String(id.id));
-            setDisplayChat(true); // display chat corresponding to chat id
-            setChatPartner(otherUsers[exists]); // save profile of chat partner
-
-            // if there are any messages that are unread that are authored by other user, mark read_at
-            const currentTimestamp = new Date().toISOString();
-
-            const updateReadAt = async () => {
-                const { data, error } = await supabase
-                    .from('messages')
-                    .update({ read_at: currentTimestamp })
-                    .eq('chat_id', id.id)
-                    .neq('author_id', user.id)
-                    .is('read_at', null);
+            if (exists !== -1) {
+                setChatId(String(id.id));
+                setDisplayChat(true); // display chat corresponding to chat id
+                setChatPartner(otherUsers[exists]); // save profile of chat partner
+                await updateReadAt();
+                const messages = await fetchMessages();
+                setMessages(messages);
+            } else {
+                // if user_id given as slug, check if valid 
+                const userData = await checkUserExists();
                 
-                if (error) {
-                    console.error('Error updating read_at values:', error);
-                    return;
-                }
-            };
-
-            updateReadAt();
-
-            // set the state messages to the data from supabase
-            supabase
-                .from('messages')
-                .select('id, created_at, content, author_id, read_at, edited_at, disabled')
-                .eq('chat_id', id.id)
-                .order('created_at', { ascending: true })
-                .then((res: any) => {
-                    setMessages(res.data);
-                    setLoading(false);
-            });
-
-        } else {
-            // if user_id given as slug, check if valid 
-            checkUserExists().then((userData: any) => {
-                if (id.id && userData) {
+                if (userData) {
                     // make new temporary chat if user_id valid
                     setDisplayChat(true);
                     setChatPartner(userData);
@@ -119,9 +75,73 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                 } else {
                     setDisplayChat(false);
                 }
-                setLoading(false);
-            });
-        }
+            }
+            setLoading(false);
+        };
+
+        /**
+         * Marks messages as read for the currently selected chat. 
+         * 
+         * @async
+         */
+        // if there are any messages that are unread that are authored by other user, mark read_at
+        const updateReadAt = async () => {
+            const currentTimestamp = new Date().toISOString();
+            const { error } = await supabase
+                .from('messages')
+                .update({ read_at: currentTimestamp })
+                .eq('chat_id', id.id)
+                .neq('author_id', user.id)
+                .is('read_at', null);
+            
+            if (error) {
+                console.error('Error updating read_at values:', error);
+                return;
+            }
+        };
+
+        /**
+         * Fetches existing messages for the selected chat. 
+         * 
+         * @async
+         * @returns {Promise<Message[]>} The messages in the chat. 
+         */
+        // set the state messages to the data from supabase
+        const fetchMessages = async () => {
+            const { data, error } = await supabase
+                .from('messages')
+                .select('id, created_at, content, author_id, read_at, edited_at, disabled')
+                .eq('chat_id', id.id)
+                .order('created_at', { ascending: true });
+
+            if (error) {
+                console.error('Error fetching messages: ', error);
+                return [];
+            }
+            return data;
+        };
+
+        /**
+         * Checks if a user exists for the given user ID.
+         * 
+         * @async
+         * @returns {Promise<Profile | null>} The user's profile or null if not found.
+         */
+        // if the id matches up to a user_id instead of chat_id generate user_id info
+        const checkUserExists = async () => {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('id, avatar_url, username')
+                .eq('id', id.id)
+                .single();
+
+            if (error && error.code !== 'PGRST116') { // Code for no matching rows found
+                    console.error('Error fetching user data:', error);
+            }
+            return data;
+        };
+
+        loadChatData();
 
         // use supabase realtime
         // following Supabase documentation at https://supabase.com/docs/guides/realtime/subscribing-to-database-changes
@@ -136,24 +156,19 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                 },
                 (payload) => {
                     const eventType = payload.eventType;
+                    const newMessage = payload.new as Message;
 
                     // if messages have been inserted, add to 'messages' state
-                    if (eventType === 'INSERT') {
-                        const newMessage = payload.new as Message;
-                        newMessage.chat_id === id.id
+                    if (eventType === 'INSERT' && newMessage.chat_id === id.id) {
                         setMessages((prevMessages) => [...prevMessages, newMessage]);
                     }
 
                     // if messages have been updated, update 'messages' state
-                    if (eventType === 'UPDATE') {
-                        const updatedMessage = payload.new as Message;
-
-                        if (updatedMessage.chat_id === id.id) {
-                            setMessages((prevMessages) =>
-                                prevMessages.map((msg) =>
-                                msg.id === updatedMessage.id ? updatedMessage : msg
-                            ));
-                        }
+                    if (eventType === 'UPDATE'  && newMessage.chat_id === id.id) {
+                        setMessages((prevMessages) =>
+                            prevMessages.map((msg) =>
+                                (msg.id === newMessage.id ? newMessage : msg)
+                        ));
                     }
                 }
             )
@@ -162,12 +177,12 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         return () => {
             supabase.removeChannel(messagesChannel);
         };
-    }, [id, chatIds, otherUsers, supabase, user.id])
+    }, [id.id, chatIds, otherUsers, supabase, user.id]);
 
     // make changes to 'chats' table realtime
     useEffect(() => {
 
-        const messagesChannel = supabase
+        const chatsChannel = supabase
             .channel('chats-changes')
             .on(
                 'postgres_changes',
@@ -176,7 +191,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                     schema: 'public',
                     table: 'chats',
                 },
-                (payload) => {
+                async (payload) => {
                     const eventType = payload.eventType;
 
                     // if chats have been updated reorder the chats const
@@ -192,25 +207,32 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                             if (error) {
                               console.error('Error fetching chats:', error);
                             } else {
-                              const chatsWithOtherUsers = data.map((chat: { id: string; }) => ({
-                                ...chat,
-                                otherUser: otherUsers[chatIds.indexOf(chat.id)],
-                                // notification: notifications[chatIds.indexOf(chat.id)],
-                              }));
-                              setChats(chatsWithOtherUsers)
+                                const updatedChats = data.map((chat: { id: string; updated_at: string; }) => ({
+                                    id: chat.id,
+                                    updated_at: chat.updated_at,
+                                    otherUser: otherUsers[chatIds.indexOf(chat.id)] || null,
+                                    notification: notifications[chatIds.indexOf(chat.id)] || 0,
+                                }));
+
+                                setChats((prevChats) => {
+                                    const chatMap = new Map();
+                                    prevChats.forEach(chat => chatMap.set(chat.id, chat));
+                                    updatedChats.forEach((chat: { id: string; }) => chatMap.set(chat.id, chat));
+                                    return Array.from(chatMap.values()).sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+                                });
                             }
                         };
-
-                        fetchChats();
+                        await fetchChats();
                     }
+
                 }
             )
             .subscribe();
 
         return () => {
-            supabase.removeChannel(messagesChannel);
+            supabase.removeChannel(chatsChannel);
         };
-    }, [chatIds, otherUsers, supabase])
+    }, [user.id, chatIds, otherUsers, supabase, notifications])
 
     return (
         <Layout user={user}>
@@ -221,7 +243,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                     </Box>
                     <Box className="flex-grow">
                         {displayChat? 
-                            <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading}/> :
+                            <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats}/> :
                             <ChatNotFound />
                         }    
                     </Box>
