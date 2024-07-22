@@ -73,7 +73,7 @@ export default function Avatar({ uid, url, size, onUpload, }: {
             }
 
             const { data: urlData } = await supabase.storage
-                .from('pet_photos')
+                .from('avatars')
                 .getPublicUrl(filePath)
 
             onUpload(urlData.publicUrl)
