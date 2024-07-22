@@ -6,7 +6,7 @@ import type { User } from '@supabase/supabase-js'
 import { createClient } from '../utils/supabase/server-props'
 import { createClient as componentCreateClient } from '@/utils/supabase/component';
 import type { GetServerSidePropsContext } from 'next'
-import { Box, Burger, em } from '@mantine/core';
+import { Box, Burger, em, Flex, Text } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
 import { Chats, Message, Profile } from '@/utils/definitions';
 import { useRouter } from 'next/router';
@@ -238,28 +238,41 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         };
     }, [user.id, chatIds, otherUsers, supabase, notifications])
 
-    const renderChatNav = () => (
-        <Burger opened={opened} onClick={toggle} aria-label="Toggle navigation" />
+    const renderMobileVersion = () => (
+        <div className="flex flex-grow p-6 md:overflow-y-auto">
+            <Box>
+                <Flex direction="row" align="center" gap="md">
+                    <p className='text-xl font-bold mb-1'>Open chat navigator</p>
+                    <Burger opened={opened} onClick={toggle} aria-label="Toggle navigation" />
+                </Flex>
+                <Box className="flex-grow">
+                    {displayChat? 
+                        <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats}/> :
+                        <ChatNotFound />
+                    }    
+                </Box>
+            </Box>
+        </div>
     );
 
     return (
         <Layout user={user}>
-            <div className="flex flex-grow p-6 md:overflow-y-auto">
-                <Box style={{ display: 'flex', width: '100%' }}>
-                    <Box ml='xl' className="flex-shrink-0 w-60 md:w-1/3">
-                        {isMobile ? 
-                            renderChatNav() :
+            {isMobile ?
+                renderMobileVersion() :
+                <div className="flex flex-grow p-6 md:overflow-y-auto">
+                    <Box style={{ display: 'flex', width: '100%' }}>
+                        <Box h={570} ml='xl'>
                             <ChatNav chats={chats} />
-                        }
+                        </Box>
+                        <Box className="flex-grow">
+                            {displayChat? 
+                                <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats}/> :
+                                <ChatNotFound />
+                            }    
+                        </Box>
                     </Box>
-                    <Box className="flex-grow">
-                        {displayChat? 
-                            <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats}/> :
-                            <ChatNotFound />
-                        }    
-                    </Box>
-                </Box>
-            </div>
+                </div>
+            }       
         </Layout>
     );
 }

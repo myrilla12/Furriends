@@ -33,4 +33,12 @@
 .chatInput {
   border-radius: 0.5rem;
   font-size: 14px;
+  width: 90%;
+  max-width: 600px;
+}
+
+.chatButton {
+  border-radius: 0.5rem;
+  font-size: 14px;
+  flex-shrink: 0;
 }
