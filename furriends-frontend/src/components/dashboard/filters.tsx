@@ -1,7 +1,8 @@
 import { calculateAge } from "@/utils/calculateAge";
 import { Pet } from "@/utils/definitions";
-import { Text, Box, Select, Group, ComboboxItem, OptionsFilter, NumberInput, Space } from "@mantine/core";
+import { Text, Select, ComboboxItem, OptionsFilter, NumberInput, Button } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 
 /**
  * Custom options filter for the Select component from Mantine.
@@ -39,6 +40,7 @@ export default function Filters({ pets, setFilteredPets }: FiltersProps) {
     const [fromWeight, setFromWeight] = useState<string | number>('');
     const [toWeight, setToWeight] = useState<string | number>('');
     const [energy_level, setEnergy] = useState<string | null>(null);
+    const [filtersVisible, setFiltersVisible] = useState(false);
 
     useEffect(() => {
         const filterPets = () => { // loop through pets & filter out those the user wants, then set the new pet list
@@ -82,100 +84,106 @@ export default function Filters({ pets, setFilteredPets }: FiltersProps) {
         filterPets();
     }, [pets, type, fromAge, toAge, fromWeight, toWeight, energy_level, setFilteredPets]) // call filterPets if there are any changes to these states
 
-    // filter input fields
-    return (
-        <Box m='lg'>
-            <Text size='xl' fw={700}>Filters</Text>
-            <div style={{ display: 'flex' }}>
-                <Group>
-                    <Select
-                        w={150}
-                        label='Pet type'
-                        placeholder='Pet type'
-                        data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea pig', 'Chincilla', 'Others']}
-                        filter={optionsFilter}
-                        searchable
-                        onChange={setType}
-                    />
 
-                    <Space w='xs' />
+    const renderFilters = () => (
 
+        <div className='flex flex-wrap gap-1'>
+            <div className='flex flex-col mr-5'>
+                <Select
+                    w={150}
+                    label='Pet type'
+                    placeholder='Pet type'
+                    data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea pig', 'Chincilla', 'Others']}
+                    filter={optionsFilter}
+                    searchable
+                    onChange={setType}
+                />
+            </div>
+
+            <div className='flex flex-col'>
+                <div className='flex gap-2 items-center'>
                     <NumberInput
                         w={100}
                         label='Age'
-                        placeholder='From ~'
+                        placeholder='From'
                         allowDecimal={false}
                         allowLeadingZeros={false}
                         allowNegative={false}
                         onChange={setFromAge}
                     />
-
-                    <Text size='sm' mt='lg' fw={700}>-</Text>
-
+                    <Text className='text-sm font-bold mt-5'>-</Text>
                     <NumberInput
                         w={100}
                         label=' '
-                        placeholder='To ~'
+                        placeholder='To'
                         allowDecimal={false}
                         allowLeadingZeros={false}
                         allowNegative={false}
                         min={Number(fromAge)}
                         onChange={setToAge}
                     />
+                    <Text className='text-sm mt-5 ml-1 mr-5'>years old</Text>
+                </div>
+            </div>
 
-                    <Text size='sm' mt='lg'>years old</Text>
-
-                    <Space w='xs' />
-
+            <div className='flex flex-col'>
+                <div className='flex gap-2 items-center'>
                     <NumberInput
                         w={100}
                         label='Size'
-                        placeholder='From ~'
+                        placeholder='From'
                         allowDecimal={false}
                         allowLeadingZeros={false}
                         allowNegative={false}
                         onChange={setFromWeight}
                     />
-
-                    <Text size='sm' mt='lg' fw={700}>-</Text>
-
+                    <Text className='text-sm font-bold mt-5'>-</Text>
                     <NumberInput
                         w={100}
                         label=' '
-                        placeholder='To ~'
+                        placeholder='To'
                         allowDecimal={false}
                         allowLeadingZeros={false}
                         allowNegative={false}
                         min={Number(fromWeight)}
                         onChange={setToWeight}
                     />
-
-                    <Text size='sm' mt='lg'>kg</Text>
-
-                    <Space w='xs' />
-
-                    <Select
-                        w={130}
-                        label='Energy level'
-                        placeholder='Energy level'
-                        data={['Very low', 'Low', 'Medium', 'High', 'Very High']}
-                        filter={optionsFilter}
-                        searchable
-                        onChange={setEnergy}
-                    />
-
-                    <Space w='xs' />
-
-                    <Select
-                        w={110}
-                        label='Location'
-                        placeholder='Location'
-                        data={['East', 'West', 'Central', 'North', 'South']}
-                        filter={optionsFilter}
-                        searchable
-                    />
-                </Group>
+                    <Text className='text-sm mt-5 ml-1 mr-5'>kg</Text>
+                </div>
             </div>
-        </Box>
+
+            <div className='flex flex-col mr-5'>
+                <Select
+                    w={130}
+                    label='Energy level'
+                    placeholder='Energy level'
+                    data={['Very low', 'Low', 'Medium', 'High', 'Very High']}
+                    filter={optionsFilter}
+                    searchable
+                    onChange={setEnergy}
+                />
+            </div>
+        </div>
     );
+
+    return (
+        <div className='m-3'>
+        <div className='flex items-center lg:hidden md:hidden cursor-pointer' onClick={() => setFiltersVisible(!filtersVisible)}>
+            <p className='text-xl font-bold mb-1'>Filters</p>
+            {filtersVisible ? <IconChevronUp className='ml-2' /> : <IconChevronDown className='ml-2' />}
+        </div>
+        <div className='lg:block md:block hidden'>
+            <p className='text-xl font-bold mb-1'>Filters</p>
+        </div>
+        {filtersVisible && (
+            <div className='flex flex-wrap gap-1 lg:hidden md:hidden'>
+                {renderFilters()}
+            </div>
+        )}
+        <div className='hidden lg:flex md:flex flex-wrap gap-1'>
+            {renderFilters()}
+        </div>
+    </div>
+    );
+
 }
