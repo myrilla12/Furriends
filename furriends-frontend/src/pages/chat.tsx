@@ -43,6 +43,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
           notification: notifications[index],
         }
     }));
+    console.log('chats', chats)
 
     useEffect(() => { 
         /**
@@ -177,7 +178,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         return () => {
             supabase.removeChannel(messagesChannel);
         };
-    }, [id, chatIds, otherUsers, supabase, user.id]);
+    }, [id.id, chatIds, otherUsers, supabase, user.id]);
 
     // make changes to 'chats' table realtime
     useEffect(() => {
@@ -191,7 +192,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                     schema: 'public',
                     table: 'chats',
                 },
-                (payload) => {
+                async (payload) => {
                     const eventType = payload.eventType;
 
                     // if chats have been updated reorder the chats const
@@ -210,13 +211,51 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                               const chatsWithOtherUsers = data.map((chat: { id: string; }) => ({
                                 ...chat,
                                 otherUser: otherUsers[chatIds.indexOf(chat.id)],
-                                // notification: notifications[chatIds.indexOf(chat.id)],
+                                notification: notifications[chatIds.indexOf(chat.id)] || 0,
                               }));
                               setChats(chatsWithOtherUsers)
                             }
                         };
+                        await fetchChats();
+                    }
 
-                        fetchChats();
+                    if (eventType === 'INSERT') {
+                        const newChatId = payload.new.id;
+                        const { data: newOtherUser , error: newOtherUserError } = await supabase
+                            .from('chat_users')
+                            .select('user_id, chat_id')
+                            .eq('chat_id', newChatId)
+                            .neq('user_id', user.id)
+                            .single();
+
+                        if (newOtherUserError) {
+                            console.error('Error fetching new chat user: ', newOtherUserError);
+                            return;
+                        }
+
+                        const { data: newOtherUserProfile , error: newOtherUserProfileError } = await supabase
+                            .from('profiles')
+                            .select('id, username, avatar_url')
+                            .eq('id', newOtherUser.user_id)
+                            .single();
+                        
+                        if (newOtherUserProfileError) {
+                            console.error('Error fetching user information of new chat partner: ', newOtherUserProfileError);
+                            return;
+                        }
+
+                        const newChat = {
+                            id: newChatId,
+                            otherUser: newOtherUserProfile as Profile,
+                            notification: 0,
+                        };
+                        
+                        setChats((prevChats) => {
+                            if (!prevChats.some(chat => chat.id === newChatId)) {
+                                return [newChat, ...prevChats];
+                            }
+                            return prevChats;
+                        });
                     }
                 }
             )
@@ -225,7 +264,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         return () => {
             supabase.removeChannel(chatsChannel);
         };
-    }, [chatIds, otherUsers, supabase])
+    }, [user.id, chatIds, otherUsers, supabase, notifications])
 
     return (
         <Layout user={user}>
@@ -236,7 +275,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                     </Box>
                     <Box className="flex-grow">
                         {displayChat? 
-                            <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading}/> :
+                            <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats}/> :
                             <ChatNotFound />
                         }    
                     </Box>

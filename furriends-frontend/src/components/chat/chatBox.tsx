@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/component";
 import { useEffect, useRef, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
-import { Message, Profile } from "@/utils/definitions";
+import { Chats, Message, Profile } from "@/utils/definitions";
 import styles from '../../styles/chatStyles.module.css';
 import printTimestamp from "@/utils/printTimestamp";
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -14,6 +14,7 @@ type ChatBoxProps = {
   messages: Message[] | null;
   chatPartner: Profile | null;
   loading: boolean;
+  setChats: React.Dispatch<React.SetStateAction<Chats>>
 }
 
 /**
@@ -27,7 +28,7 @@ type ChatBoxProps = {
  * @param {boolean} props.loading - Whether chat box is loading or not. 
  * @returns {JSX.Element} The chat box component.
  */
-export default function ChatBox({ user, chatId, messages, chatPartner, loading }: ChatBoxProps) {
+export default function ChatBox({ user, chatId, messages, chatPartner, loading, setChats }: ChatBoxProps) {
 
     const supabase = createClient();
     const router = useRouter();
@@ -93,6 +94,16 @@ export default function ChatBox({ user, chatId, messages, chatPartner, loading }
             console.error('Error storing user id in chat users:', usersError);
         }
 
+        setChats((prevChats) => {
+            const newChat = {
+                id: currChatId as string,
+                otherUser: chatPartner as Profile,
+                notification: 0,
+            };
+            return [newChat, ...prevChats];
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
         router.push(`/chat?id=${currChatId}`);
         }
 
