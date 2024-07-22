@@ -1,5 +1,7 @@
 .chatBubble {
     padding: 0.75rem; 
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
     border-radius: 0.5rem; 
     width: 66.666667%; 
     font-size: 0.875rem; 
@@ -19,7 +21,8 @@
   background-color: #f6f6f6;
   border-radius: 0.5rem;
   /* width: 850px; */
-  height: 650px;
+  height: 100%;
+  padding: 0;
 }
 
 .chatTimestamp {

@@ -6,12 +6,13 @@ import type { User } from '@supabase/supabase-js'
 import { createClient } from '../utils/supabase/server-props'
 import { createClient as componentCreateClient } from '@/utils/supabase/component';
 import type { GetServerSidePropsContext } from 'next'
-import { Box } from '@mantine/core';
+import { Box, Burger, em } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
 import { Chats, Message, Profile } from '@/utils/definitions';
 import { useRouter } from 'next/router';
 import ChatBox from '@/components/chat/chatBox';
 import ChatNotFound from '@/components/chat/chatNotFound';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
 type ChatProps = {
     user: User;
@@ -44,6 +45,9 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         }
     }));
 
+    const isMobile = useMediaQuery(`(max-width: ${em(1150)})`);
+    const [opened, { toggle }] = useDisclosure();
+    
     useEffect(() => { 
         /**
          * Loads chat data based on the current chat ID.
@@ -234,12 +238,19 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         };
     }, [user.id, chatIds, otherUsers, supabase, notifications])
 
+    const renderChatNav = () => (
+        <Burger opened={opened} onClick={toggle} aria-label="Toggle navigation" />
+    );
+
     return (
         <Layout user={user}>
             <div className="flex flex-grow p-6 md:overflow-y-auto">
                 <Box style={{ display: 'flex', width: '100%' }}>
                     <Box ml='xl' className="flex-shrink-0 w-60 md:w-1/3">
-                        <ChatNav chats={chats} />
+                        {isMobile ? 
+                            renderChatNav() :
+                            <ChatNav chats={chats} />
+                        }
                     </Box>
                     <Box className="flex-grow">
                         {displayChat? 
