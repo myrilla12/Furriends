@@ -45,6 +45,11 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
     }));
 
     useEffect(() => { 
+        /**
+         * Loads chat data based on the current chat ID.
+         * 
+         * @async
+         */
         const loadChatData = async () => {
             setLoading(true);
             // check if chat id exists 
@@ -74,6 +79,11 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
             setLoading(false);
         };
 
+        /**
+         * Marks messages as read for the currently selected chat. 
+         * 
+         * @async
+         */
         // if there are any messages that are unread that are authored by other user, mark read_at
         const updateReadAt = async () => {
             const currentTimestamp = new Date().toISOString();
@@ -90,6 +100,12 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
             }
         };
 
+        /**
+         * Fetches existing messages for the selected chat. 
+         * 
+         * @async
+         * @returns {Promise<Message[]>} The messages in the chat. 
+         */
         // set the state messages to the data from supabase
         const fetchMessages = async () => {
             const { data, error } = await supabase
@@ -105,6 +121,12 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
             return data;
         };
 
+        /**
+         * Checks if a user exists for the given user ID.
+         * 
+         * @async
+         * @returns {Promise<Profile | null>} The user's profile or null if not found.
+         */
         // if the id matches up to a user_id instead of chat_id generate user_id info
         const checkUserExists = async () => {
             const { data, error } = await supabase
@@ -160,7 +182,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
     // make changes to 'chats' table realtime
     useEffect(() => {
 
-        const messagesChannel = supabase
+        const chatsChannel = supabase
             .channel('chats-changes')
             .on(
                 'postgres_changes',
@@ -201,7 +223,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
             .subscribe();
 
         return () => {
-            supabase.removeChannel(messagesChannel);
+            supabase.removeChannel(chatsChannel);
         };
     }, [chatIds, otherUsers, supabase])
 
