@@ -3,7 +3,7 @@ import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
 import { createClient as componentCreateClient } from '@/utils/supabase/component';
-import { Button, Flex } from '@mantine/core';
+import { Button, Flex, em } from '@mantine/core';
 import FeedLinks from '@/components/feed/feedLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { SetStateAction, useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 import { Community, Post } from '@/utils/definitions';
 import Communities from '@/components/feed/communities';
+import { useMediaQuery } from '@mantine/hooks';
 
 type FeedPageProps = {
     user: User;
@@ -36,6 +37,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     const [myCommunitiesState, setMyCommunities] = useState<Community[]>(myCommunities);
     const [otherCommunitiesState, setOtherCommunities] = useState<Community[]>(otherCommunities);
     const [currentCommunity, setCurrentCommunity] = useState<Community | null>(null);
+    const isMobile = useMediaQuery(`(max-width: ${em(1050)})`);
 
     // make changes to 'community_posts' table realtime
     useEffect(() => {
@@ -138,35 +140,67 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         setFeed(posts);
         setCurrentCommunity(null);
     }
+
+    const renderMobileVersion = () => (
+        <div className='relative flex-grow p-6'>
+            <FeedLinks />
+            <div className="absolute top-1 right-1">
+                <Button 
+                    leftSection={<PlusCircleIcon className='w-6'/>} 
+                    m='md' 
+                    size='md' 
+                    variant='light' 
+                    color='#6d543e' 
+                    radius='md'
+                    onClick={() => setOpened(true)}
+                >
+                    Create a post
+                </Button>
+            </div>
+            <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false} myCommunities={myCommunitiesState}/>
+            <Flex direction="row">
+                <div>
+                    <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
+                    <h2 className="mb-7">Share your pet adventures</h2>
+                    <Feed user={user} posts={feed} service={false} community={currentCommunity} returnToGeneralFeed={returnToGeneralFeed}/>
+                    {/* <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
+                    <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/> */}
+                </div>
+            </Flex>
+        </div>
+    );
     
     return (
         <Layout user={user}>
-            <div className='relative flex-grow p-6'>
-                <FeedLinks />
-                <div className="absolute top-1 right-1">
-                    <Button 
-                        leftSection={<PlusCircleIcon className='w-6'/>} 
-                        m='md' 
-                        size='md' 
-                        variant='light' 
-                        color='#6d543e' 
-                        radius='md'
-                        onClick={() => setOpened(true)}
-                    >
-                        Create a post
-                    </Button>
-                </div>
-                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false} myCommunities={myCommunitiesState}/>
-                <Flex direction="row">
-                    <div>
-                        <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
-                        <h2 className="mb-7">Share your pet adventures</h2>
-                        <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
-                        <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
+            {isMobile ?
+                renderMobileVersion() :
+                <div className='relative flex-grow p-6'>
+                    <FeedLinks />
+                    <div className="absolute top-1 right-1">
+                        <Button 
+                            leftSection={<PlusCircleIcon className='w-6'/>} 
+                            m='md' 
+                            size='md' 
+                            variant='light' 
+                            color='#6d543e' 
+                            radius='md'
+                            onClick={() => setOpened(true)}
+                        >
+                            Create a post
+                        </Button>
                     </div>
-                    <Feed user={user} posts={feed} service={false} community={currentCommunity} returnToGeneralFeed={returnToGeneralFeed}/>
-                </Flex>
-            </div>
+                    <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false} myCommunities={myCommunitiesState}/>
+                    <Flex direction="row">
+                        <div>
+                            <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
+                            <h2 className="mb-7">Share your pet adventures</h2>
+                            <Communities user={user} communities={myCommunitiesState} mine={true} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
+                            <Communities user={user} communities={otherCommunitiesState} mine={false} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} addNewCommunity={addNewCommunity} handleCommunityPosts={handleCommunityPosts}/>
+                        </div>
+                        <Feed user={user} posts={feed} service={false} community={currentCommunity} returnToGeneralFeed={returnToGeneralFeed}/>
+                    </Flex>
+                </div>
+            }
         </Layout >
     )
 }
