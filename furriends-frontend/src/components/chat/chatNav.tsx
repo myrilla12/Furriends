@@ -36,7 +36,7 @@ export default function ChatNav({ chats } : ChatNavProps) {
                         key={obj.otherUser.username}
                         href={`/chat?id=${obj.id}`}
                         className={clsx(
-                            "flex h-[70px] w-[400px] items-center justify-start gap-2 rounded-lg p-3 text-lg font-medium md:flex-none md:justify-start md:p-3 md:px-6",
+                            "flex h-[70px] items-center justify-start gap-2 rounded-lg p-3 text-lg font-medium md:flex-none md:justify-start md:p-3 md:px-6",
                             { 
                                 'bg-amber-900 bg-opacity-60': isActive,
                                 'bg-gray-100 hover:bg-amber-900 hover:bg-opacity-30': !isActive,

@@ -6,7 +6,7 @@ import type { User } from '@supabase/supabase-js'
 import { createClient } from '../utils/supabase/server-props'
 import { createClient as componentCreateClient } from '@/utils/supabase/component';
 import type { GetServerSidePropsContext } from 'next'
-import { Box, Burger, em, Flex, Text } from '@mantine/core';
+import { Box, Burger, Drawer, em, Flex, Text } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
 import { Chats, Message, Profile } from '@/utils/definitions';
 import { useRouter } from 'next/router';
@@ -45,8 +45,8 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         }
     }));
 
-    const isMobile = useMediaQuery(`(max-width: ${em(1150)})`);
-    const [opened, { toggle }] = useDisclosure();
+    const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+    const [opened, { open, close }] = useDisclosure(false);
     
     useEffect(() => { 
         /**
@@ -243,7 +243,18 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
             <Box>
                 <Flex direction="row" align="center" gap="md">
                     <p className='text-xl font-bold mb-1'>Open chat navigator</p>
-                    <Burger opened={opened} onClick={toggle} aria-label="Toggle navigation" />
+                    <Burger opened={opened} onClick={opened ? close : open} aria-label="Toggle navigation" />
+
+                    <Drawer
+                        opened={opened}
+                        onClose={close}
+                        title={<p className='text-xl font-bold mb-1'>Chat navigator</p>}
+                        size="100%"
+                    >
+                        <div style={{width: '100%'}}>
+                            <ChatNav chats={chats} />
+                        </div>
+                    </Drawer>
                 </Flex>
                 <Box className="flex-grow">
                     {displayChat? 
@@ -262,7 +273,9 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                 <div className="flex flex-grow p-6 md:overflow-y-auto">
                     <Box style={{ display: 'flex', width: '100%' }}>
                         <Box h={570} ml='xl'>
-                            <ChatNav chats={chats} />
+                            <div style={{width: '400px'}}>
+                                <ChatNav chats={chats} />
+                            </div>
                         </Box>
                         <Box className="flex-grow">
                             {displayChat? 
