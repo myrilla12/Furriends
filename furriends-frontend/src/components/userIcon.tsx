@@ -88,6 +88,7 @@ export default function UserIcon({ user }: UserIconProps) {
                                 alt="profile picture"
                                 width={48}
                                 height={48}
+                                style={{ height: "45px", width: "auto" }}
                                 className="object-cover"
                             />
                         </div>
