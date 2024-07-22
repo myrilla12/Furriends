@@ -31,6 +31,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
     const router = useRouter();
     const id = router.query;
 
+    const [loading, setLoading] = useState(true);
     const [chatId, setChatId] = useState<string | null>(null);
     const [displayChat, setDisplayChat] = useState<boolean>(false);
     const [chatPartner, setChatPartner] = useState<Profile | null>(null);
@@ -44,6 +45,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
     }));
 
     useEffect(() => { 
+        setLoading(true);
         // check if chat id exists 
         const exists = chatIds.indexOf(String(id.id));
         
@@ -102,6 +104,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                 .order('created_at', { ascending: true })
                 .then((res: any) => {
                     setMessages(res.data);
+                    setLoading(false);
             });
 
         } else {
@@ -116,6 +119,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                 } else {
                     setDisplayChat(false);
                 }
+                setLoading(false);
             });
         }
 
@@ -217,7 +221,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                     </Box>
                     <Box className="flex-grow">
                         {displayChat? 
-                            <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner}/> :
+                            <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading}/> :
                             <ChatNotFound />
                         }    
                     </Box>

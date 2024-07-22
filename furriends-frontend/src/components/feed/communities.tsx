@@ -43,12 +43,11 @@ export default function Communities({ user, communities, mine, joinCommunity, le
 
     return (
         <Box w={400}>
-            <Flex direction="row" gap="xl" mt="xl" className="border-b-2">
+            <Flex direction="row" gap="xl" mt="lg" mb="xs">
                 <h1 className="mt-1 text-xl font-bold text-amber-950">{mine ? "My Communities" : "Discover Communities"}</h1>
                 {mine && <Button 
                     leftSection={<PlusCircleIcon className='w-6'/>} 
                     ml='xl'
-                    mb='xs' 
                     size='sm' 
                     variant='light' 
                     color='#6d543e' 

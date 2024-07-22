@@ -69,7 +69,7 @@ export default function PetCard({ pet, editable, chattable, distance, updatePetI
                     <h2 className="text-2xl font-bold">{pet.name}</h2>
                     <p>{pet.type},{" "}{pet.breed}</p>
                     <p className="text-sm">{getAgeString(calculateAge(pet))}</p>
-                    {chattable && <p className="text-sm">{distance} km away</p>}
+                    {chattable && distance !== "Infinity" && <p className="text-sm">{distance} km away</p>}
                 </div>
 
                 {editable && updatePetInState && deletePetFromState && (
