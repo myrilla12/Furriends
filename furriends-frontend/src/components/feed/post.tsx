@@ -34,28 +34,28 @@ export default function PostCard({ user, post, service }: PostCardProps) {
      * @async
      * @function getProfileData
      */
-    async function getProfileData() {
-        try {
-            setLoading(true);
-            const { data: ProfileData, error: ProfileError } = await supabase
-                .from('profiles')
-                .select(`username, avatar_url`)
-                .eq('id', post.post_author)
-                .single();
-
-            if (ProfileData) {
-                setUsername(ProfileData.username);
-                setAvatarUrl(ProfileData.avatar_url);
+    useEffect(() => {
+        async function getProfileData() {
+            try {
+                setLoading(true);
+                const { data: ProfileData, error: ProfileError } = await supabase
+                    .from('profiles')
+                    .select(`username, avatar_url`)
+                    .eq('id', post.post_author)
+                    .single();
+    
+                if (ProfileData) {
+                    setUsername(ProfileData.username);
+                    setAvatarUrl(ProfileData.avatar_url);
+                }
+            } catch (ProfileError) {
+                console.log("Error fetching profile data", ProfileError)
+            } finally {
+                setLoading(false);
             }
-        } catch (ProfileError) {
-            console.log("Error fetching profile data", ProfileError)
-        } finally {
-            setLoading(false);
         }
-    }
-    useEffect(() => { 
-        getProfileData(); 
-    }, [user, post.post_author, getProfileData]);
+        getProfileData()
+    }, [post.post_author]);
 
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder w={600}>
