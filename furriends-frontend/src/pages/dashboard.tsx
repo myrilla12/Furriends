@@ -52,7 +52,7 @@ export default function DashboardPage({ user, username, pets, children, showLoca
                 </h1>
 
                 <Filters pets={pets} setFilteredPets={setFilteredPets} />
-                {filteredPets.length > 0 ? (<PetCarousel pets={filteredPets} />) : (<NoPetsFound />)}
+                {filteredPets.length > 0 ? (<PetCarousel user={user} pets={filteredPets} />) : (<NoPetsFound />)}
                 {children}
             </div>
 

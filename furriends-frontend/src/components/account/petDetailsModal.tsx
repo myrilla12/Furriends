@@ -46,8 +46,6 @@ export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModa
         fetchOwner();
     }, [pet.owner_id, fetchOwner]);
 
-    console.log("owner", owner)
-
     return (
         <Modal opened={opened} onClose={onClose} title={(<Title order={3}>{pet.name}</Title>)} scrollAreaComponent={ScrollArea.Autosize} size='lg' centered>
             <div className="space-y-4">
