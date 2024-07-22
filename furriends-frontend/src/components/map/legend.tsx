@@ -24,13 +24,13 @@ const legendItems = [
  */
 export default function Legend() {
     return (
-        <div className='flex items-center justify-end mt-1 mr-8'>
-            <div className='flex items-center'>
+        <div className='flex flex-wrap items-center justify-end mt-1 mr-8'>
+            <div className='flex items-center w-full sm:w-auto'>
                 <IconMapPinFilled className='w-7 h-7 p-1 text-red-600' />
                 <span className='mr-3 text-xs text-gray-500'>You</span>
             </div>
             {legendItems.map(({ type, IconComponent }) => (
-                <div key={type} className='flex items-center'>
+                <div key={type} className='flex items-center w-full sm:w-auto mt-2 sm:mt-0'>
                     <IconComponent className='w-7 h-7 p-1 text-brown' />
                     <span className='mr-3 text-xs text-gray-500'>{type}</span>
                 </div>
