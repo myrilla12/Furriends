@@ -37,7 +37,7 @@ export default function Layout({ children, user }: LayoutProps) {
     };
 
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen overflow-x-auto">
             {isSidebarOpen && (
                 <>
                     <aside className="w-56 fixed inset-0 z-50 bg-white shadow-lg md:relative md:shadow-none">
