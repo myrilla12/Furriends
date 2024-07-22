@@ -43,7 +43,6 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
           notification: notifications[index],
         }
     }));
-    console.log('chats', chats)
 
     useEffect(() => { 
         /**
@@ -208,55 +207,24 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                             if (error) {
                               console.error('Error fetching chats:', error);
                             } else {
-                              const chatsWithOtherUsers = data.map((chat: { id: string; }) => ({
-                                ...chat,
-                                otherUser: otherUsers[chatIds.indexOf(chat.id)],
-                                notification: notifications[chatIds.indexOf(chat.id)] || 0,
-                              }));
-                              setChats(chatsWithOtherUsers)
+                                const updatedChats = data.map((chat: { id: string; updated_at: string; }) => ({
+                                    id: chat.id,
+                                    updated_at: chat.updated_at,
+                                    otherUser: otherUsers[chatIds.indexOf(chat.id)] || null,
+                                    notification: notifications[chatIds.indexOf(chat.id)] || 0,
+                                }));
+
+                                setChats((prevChats) => {
+                                    const chatMap = new Map();
+                                    prevChats.forEach(chat => chatMap.set(chat.id, chat));
+                                    updatedChats.forEach((chat: { id: string; }) => chatMap.set(chat.id, chat));
+                                    return Array.from(chatMap.values()).sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+                                });
                             }
                         };
                         await fetchChats();
                     }
 
-                    if (eventType === 'INSERT') {
-                        const newChatId = payload.new.id;
-                        const { data: newOtherUser , error: newOtherUserError } = await supabase
-                            .from('chat_users')
-                            .select('user_id, chat_id')
-                            .eq('chat_id', newChatId)
-                            .neq('user_id', user.id)
-                            .single();
-
-                        if (newOtherUserError) {
-                            console.error('Error fetching new chat user: ', newOtherUserError);
-                            return;
-                        }
-
-                        const { data: newOtherUserProfile , error: newOtherUserProfileError } = await supabase
-                            .from('profiles')
-                            .select('id, username, avatar_url')
-                            .eq('id', newOtherUser.user_id)
-                            .single();
-                        
-                        if (newOtherUserProfileError) {
-                            console.error('Error fetching user information of new chat partner: ', newOtherUserProfileError);
-                            return;
-                        }
-
-                        const newChat = {
-                            id: newChatId,
-                            otherUser: newOtherUserProfile as Profile,
-                            notification: 0,
-                        };
-                        
-                        setChats((prevChats) => {
-                            if (!prevChats.some(chat => chat.id === newChatId)) {
-                                return [newChat, ...prevChats];
-                            }
-                            return prevChats;
-                        });
-                    }
                 }
             )
             .subscribe();

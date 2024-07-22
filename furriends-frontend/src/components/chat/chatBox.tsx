@@ -100,8 +100,10 @@ export default function ChatBox({ user, chatId, messages, chatPartner, loading, 
                 otherUser: chatPartner as Profile,
                 notification: 0,
             };
+
             return [newChat, ...prevChats];
         });
+
 
         await new Promise((resolve) => setTimeout(resolve, 0));
         router.push(`/chat?id=${currChatId}`);
