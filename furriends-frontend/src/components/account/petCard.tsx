@@ -16,7 +16,7 @@ type PetCardProps = {
     pet: Pet;
     editable: boolean;
     chattable: boolean;
-    distance: string;
+    distance?: string;
     updatePetInState?: (updatedPet: Pet) => void; // optional prop, only defined when pet card is editable
     deletePetFromState?: (deletedPetId: string) => void; // optional prop, only defined when pet card is editable
 };
@@ -69,7 +69,7 @@ export default function PetCard({ pet, editable, chattable, distance, updatePetI
                     <h2 className="text-2xl font-bold">{pet.name}</h2>
                     <p>{pet.type},{" "}{pet.breed}</p>
                     <p className="text-sm">{getAgeString(calculateAge(pet))}</p>
-                    <p className="text-sm">{distance} km away</p>
+                    {chattable && <p className="text-sm">{distance} km away</p>}
                 </div>
 
                 {editable && updatePetInState && deletePetFromState && (
