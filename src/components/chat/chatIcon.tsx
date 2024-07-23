@@ -64,10 +64,14 @@ export default function ChatIcon({ profile }: ChatIconProps) {
                     <Image
                         src={avatarUrl} // use default avatar if no avatar set
                         alt="profile picture"
-                        width={48}
-                        height={48}
-                        style={{ height: "45px", width: "auto" }}
-                        className="object-cover"
+                        width={45}
+                        height={45}
+                        style={{
+                            height: "45px",
+                            width: "45px",
+                            borderRadius: "50%",
+                            objectFit: "cover"
+                        }}
                     />
                 </div>
             </button>
