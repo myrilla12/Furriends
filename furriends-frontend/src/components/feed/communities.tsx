@@ -59,10 +59,9 @@ export default function Communities({ user, communities, mine, joinCommunity, le
                 <CommunityCreationModal user={user} opened={opened} setOpened={setOpened} addNewCommunity={addNewCommunity}/>
             </Flex>
             
-                <ScrollArea.Autosize mah={230} w={400} scrollbars="y">
-                    <CommunityList user={user} communities={communities} mine={mine} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} handleCommunityPosts={handleCommunityPosts}/>
-                </ScrollArea.Autosize>
-                
+            <ScrollArea.Autosize mah={230} w={400} scrollbars="y">
+                <CommunityList user={user} communities={communities} mine={mine} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} handleCommunityPosts={handleCommunityPosts}/>
+            </ScrollArea.Autosize>
         </Flex>
     );
 }
