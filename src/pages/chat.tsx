@@ -39,16 +39,16 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
     const [messages, setMessages] = useState<Message[]>([]);
     const [chats, setChats] = useState<Chats>(chatIds.map((chatId, index) => {
         return {
-          id: chatId,
-          otherUser: otherUsers[index],
-          notification: notifications[index],
+            id: chatId,
+            otherUser: otherUsers[index],
+            notification: notifications[index],
         }
     }));
 
     const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
     const [opened, { open, close }] = useDisclosure(false);
-    
-    useEffect(() => { 
+
+    useEffect(() => {
         /**
          * Loads chat data based on the current chat ID.
          * 
@@ -69,7 +69,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
             } else {
                 // if user_id given as slug, check if valid 
                 const userData = await checkUserExists();
-                
+
                 if (userData) {
                     // make new temporary chat if user_id valid
                     setDisplayChat(true);
@@ -97,7 +97,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                 .eq('chat_id', id.id)
                 .neq('author_id', user.id)
                 .is('read_at', null);
-            
+
             if (error) {
                 console.error('Error updating read_at values:', error);
                 return;
@@ -140,7 +140,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                 .single();
 
             if (error && error.code !== 'PGRST116') { // Code for no matching rows found
-                    console.error('Error fetching user data:', error);
+                console.error('Error fetching user data:', error);
             }
             return data;
         };
@@ -168,11 +168,11 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                     }
 
                     // if messages have been updated, update 'messages' state
-                    if (eventType === 'UPDATE'  && newMessage.chat_id === id.id) {
+                    if (eventType === 'UPDATE' && newMessage.chat_id === id.id) {
                         setMessages((prevMessages) =>
                             prevMessages.map((msg) =>
                                 (msg.id === newMessage.id ? newMessage : msg)
-                        ));
+                            ));
                     }
                 }
             )
@@ -203,13 +203,13 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                         const fetchChats = async () => {
                             // Fetch the chats with their updated_at field
                             const { data, error } = await supabase
-                              .from('chats')
-                              .select('id, updated_at')
-                              .in('id', chatIds)
-                              .order('updated_at', { ascending: false });
-                      
+                                .from('chats')
+                                .select('id, updated_at')
+                                .in('id', chatIds)
+                                .order('updated_at', { ascending: false });
+
                             if (error) {
-                              console.error('Error fetching chats:', error);
+                                console.error('Error fetching chats:', error);
                             } else {
                                 const updatedChats = data.map((chat: { id: string; updated_at: string; }) => ({
                                     id: chat.id,
@@ -228,7 +228,6 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                         };
                         await fetchChats();
                     }
-
                 }
             )
             .subscribe();
@@ -250,16 +249,16 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                     title={<p className='text-xl font-bold mb-1'>Chat navigator</p>}
                     size="100%"
                 >
-                    <div style={{width: '100%'}}>
+                    <div style={{ width: '100%' }}>
                         <ChatNav chats={chats} />
                     </div>
                 </Drawer>
             </Flex>
-            <Box className="flex-grow">
-                {displayChat? 
-                    <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats}/> :
+            <Box className="flex-grow h-full w-full">
+                {displayChat ?
+                    <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats} /> :
                     <ChatNotFound />
-                }    
+                }
             </Box>
         </Box>
     );
@@ -271,19 +270,19 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                     renderMobileVersion() :
                     <Box style={{ display: 'flex', width: '100%' }}>
                         <Box h={570} ml='xl'>
-                            <div style={{width: '400px'}}>
+                            <div style={{ width: '400px' }}>
                                 <ChatNav chats={chats} />
                             </div>
                         </Box>
                         <Box className="flex-grow">
-                            {displayChat? 
-                                <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats}/> :
+                            {displayChat ?
+                                <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats} /> :
                                 <ChatNotFound />
-                            }    
+                            }
                         </Box>
                     </Box>
-                } 
-            </div>      
+                }
+            </div>
         </Layout>
     );
 }
@@ -308,7 +307,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             },
         }
     }
-    
+
     // select tuple corresponding to user, expecting a single result
     const { data: profileData, error: profileError } = await supabase
         .from('profiles')
@@ -352,7 +351,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         .from('profiles')
         .select('id, avatar_url, username')
         .in('id', otherUserIds);
-    
+
     if (otherUserError) {
         console.error('Error fetching the id of the other user in chat:', otherUserError);
         return;
@@ -361,17 +360,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const userIdToIndexMap: Map<string, number> = new Map(
         otherUserIds.map((id: string, index: number): [string, number] => [id, index])
     );
-    
+
     // sort otherProfilesData based on the order of ids in otherUserIds
     otherProfilesData.sort((a: Profile, b: Profile) => {
         const indexA = userIdToIndexMap.get(a.id);
         const indexB = userIdToIndexMap.get(b.id);
-    
+
         if (indexA === undefined || indexB === undefined) {
             // handle the case where the ID is not found in the map
             return 0;
         }
-    
+
         return indexA - indexB;
     });
 

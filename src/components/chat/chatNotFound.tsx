@@ -11,20 +11,20 @@ export default function ChatNotFound() {
 
   return (
     <Container
-     m='md'
-     className={`${styles.chatContainer}`}
-    >   
-        <Stack
-            align="center"
-        >
-            <Image
-                src="/cat-outline.png"
-                w={400}
-                alt="Picture of a sad dog"
-            />
+      m='md'
+      className={`${styles.chatContainer}`}
+    >
+      <Stack
+        className="items-center justify-center h-full"
+      >
+        <Image
+          src="/chat-not-found.png"
+          w={200}
+          alt="Outline of a dog"
+        />
 
-            <Title order={2}>Please select an existing chat</Title>
-        </Stack>
+        <Title order={3} m="sm">Please select an existing chat</Title>
+      </Stack>
     </Container>
   );
 }
