@@ -239,38 +239,36 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
     }, [user.id, chatIds, otherUsers, supabase, notifications])
 
     const renderMobileVersion = () => (
-        <div className="flex flex-grow p-6 md:overflow-y-auto">
-            <Box>
-                <Flex direction="row" align="center" gap="md">
-                    <p className='text-xl font-bold mb-1'>Open chat navigator</p>
-                    <Burger opened={opened} onClick={opened ? close : open} aria-label="Toggle navigation" />
+        <Box>
+            <Flex direction="row" align="center" gap="md">
+                <p className='text-xl font-bold mb-1'>Open chat navigator</p>
+                <Burger opened={opened} onClick={opened ? close : open} aria-label="Toggle navigation" />
 
-                    <Drawer
-                        opened={opened}
-                        onClose={close}
-                        title={<p className='text-xl font-bold mb-1'>Chat navigator</p>}
-                        size="100%"
-                    >
-                        <div style={{width: '100%'}}>
-                            <ChatNav chats={chats} />
-                        </div>
-                    </Drawer>
-                </Flex>
-                <Box className="flex-grow">
-                    {displayChat? 
-                        <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats}/> :
-                        <ChatNotFound />
-                    }    
-                </Box>
+                <Drawer
+                    opened={opened}
+                    onClose={close}
+                    title={<p className='text-xl font-bold mb-1'>Chat navigator</p>}
+                    size="100%"
+                >
+                    <div style={{width: '100%'}}>
+                        <ChatNav chats={chats} />
+                    </div>
+                </Drawer>
+            </Flex>
+            <Box className="flex-grow">
+                {displayChat? 
+                    <ChatBox user={user} chatId={chatId} messages={messages} chatPartner={chatPartner} loading={loading} setChats={setChats}/> :
+                    <ChatNotFound />
+                }    
             </Box>
-        </div>
+        </Box>
     );
 
     return (
         <Layout user={user}>
-            {isMobile ?
-                renderMobileVersion() :
-                <div className="flex flex-grow p-6 md:overflow-y-auto">
+            <div className="flex flex-grow p-6 md:overflow-y-auto">
+                {isMobile ?
+                    renderMobileVersion() :
                     <Box style={{ display: 'flex', width: '100%' }}>
                         <Box h={570} ml='xl'>
                             <div style={{width: '400px'}}>
@@ -284,8 +282,8 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                             }    
                         </Box>
                     </Box>
-                </div>
-            }       
+                } 
+            </div>      
         </Layout>
     );
 }
