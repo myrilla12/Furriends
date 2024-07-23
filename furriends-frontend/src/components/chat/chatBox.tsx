@@ -185,12 +185,12 @@ export default function ChatBox({ user, chatId, messages, chatPartner, loading, 
     };
 
     return (
-    <Container m='md' className={`${styles.chatContainer}`}>
+    <Container h='auto' m='md' className={`${styles.chatContainer}`}>
         {/* Display author name, messages, timestamp, read? and edited? in chat bubbles */}
-        <Box h={570}>
+        <Box h={520} pt='sm'>
             {loading ? 
-            <Flex h={550} align="center" justify="center"><Loader size="xl" color="#6d543e" /></Flex> :
-            <Box h={550} pb='md' ref={scrollAreaRef} style={{"overflow": "auto"}}>
+            <Flex h={500} align="center" justify="center"><Loader size="xl" color="#6d543e" /></Flex> :
+            <Box h={500} pb='md' ref={scrollAreaRef} style={{"overflow": "auto"}}>
                 <div className="mt-5 flex flex-col gap-3">
                     {messages?.map((msg, i) => (
                         <div 
@@ -260,13 +260,12 @@ export default function ChatBox({ user, chatId, messages, chatPartner, loading, 
         
         {editing ?
             // if editing is true, show display for editing messages
-            <Flex gap="md" justify="center" align="flex-end" direction="row" wrap="wrap">
+            <Flex gap="md" justify="center" align="flex-end" direction="row" wrap="nowrap" pt='sm' pb='xl'>
                 <Input
                     type="text"
                     placeholder="Message"
                     value={message}
                     size="md"
-                    w={600}
                     className={styles.chatInput}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyUp={(e) => {
@@ -276,7 +275,7 @@ export default function ChatBox({ user, chatId, messages, chatPartner, loading, 
                         }
                     }}
                 />
-                <Button size='md' color='#ad925a' variant='filled' className={styles.chatInput}
+                <Button size='md' color='#ad925a' variant='filled' className={styles.chatButton}
                     onClick={() => {
                         if (checkMessage()) {
                             editMessage(message).then(() => {setMessage(''); setMessageToChange(null);});
@@ -298,7 +297,7 @@ export default function ChatBox({ user, chatId, messages, chatPartner, loading, 
 
             deleting ? 
                 // if deleting is true show display for deleting messages
-                <Flex gap='lg' justify='center'>
+                <Flex gap='lg' justify='center' pb='xl'>
                     <Button
                         variant='subtle'
                         onClick={() => {
@@ -320,13 +319,12 @@ export default function ChatBox({ user, chatId, messages, chatPartner, loading, 
                     </Button>
                 </Flex> :
             // Input field + button to send messages 
-            <Flex gap="md" justify="center" align="flex-end" direction="row" wrap="wrap">
+            <Flex gap="md" justify="center" align="flex-end" direction="row" wrap="nowrap" pt='sm' pb='xl'>
                 <Input
                     type="text"
                     placeholder="Message"
                     value={message}
                     size="lg"
-                    w={600}
                     className={styles.chatInput}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyUp={(e) => {
@@ -335,7 +333,7 @@ export default function ChatBox({ user, chatId, messages, chatPartner, loading, 
                         }
                     }}
                 />
-                <Button size='lg' color='#ad925a' variant='filled' className={styles.chatInput}
+                <Button size='lg' color='#ad925a' variant='filled' className={styles.chatButton}
                     onClick={() => {
                         if (checkMessage()) {
                             sendMessage(message).then(() => setMessage(''));
