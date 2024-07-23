@@ -5,11 +5,12 @@ import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '../../utils/supabase/server-props'
 import { createClient as componentCreateClient } from '@/utils/supabase/component';
 import FeedLinks from '@/components/feed/feedLinks';
-import { Button, Flex } from '@mantine/core';
+import { Button, Flex, em } from '@mantine/core';
 import { Post, Profile } from '@/utils/definitions';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
+import { useMediaQuery } from '@mantine/hooks';
 
 type ServicesPageProps = {
     user: User,
@@ -30,6 +31,7 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
     const supabase = componentCreateClient();
     const [opened, setOpened] = useState(false);
     const [feed, setFeed] = useState<Post[]>(posts);
+    const isMobile = useMediaQuery(`(max-width: ${em(1050)})`);
 
     // make changes to 'freelancer_posts' table realtime
     useEffect(() => {
@@ -59,12 +61,15 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
             supabase.removeChannel(freelancerPostsChannel);
         };
     }, [supabase])
-    
-    return (
-        <Layout user={user}>
-            <div className="relative flex-grow px-6 pt-6">
-                <FeedLinks />
-                <div className="absolute top-1 right-1">
+
+    const renderMobileVersion = () => (
+        <div className='relative flex-grow p-6'>
+            <FeedLinks />
+                <Flex direction="row" align="center" wrap="wrap" style={{ justifyContent: 'space-between', width: '100%' }} className="mb-3">
+                    <div>
+                        <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
+                        <h2 className="mb-7">For all your pet&apos;s needs</h2>
+                    </div>
                     {profile.freelancer && 
                         <Button 
                             leftSection={<PlusCircleIcon className="w-6"/>} 
@@ -78,17 +83,44 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
                             Create a post
                         </Button>
                     }
-                </div>
-                <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={true} myCommunities={null}/>
-                <Flex direction="row">
-                    <div>
-                        <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
-                        <h2 className="mb-7">For all your pet&apos;s needs</h2>
-                    </div>
-                    <Feed user={user} posts={feed} service={true} community={null} returnToGeneralFeed={() => ""}/>
+                    <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={true} myCommunities={null}/>
                 </Flex>
-   
-            </div>
+            <Feed user={user} posts={feed} service={true} community={null} returnToGeneralFeed={() => ""}/>
+        </div>
+    );
+    
+    return (
+        <Layout user={user}>
+            {isMobile ?
+                renderMobileVersion() :
+                <div className="relative flex-grow px-6 pt-6">
+                    <FeedLinks />
+                    <div className="absolute top-1 right-1">
+                        {profile.freelancer && 
+                            <Button 
+                                leftSection={<PlusCircleIcon className="w-6"/>} 
+                                m='md' 
+                                size='md' 
+                                variant='light' 
+                                color='#6d543e' 
+                                radius='md'
+                                onClick={() => setOpened(true)}
+                            >
+                                Create a post
+                            </Button>
+                        }
+                    </div>
+                    <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={true} myCommunities={null}/>
+                    <Flex direction="row">
+                        <div>
+                            <h1 className="mt-7 text-2xl font-bold text-amber-950">Pet services</h1>
+                            <h2 className="mb-7">For all your pet&apos;s needs</h2>
+                        </div>
+                        <Feed user={user} posts={feed} service={true} community={null} returnToGeneralFeed={() => ""}/>
+                    </Flex>
+    
+                </div>
+            }
         </Layout >
     )
 }

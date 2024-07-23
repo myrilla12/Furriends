@@ -1,6 +1,7 @@
 import { Community, Post } from "@/utils/definitions";
 import { createClient } from "@/utils/supabase/component";
-import { Accordion, Avatar, Button, Group, Loader, Text } from "@mantine/core";
+import { Accordion, Avatar, Button, Flex, Loader, Text, em } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { User } from "@supabase/supabase-js";
 import { SetStateAction, useState } from "react";
 
@@ -29,6 +30,7 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
     const supabase = createClient();
     const [loading, setLoading] = useState<string | null>(null);
     const [loadingCommunity, setLoadingCommunity] = useState<string | null>(null);
+    const isMobile = useMediaQuery(`(max-width: ${em(1050)})`);
 
     /**
      * Fetches the posts under the selected community.
@@ -69,7 +71,7 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
      */
     function AccordionLabel({ id , name, avatar_url }: Community) {
         return (
-            <Group wrap="nowrap">
+            <Flex align="center" gap="md" wrap="wrap" style={{ width: '100%' }}>
                 <Avatar src={avatar_url} radius="xl" size="md" />
                 <Text 
                     className="flex-grow" 
@@ -115,11 +117,12 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
                             await joinCommunity(id);
                             setLoading(null);
                         }}
+                        style={{ flexShrink: 0 }}
                     >
                         Join
                     </Button>
                 }
-            </Group>
+            </Flex>
         );
     }
 
@@ -133,10 +136,19 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
             </Accordion.Panel>
         </Accordion.Item>
     ));
+
+    const containerStyle = {
+        width: '100%',
+        maxWidth: isMobile ? '100%' : '400px',
+        margin: '0 auto',
+        transition: 'width 0.3s ease',
+    };
     
     return (
+        <div style={containerStyle}>
         <Accordion chevronPosition="left" variant="contained">
             {list}
         </Accordion>
+        </div>
     );
 }

@@ -58,7 +58,7 @@ export default function PostCard({ user, post, service }: PostCardProps) {
     }, [post.post_author]);
 
     return (
-        <Card shadow="sm" padding="lg" radius="md" withBorder w={600}>
+        <Card shadow="sm" padding="lg" radius="md" withBorder w="auto" maw={600}>
         <Card.Section className="bg-amber-900 bg-opacity-10">
             <Group m="xs">
                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-700 ml-4 mr-1">

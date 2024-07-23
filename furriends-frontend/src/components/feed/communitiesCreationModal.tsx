@@ -132,15 +132,24 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                 setDescription('');
             }} 
             scrollAreaComponent={ScrollArea.Autosize} 
-            size='lg' 
             centered
+            style={{ maxWidth: '90vw', width: '100%' }}
         >
-            <Flex justify='center' align='center' direction='column' gap='md'>
+            <Flex justify='center' align='center' direction='column' gap='md' style={{ width: '100%', padding: '1rem' }}>
                 <Title order={2} c='#6d543e'>Create a community</Title>
 
                 {/* Dropzone for photo upload */}
                 <Dropzone
-                    className="w-75 h-75 rounded-full overflow-hidden border-2 flex items-center"
+                    style={{ 
+                        width: '100%', 
+                        paddingBottom: '100%', 
+                        borderRadius: '50%',  
+                        position: 'relative',
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                    }}
                     loading={loading}
                     onDrop={async (files) => {
                         const uploadedUrl = await uploadPhoto(files[0]);
@@ -154,9 +163,9 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                     accept={IMAGE_MIME_TYPE}
                     {...props}
                 >
-                    <Group justify="center" gap="xl" mih={300} miw={450} style={{ pointerEvents: 'none' }}>
+                    <Group justify="center" gap="xl" mih={300} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, pointerEvents: 'none', boxSizing: 'border-box' }}>
                         <Dropzone.Accept>
-                            <Flex direction='row' gap='md' align='center'>
+                            <Flex direction='row' gap='md' align='center' style={{ flexShrink: 1 }}>
                                 <ArrowUpTrayIcon className="w-12"/>
                                 <Text size="xl" inline>
                                     Uploading image...
@@ -164,7 +173,7 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                             </Flex>
                         </Dropzone.Accept>
                         <Dropzone.Reject>
-                            <Flex direction='row' gap='md' align='center'>
+                            <Flex direction='row' gap='md' align='center' style={{ flexShrink: 1 }}>
                                 <ExclamationTriangleIcon className="w-12"/>
                                 <Text size="xl" inline>
                                     Error! Check that image does not exceed 5mb
@@ -175,13 +184,13 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                             {avatar_url ?
                                 <Image
                                     src={avatar_url}
-                                    className="w-75 h-75 rounded-full flex items-center justify-center"
+                                    style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'contain' }}
                                     alt="Community avatar"
                                 />
                                 :
-                                <Flex direction='row' gap='md' align='center'>
+                                <Flex direction='row' gap='md' align='center' justify='center' style={{ flexShrink: 1 }}>
                                 <PhotoIcon className="w-12"/>
-                                <div>
+                                <div style={{ flexShrink: 1, objectFit: 'contain'}}>
                                     <Text size="xl" inline>
                                         Drag images here or click to select files <span style={{ color: 'red' }}>*</span>
                                     </Text>
@@ -199,7 +208,7 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                 <TextInput
                     label="Name"
                     placeholder="E.g. British shorthair cats community"
-                    w={500}
+                    style={{ width: '100%' }}
                     onChange={(e) => setName(e.target.value)}
                     required
                 />
@@ -208,7 +217,8 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                 <Textarea
                     label="Description"
                     placeholder="Short description about this community's interests"
-                    w={500}
+                    style={{ width: '100%' }}
+                    autosize
                     onChange={(e) => setDescription(e.target.value)}
                     required
                 />
