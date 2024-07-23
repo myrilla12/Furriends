@@ -147,7 +147,8 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                         position: 'relative',
                         display: 'flex', 
                         alignItems: 'center', 
-                        justifyContent: 'center' 
+                        justifyContent: 'center',
+                        overflow: 'hidden',
                     }}
                     loading={loading}
                     onDrop={async (files) => {
@@ -162,7 +163,7 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                     accept={IMAGE_MIME_TYPE}
                     {...props}
                 >
-                    <Group justify="center" gap="xl" mih={300} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+                    <Group justify="center" gap="xl" mih={300} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, pointerEvents: 'none', boxSizing: 'border-box' }}>
                         <Dropzone.Accept>
                             <Flex direction='row' gap='md' align='center' style={{ flexShrink: 1 }}>
                                 <ArrowUpTrayIcon className="w-12"/>
@@ -187,9 +188,9 @@ export default function CommunityCreationModal({user, opened, setOpened, addNewC
                                     alt="Community avatar"
                                 />
                                 :
-                                <Flex direction='row' gap='md' align='center' style={{ flexShrink: 1 }}>
+                                <Flex direction='row' gap='md' align='center' justify='center' style={{ flexShrink: 1 }}>
                                 <PhotoIcon className="w-12"/>
-                                <div>
+                                <div style={{ flexShrink: 1, objectFit: 'contain'}}>
                                     <Text size="xl" inline>
                                         Drag images here or click to select files <span style={{ color: 'red' }}>*</span>
                                     </Text>
