@@ -184,10 +184,11 @@ export default function PostCreationModal({user, opened, setOpened, service, myC
                 setCommunity(null);
             }} 
             scrollAreaComponent={ScrollArea.Autosize} 
-            size='lg' 
+            size='auto' 
             centered
+            style={{ maxWidth: '90vw', width: '100%' }}
         >
-            <Flex justify='center' align='center' direction='column' gap='md'>
+            <Flex justify='center' align='center' direction='column' gap='md' style={{ width: '100%', padding: '1rem' }}>
                 <Title order={2} c='#6d543e'>Create your post</Title>
 
                 {/* Dropzone for photo upload */}
@@ -206,7 +207,7 @@ export default function PostCreationModal({user, opened, setOpened, service, myC
                     accept={IMAGE_MIME_TYPE}
                     {...props}
                 >
-                    <Group justify="center" gap="xl" mih={300} miw={450} style={{ pointerEvents: 'none' }}>
+                    <Group justify="center" gap="xl" mih={300} style={{ width: '100%', pointerEvents: 'none' }}>
                         <Dropzone.Accept>
                             <Flex direction='row' gap='md' align='center'>
                                 <ArrowUpTrayIcon className="w-12"/>
@@ -252,7 +253,7 @@ export default function PostCreationModal({user, opened, setOpened, service, myC
                 <Textarea
                     label="Title"
                     placeholder="Name this post"
-                    w={500}
+                    style={{ width: '100%' }}
                     autosize
                     minRows={1}
                     onChange={(e) => setTitle(e.target.value)}
@@ -263,7 +264,7 @@ export default function PostCreationModal({user, opened, setOpened, service, myC
                 <Textarea
                     label="Description"
                     placeholder="Tell us more about the pet services you're offering!"
-                    w={500}
+                    style={{ width: '100%' }}
                     autosize
                     minRows={2}
                     onChange={(e) => setContent(e.target.value)}
@@ -274,14 +275,14 @@ export default function PostCreationModal({user, opened, setOpened, service, myC
                 <TextInput
                     label="Located at"
                     placeholder="E.g. Tampines"
-                    w={500}
+                    style={{ width: '100%' }}
                     onChange={(e) => setLocation(e.target.value)}
                     required
                 />
 
                 {/* Service price range input for service modal */}
                 {service && 
-                    <Box m='md' w={500}>
+                    <Box m='md' style={{ width: '100%' }}>
                         <Text size='sm' fw={500} mb='xs' inline>Price range <span style={{ color: 'red' }}>*</span></Text>
                         <RangeSlider 
                             minRange={0} 
@@ -301,7 +302,7 @@ export default function PostCreationModal({user, opened, setOpened, service, myC
 
                 {!service &&
                     <Select
-                        w={500}
+                        style={{ width: '100%' }}
                         label="Community"
                         placeholder="Choose a community"
                         data={myCommunities?.map((community) => ({
