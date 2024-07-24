@@ -43,7 +43,7 @@ export default function PostCard({ user, post, service }: PostCardProps) {
                     .select(`username, avatar_url`)
                     .eq('id', post.post_author)
                     .single();
-    
+
                 if (ProfileData) {
                     setUsername(ProfileData.username);
                     setAvatarUrl(ProfileData.avatar_url);
@@ -59,57 +59,62 @@ export default function PostCard({ user, post, service }: PostCardProps) {
 
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder w="auto" maw={600}>
-        <Card.Section className="bg-amber-900 bg-opacity-10">
-            <Group m="xs">
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-700 ml-4 mr-1">
-                    <Image
-                        src={avatar_url} // use default avatar if no avatar set
-                        alt="profile picture"
-                        width={48}
-                        height={48}
-                        className="object-cover"
-                    />
-                </div>
-                <Text size="md" fw={700} c="#6d543e">{username}</Text>
+            <Card.Section className="bg-amber-900 bg-opacity-10">
+                <Group m="xs">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-700 ml-4 mr-1">
+                        <Image
+                            src={avatar_url} // use default avatar if no avatar set
+                            alt="profile picture"
+                            width={45}
+                            height={45}
+                            style={{
+                                height: "45px",
+                                width: "45px",
+                                borderRadius: "50%",
+                                objectFit: "cover"
+                            }}
+                        />
+                    </div>
+                    <Text size="md" fw={700} c="#6d543e">{username}</Text>
+                </Group>
+            </Card.Section>
+
+            <Card.Section>
+                <Image
+                    src={post.post_image}
+                    h={400}
+                    fit="contain"
+                    alt="Not loading..."
+                    className="bg-slate-950"
+                />
+            </Card.Section>
+
+            <Group justify="space-between" mt="sm" style={{ display: 'flex', alignItems: 'center' }}>
+                <Text fw={700} size="xl" c="#6d543e" style={{ flex: 1, overflowWrap: 'anywhere' }}>{post.post_title}</Text>
+                {post.post_pricing &&
+                    (service &&
+                        (post.post_pricing[0] === post.post_pricing[1]) ?
+                        <Badge size="md" color="#6d543e">
+                            ${post.post_pricing[0]}
+                        </Badge> :
+                        <Badge size="md" color="#6d543e">
+                            ${post.post_pricing[0]} - {post.post_pricing[1]}
+                        </Badge>
+                    )
+                }
             </Group>
-        </Card.Section>
 
-        <Card.Section>
-            <Image
-                src={post.post_image}
-                h={400}
-                fit="contain"
-                alt="Not loading..."
-                className="bg-slate-950"
-            />
-        </Card.Section>
+            <Group gap="xs">
+                <MapPinIcon className="w-4 text-gray-500" />
+                <Text size="sm" c="dimmed">{post.post_location}</Text>
+            </Group>
+            <Text size="xs" c="dimmed">Posted at: {printTimestamp(post.created_at)}</Text>
 
-        <Group justify="space-between" mt="sm" style={{ display: 'flex', alignItems: 'center' }}>
-            <Text fw={700} size="xl" c="#6d543e" style={{ flex: 1, overflowWrap: 'anywhere' }}>{post.post_title}</Text>
-            {post.post_pricing && 
-                (service &&
-                (post.post_pricing[0] === post.post_pricing[1]) ?
-                    <Badge size="md" color="#6d543e">
-                        ${post.post_pricing[0]} 
-                    </Badge> :
-                    <Badge size="md" color="#6d543e">
-                        ${post.post_pricing[0]} - {post.post_pricing[1]}
-                    </Badge>
-                )
-            }
-        </Group>
+            <Text size="sm" mb="xs">
+                {post.post_content}
+            </Text>
 
-        <Group gap="xs">
-            <MapPinIcon className="w-4 text-gray-500" />
-            <Text size="sm" c="dimmed">{post.post_location}</Text>
-        </Group>
-        <Text size="xs" c="dimmed">Posted at: {printTimestamp(post.created_at)}</Text>
-
-        <Text size="sm" mb="xs">
-            {post.post_content}
-        </Text>
-        
-        {(user.id !== post.post_author) && service && <ChatButton owner_id={post.post_author} button_color="white" feed={true}/>}
+            {(user.id !== post.post_author) && service && <ChatButton owner_id={post.post_author} button_color="white" feed={true} />}
         </Card>
     );
 }
