@@ -15,7 +15,7 @@ export default function ChatNotFound() {
       className={`${styles.chatContainer}`}
     >
       <Stack
-        className="items-center justify-center h-full"
+        className="items-center justify-center h-full text-center"
       >
         <Image
           src="/chat-not-found.png"
@@ -23,7 +23,8 @@ export default function ChatNotFound() {
           alt="Outline of a dog"
         />
 
-        <Title order={3} m="sm">Please select an existing chat</Title>
+        <Title order={3} mx="sm" mt="sm">No chat selected.</Title>
+        <Title order={3} mx="sm" mb="sm">Please start a new chat or select an existing chat.</Title>
       </Stack>
     </Container>
   );
