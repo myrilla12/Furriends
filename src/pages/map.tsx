@@ -6,6 +6,7 @@ import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
 import BusinessForm from '@/components/map/businessForm';
 import Legend from '@/components/map/legend';
+import Head from 'next/head';
 
 type MapProps = {
     user: User;
@@ -22,6 +23,10 @@ type MapProps = {
 export default function MapPage({ user }: MapProps) {
     return (
         <Layout user={user}>
+            <Head>
+                <title>furriends | map</title>
+                <meta name="Map page" content="This is the map page of furriends."></meta>
+            </Head>
             <div className="flex flex-grow items-center px-6 pt-6 ">
                 <h1 className="text-2xl font-bold text-amber-950 md:text-left break-words">Find some new locations to hang out with your furriends!</h1>
             </div>

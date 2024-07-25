@@ -9,6 +9,7 @@ import Filters from '@/components/dashboard/filters';
 import PetCarousel from '@/components/dashboard/petCarousel';
 import LocationModal from '@/components/dashboard/locationModal';
 import NoPetsFound from '@/components/dashboard/noPetsFound';
+import Head from 'next/head';
 
 /**
  * Props for the DashboardPage component.
@@ -45,6 +46,9 @@ export default function DashboardPage({ user, username, pets, children, showLoca
 
     return (
         <Layout user={user}>
+            <Head>
+                <meta name="Dashboard page" content="This is the dashboard page of furriends."></meta>
+            </Head>
             <div className="flex-grow p-6 md:overflow-y-auto">
                 <h1 className="mb-8 text-2xl">Welcome, <strong>{username || user.email || 'user'}</strong>!</h1>
                 <h1 className="mb-8 text-2xl font-bold">

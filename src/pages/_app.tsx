@@ -2,8 +2,9 @@ import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
 import '@mantine/dropzone/styles.css';
 import { createTheme, MantineProvider } from '@mantine/core';
-import '../styles/globals.css'; 
+import '../styles/globals.css';
 import 'tailwindcss/tailwind.css';
+import Head from 'next/head';
 
 /**
  * Custom theme configuration for Mantine.
@@ -23,6 +24,10 @@ const theme = createTheme({
 export default function App({ Component, pageProps }: any) {
   return (
     <MantineProvider theme={theme}>
+      <Head>
+        <title>furriends</title>
+        <link rel="icon" href="/favicon.png" />
+      </Head>
       <Component {...pageProps} />
     </MantineProvider>
   );

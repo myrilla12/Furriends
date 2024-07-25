@@ -1,6 +1,7 @@
 import LogoHeader from '@/components/logoHeader';
 import { Button, MantineProvider, Text, Title } from '@mantine/core';
 import router from 'next/router';
+import Head from 'next/head';
 import BusinessForm from '@/components/map/businessForm';
 
 /**
@@ -11,6 +12,9 @@ import BusinessForm from '@/components/map/businessForm';
 export default function Home() {
     return (
         <>
+            <Head>
+                <meta name="Home Page" content="This is the home page of furriends."></meta>
+            </Head>
             <MantineProvider>
                 <div className="flex flex-col min-h-screen">
                     <LogoHeader />
