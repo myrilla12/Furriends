@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import ChatBox from '@/components/chat/chatBox';
 import ChatNotFound from '@/components/chat/chatNotFound';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import Head from 'next/head';
 
 type ChatProps = {
     user: User;
@@ -185,7 +186,6 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
 
     // make changes to 'chats' table realtime
     useEffect(() => {
-
         const chatsChannel = supabase
             .channel('chats-changes')
             .on(
@@ -265,6 +265,10 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
 
     return (
         <Layout user={user}>
+            <Head>
+                <title>furriends | chat</title>
+                <meta name="Chat page" content="This is the chat page of furriends."></meta>
+            </Head>
             <div className="flex flex-grow p-6 md:overflow-y-auto">
                 {isMobile ?
                     renderMobileVersion() :

@@ -3,6 +3,7 @@ import AccountForm from '@/components/account/accountForm'
 import type { User } from '@supabase/supabase-js'
 import type { GetServerSidePropsContext } from 'next'
 import { createClient } from '@/utils/supabase/server-props'
+import Head from 'next/head';
 
 /**
  * Page component for editing the user's account.
@@ -14,6 +15,10 @@ import { createClient } from '@/utils/supabase/server-props'
 export default function EditAccountPage({ user }: { user: User }) {
     return (
         <Layout user={user}>
+            <Head>
+                <title>furriends | edit account</title>
+                <meta name="Edit Account page" content="This is the account editing page of furriends."></meta>
+            </Head>
             <div className="flex-grow p-6">
                 <h1 className="mb-7 text-2xl font-bold text-amber-950">Edit Profile</h1>
             </div>

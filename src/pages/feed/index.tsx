@@ -12,6 +12,7 @@ import Feed from '@/components/feed/feed';
 import { Community, Post } from '@/utils/definitions';
 import Communities from '@/components/feed/communities';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import Head from 'next/head';
 
 type FeedPageProps = {
     user: User;
@@ -42,7 +43,6 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
 
     // make changes to 'community_posts' table realtime
     useEffect(() => {
-
         const communityPostsChannel = supabase
             .channel('community-posts-changes')
             .on(
@@ -186,6 +186,10 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
     
     return (
         <Layout user={user}>
+            <Head>
+                <title>furriends | feed</title>
+                <meta name="Feed page" content="This is the feed page of furriends."></meta>
+            </Head>
             {isMobile ?
                 renderMobileVersion() :
                 <div className='relative flex-grow p-6'>

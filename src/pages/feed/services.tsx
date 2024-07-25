@@ -11,6 +11,7 @@ import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import PostCreationModal from '@/components/feed/postCreationModal';
 import Feed from '@/components/feed/feed';
 import { useMediaQuery } from '@mantine/hooks';
+import Head from 'next/head';
 
 type ServicesPageProps = {
     user: User,
@@ -91,6 +92,10 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
     
     return (
         <Layout user={user}>
+            <Head>
+                <title>furriends | feed</title>
+                <meta name="Feed page" content="This is the feed page of furriends."></meta>
+            </Head>
             {isMobile ?
                 renderMobileVersion() :
                 <div className="relative flex-grow px-6 pt-6">

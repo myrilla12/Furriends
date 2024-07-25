@@ -7,6 +7,7 @@ import PetForm from '@/components/account/petForm';
 import PetCard from '@/components/account/petCard';
 import type { GetServerSidePropsContext } from 'next'
 import { Pet } from '@/utils/definitions';
+import Head from 'next/head';
 
 interface RawPetPhoto {
     photo_url: string;
@@ -75,6 +76,10 @@ export default function PetsPage({ pets, user }: PetsPageProps) {
 
     return (
         <Layout user={user}>
+            <Head>
+                <title>furriends | my pets</title>
+                <meta name="My Pets page" content="This is the page for viewing your pets on furriends."></meta>
+            </Head>
             <div className="flex-grow p-6">
                 <h1 className="mb-7 text-2xl font-bold text-amber-950">My Pets</h1>
                 <Button variant="light" color="#6d543e" onClick={() => setModalOpened(true)}>Add a pet</Button>
