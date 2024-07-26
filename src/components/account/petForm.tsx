@@ -3,8 +3,8 @@
 'use client'
 
 import dayjs from 'dayjs';
-import { useState } from 'react';
-import { Button, Modal, TextInput, Textarea, NumberInput, Select, ScrollArea } from '@mantine/core';
+import { useState, useEffect } from 'react';
+import { Button, Modal, TextInput, Textarea, NumberInput, Select, ScrollArea, Notification } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
 import { createClient } from '@/utils/supabase/component';
@@ -41,8 +41,18 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
     const [description, setDescription] = useState<string | null>(null);
     const [likes, setLikes] = useState<string | null>(null);
     const [photo_urls, setPhotoUrls] = useState<string[] | null>(null);
+    const [alertOpen, setAlertOpen] = useState(false);
 
-    // add getProfile using useCallBack here when implementing "edit" button, to allow code reusability
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (alertOpen) {
+            timer = setTimeout(() => {
+                setAlertOpen(false);
+            }, 3000); // closes alert after 3 seconds
+        }
+
+        return () => clearTimeout(timer); // clear timeout if component unmounts or alertOpen changes
+    }, [alertOpen]);
 
     /**
      * Adds a new pet profile to the database and state.
@@ -61,8 +71,8 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
      * @param {string[] | null} petProfile.photo_urls - The photo URLs of the pet.
      */
     async function addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls }: {
-        name: string 
-        type: string 
+        name: string
+        type: string
         breed: string
         weight: number | null
         birthday: Date | null
@@ -106,7 +116,7 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
                     .insert(photoInserts);
                 if (photoError) throw photoError;
             }
-            
+
             const newPet = {
                 id: pet_id,
                 name: name,
@@ -122,7 +132,8 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
             };
 
             addPetToState(newPet);
-            alert('Pet added!');
+            setAlertOpen(true);
+            //alert('Pet added!');
         } catch (error) {
             alert('Unable to add pet!');
         } finally {
@@ -148,122 +159,135 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
     // modal contains name, type, breed, weight, bday, energy level, description, likes, photo upload fields
     // name, type, breed, age are mandatory fields
     return (
-        <Modal
-            opened={modalOpened}
-            onClose={() => {
-                setModalOpened(false);
-                setName('');
-                setType('');
-                setBreed('');
-                setWeight(null);
-                setBirthday(null);
-                setEnergy(null);
-                setDescription(null);
-                setLikes(null);
-                setPhotoUrls(null);
-            }}
-            title={<span className="font-bold text-lg text-brown">Create pet profile</span>}
-            scrollAreaComponent={ScrollArea.Autosize}
-        >
-            <div className="space-y-4">
-                <TextInput
-                    label="Name"
-                    name="name"
-                    placeholder="Name"
-                    value={name || ''}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-                <Select
-                    label="Type"
-                    name="type"
-                    placeholder="Select type"
-                    value={type || ''}
-                    data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea Pig', 'Chinchilla', 'Other']}
-                    onChange={(value: string | null) => setType(value || '')}
-                    allowDeselect={false}
-                    checkIconPosition="right"
-                    required
-                    searchable
-                    nothingFoundMessage="Nothing found..."
-                />
-                <TextInput
-                    label="Breed"
-                    name="breed"
-                    placeholder="Breed"
-                    value={breed || ''}
-                    onChange={(e) => setBreed(e.target.value)}
-                    required
-                />
-                <NumberInput
-                    label="Weight"
-                    name="weight"
-                    placeholder="Weight"
-                    suffix=" kg"
-                    value={weight || ''}
-                    onChange={(value) => setWeight(value !== '' ? Number(value) : null)}
-                    min={0}
-                />
-                <DatePickerInput
-                    label="Birthday"
-                    name="birthday"
-                    placeholder="Select birthday"
-                    value={birthday}
-                    onChange={(e) => setBirthday(e)}
-                    required
-                />
-                <Select
-                    label="Energy Level"
-                    name="energy"
-                    placeholder="Select energy level"
-                    value={energy_level || ''}
-                    data={['Very Low', 'Low', 'Medium', 'High', 'Very High']}
-                    onChange={setEnergy}
-                    checkIconPosition="right"
-                />
-                <Textarea
-                    label="Description"
-                    name="description"
-                    placeholder="Describe your pet"
-                    value={description || ''}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-                <Textarea
-                    label="Likes"
-                    name="likes"
-                    placeholder="Add your pet's favourite items/activities!"
-                    value={likes || ''}
-                    onChange={(e) => setLikes(e.target.value)}
-                />
-                <FileUpload
-                    uid={user?.id ?? null}
-                    urls={photo_urls}
-                    onUpload={(urls: string[]) => {
-                        setPhotoUrls(urls)
-                    }}
-                />
-                <Button variant="outline" color="#6d543e"
-                    onClick={async () => {
-                        if (validateForm()) {
-                            await addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
-                            setModalOpened(false); // close modal upon addition of pet
-                            // reset all fields to prepare modal for next addition
-                            setName('');
-                            setType('');
-                            setBreed('');
-                            setWeight(null);
-                            setBirthday(null);
-                            setEnergy(null);
-                            setDescription(null);
-                            setLikes(null);
-                            setPhotoUrls(null);
-                        }
-                    }}
-                    disabled={loading} // button shows loading while data is uploaded
-                >
-                    {loading ? 'Loading...' : 'Add'}
-                </Button>
-            </div>
-        </Modal>
+        <>
+            <Modal
+                opened={modalOpened}
+                onClose={() => {
+                    setModalOpened(false);
+                    setName('');
+                    setType('');
+                    setBreed('');
+                    setWeight(null);
+                    setBirthday(null);
+                    setEnergy(null);
+                    setDescription(null);
+                    setLikes(null);
+                    setPhotoUrls(null);
+                }}
+                title={<span className="font-bold text-lg text-brown">Create pet profile</span>}
+                scrollAreaComponent={ScrollArea.Autosize}
+            >
+                <div className="space-y-4">
+                    <TextInput
+                        label="Name"
+                        name="name"
+                        placeholder="Name"
+                        value={name || ''}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                    <Select
+                        label="Type"
+                        name="type"
+                        placeholder="Select type"
+                        value={type || ''}
+                        data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea Pig', 'Chinchilla', 'Other']}
+                        onChange={(value: string | null) => setType(value || '')}
+                        allowDeselect={false}
+                        checkIconPosition="right"
+                        required
+                        searchable
+                        nothingFoundMessage="Nothing found..."
+                    />
+                    <TextInput
+                        label="Breed"
+                        name="breed"
+                        placeholder="Breed"
+                        value={breed || ''}
+                        onChange={(e) => setBreed(e.target.value)}
+                        required
+                    />
+                    <NumberInput
+                        label="Weight"
+                        name="weight"
+                        placeholder="Weight"
+                        suffix=" kg"
+                        value={weight || ''}
+                        onChange={(value) => setWeight(value !== '' ? Number(value) : null)}
+                        min={0}
+                    />
+                    <DatePickerInput
+                        label="Birthday"
+                        name="birthday"
+                        placeholder="Select birthday"
+                        value={birthday}
+                        onChange={(e) => setBirthday(e)}
+                        required
+                    />
+                    <Select
+                        label="Energy Level"
+                        name="energy"
+                        placeholder="Select energy level"
+                        value={energy_level || ''}
+                        data={['Very Low', 'Low', 'Medium', 'High', 'Very High']}
+                        onChange={setEnergy}
+                        checkIconPosition="right"
+                    />
+                    <Textarea
+                        label="Description"
+                        name="description"
+                        placeholder="Describe your pet"
+                        value={description || ''}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <Textarea
+                        label="Likes"
+                        name="likes"
+                        placeholder="Add your pet's favourite items/activities!"
+                        value={likes || ''}
+                        onChange={(e) => setLikes(e.target.value)}
+                    />
+                    <FileUpload
+                        uid={user?.id ?? null}
+                        urls={photo_urls}
+                        onUpload={(urls: string[]) => {
+                            setPhotoUrls(urls)
+                        }}
+                    />
+                    <Button variant="outline" color="#6d543e"
+                        onClick={async () => {
+                            if (validateForm()) {
+                                await addPetProfile({ name, type, breed, weight, birthday, energy_level, description, likes, photo_urls });
+                                setModalOpened(false); // close modal upon addition of pet
+                                // reset all fields to prepare modal for next addition
+                                setName('');
+                                setType('');
+                                setBreed('');
+                                setWeight(null);
+                                setBirthday(null);
+                                setEnergy(null);
+                                setDescription(null);
+                                setLikes(null);
+                                setPhotoUrls(null);
+                            }
+                        }}
+                        disabled={loading} // button shows loading while data is uploaded
+                    >
+                        {loading ? 'Loading...' : 'Add'}
+                    </Button>
+                </div>
+            </Modal>
+
+            {alertOpen && (
+                <Notification
+                    variant="light"
+                    color="#6d543e"
+                    withBorder
+                    onClose={() => setAlertOpen(false)}
+                    title="Pet added!"
+                    style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)' }}>
+                </Notification>
+            )}
+        </>
     );
 }

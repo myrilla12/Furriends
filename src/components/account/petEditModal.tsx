@@ -2,8 +2,8 @@
 'use client'
 
 import dayjs from 'dayjs';
-import { useState } from 'react';
-import { Modal, ScrollArea, Button, TextInput, Textarea, Select, NumberInput } from '@mantine/core';
+import { useState, useEffect } from 'react';
+import { Modal, ScrollArea, Button, TextInput, Textarea, Select, NumberInput, Notification } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import FileUpload from './fileUpload';
 import SortablePhotoArray from './sortablePhotoArray';
@@ -40,6 +40,18 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
     const [description, setDescription] = useState<string | null>(pet.description);
     const [likes, setLikes] = useState<string | null>(pet.likes);
     const [photo_urls, setPhotoUrls] = useState<string[] | null>(pet.photos);
+    const [alertOpen, setAlertOpen] = useState(false);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (alertOpen) {
+            timer = setTimeout(() => {
+                setAlertOpen(false);
+            }, 3000);  // closes alert after 3 seconds
+        }
+
+        return () => clearTimeout(timer); // clear timeout if component unmounts or alertOpen changes
+    }, [alertOpen]);
 
     /**
      * Updates the pet profile in the database and state.
@@ -102,7 +114,8 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
             };
 
             updatePetInState(fullUpdatedPet);
-            alert('Pet profile updated!');
+            setAlertOpen(true);
+            //alert('Pet profile updated!');
         } catch (error) {
             alert('Error updating the data!');
         } finally {
@@ -126,124 +139,137 @@ export default function PetEditModal({ opened, onClose, pet, updatePetInState }:
     };
 
     return (
-        <Modal
-            opened={opened}
-            onClose={() => {
-                onClose();
-                setName(pet.name);
-                setType(pet.type);
-                setBreed(pet.breed);
-                setWeight(pet.weight);
-                setBirthday(new Date(pet.birthday));
-                setEnergy(pet.energy_level);
-                setDescription(pet.description);
-                setLikes(pet.likes);
-                setPhotoUrls(pet.photos);
-            }}
-            title={<span className="font-bold text-lg text-brown">{`Edit ${pet.name}'s pet profile`}</span>}
-            centered
-            scrollAreaComponent={ScrollArea.Autosize}
-        >
-            <div className="space-y-4">
-                <TextInput
-                    label="Name"
-                    name="name"
-                    placeholder="Name"
-                    value={name || ''}
-                    onChange={(e) => setName(e.target.value)}
-                    required
+        <>
+            <Modal
+                opened={opened}
+                onClose={() => {
+                    onClose();
+                    setName(pet.name);
+                    setType(pet.type);
+                    setBreed(pet.breed);
+                    setWeight(pet.weight);
+                    setBirthday(new Date(pet.birthday));
+                    setEnergy(pet.energy_level);
+                    setDescription(pet.description);
+                    setLikes(pet.likes);
+                    setPhotoUrls(pet.photos);
+                }}
+                title={<span className="font-bold text-lg text-brown">{`Edit ${pet.name}'s pet profile`}</span>}
+                centered
+                scrollAreaComponent={ScrollArea.Autosize}
+            >
+                <div className="space-y-4">
+                    <TextInput
+                        label="Name"
+                        name="name"
+                        placeholder="Name"
+                        value={name || ''}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                    <Select
+                        label="Type"
+                        name="type"
+                        placeholder="Select type"
+                        value={type || ''}
+                        data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea Pig', 'Chinchilla', 'Other']}
+                        onChange={(value: string | null) => setType(value || '')}
+                        allowDeselect={false}
+                        checkIconPosition="right"
+                        required
+                        searchable
+                        nothingFoundMessage="Nothing found..."
+                    />
+                    <TextInput
+                        label="Breed"
+                        name="breed"
+                        placeholder="Breed"
+                        value={breed || ''}
+                        onChange={(e) => setBreed(e.target.value)}
+                        required
+                    />
+                    <NumberInput
+                        label="Weight"
+                        name="weight"
+                        placeholder="Weight"
+                        suffix=" kg"
+                        value={weight || ''}
+                        onChange={(value) => setWeight(value !== '' ? Number(value) : null)}
+                        min={0}
+                    />
+                    <DatePickerInput
+                        label="Birthday"
+                        name="birthday"
+                        placeholder="Select birthday"
+                        value={birthday}
+                        onChange={(e) => setBirthday(e)}
+                        required
+                    />
+                    <Select
+                        label="Energy Level"
+                        name="energy"
+                        placeholder="Select energy level"
+                        value={energy_level || ''}
+                        data={['Very Low', 'Low', 'Medium', 'High', 'Very High']}
+                        onChange={setEnergy}
+                        checkIconPosition="right"
+                    />
+                    <Textarea
+                        label="Description"
+                        name="description"
+                        placeholder="Describe your pet"
+                        value={description || ''}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <Textarea
+                        label="Likes"
+                        name="likes"
+                        placeholder="Add your pet's favourite items/activities!"
+                        value={likes || ''}
+                        onChange={(e) => setLikes(e.target.value)}
+                    />
+                    <FileUpload
+                        uid={pet.owner_id}
+                        urls={photo_urls}
+                        onUpload={(urls: string[]) => {
+                            setPhotoUrls(urls)
+                        }}
+                    />
+                    <SortablePhotoArray photoUrls={photo_urls} setPhotoUrls={setPhotoUrls} />
+                    <Button variant="outline" color="#6d543e"
+                        onClick={async () => {
+                            if (validateForm()) {
+                                await updatePetProfile();
+                                onClose(); // close modal upon update of pet details
+                                // reset fields
+                                setName(name);
+                                setType(type);
+                                setBreed(breed);
+                                setWeight(weight);
+                                setBirthday(birthday);
+                                setEnergy(energy_level);
+                                setDescription(description);
+                                setLikes(likes);
+                                setPhotoUrls(photo_urls);
+                            }
+                        }}
+                        disabled={loading} // button shows loading while data is uploaded
+                    >
+                        {loading ? 'Loading...' : 'Update'}
+                    </Button>
+                </div>
+            </Modal>
+
+            {alertOpen && (
+                <Notification
+                    variant="light"
+                    color="#6d543e"
+                    withBorder
+                    onClose={() => setAlertOpen(false)}
+                    title="Pet profile updated!"
+                    style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)' }}
                 />
-                <Select
-                    label="Type"
-                    name="type"
-                    placeholder="Select type"
-                    value={type || ''}
-                    data={['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Turtle/Tortoise', 'Guinea Pig', 'Chinchilla', 'Other']}
-                    onChange={(value: string | null) => setType(value || '')}
-                    allowDeselect={false}
-                    checkIconPosition="right"
-                    required
-                    searchable
-                    nothingFoundMessage="Nothing found..."
-                />
-                <TextInput
-                    label="Breed"
-                    name="breed"
-                    placeholder="Breed"
-                    value={breed || ''}
-                    onChange={(e) => setBreed(e.target.value)}
-                    required
-                />
-                <NumberInput
-                    label="Weight"
-                    name="weight"
-                    placeholder="Weight"
-                    suffix=" kg"
-                    value={weight || ''}
-                    onChange={(value) => setWeight(value !== '' ? Number(value) : null)}
-                    min={0}
-                />
-                <DatePickerInput
-                    label="Birthday"
-                    name="birthday"
-                    placeholder="Select birthday"
-                    value={birthday}
-                    onChange={(e) => setBirthday(e)}
-                    required
-                />
-                <Select
-                    label="Energy Level"
-                    name="energy"
-                    placeholder="Select energy level"
-                    value={energy_level || ''}
-                    data={['Very Low', 'Low', 'Medium', 'High', 'Very High']}
-                    onChange={setEnergy}
-                    checkIconPosition="right"
-                />
-                <Textarea
-                    label="Description"
-                    name="description"
-                    placeholder="Describe your pet"
-                    value={description || ''}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-                <Textarea
-                    label="Likes"
-                    name="likes"
-                    placeholder="Add your pet's favourite items/activities!"
-                    value={likes || ''}
-                    onChange={(e) => setLikes(e.target.value)}
-                />
-                <FileUpload
-                    uid={pet.owner_id}
-                    urls={photo_urls}
-                    onUpload={(urls: string[]) => {
-                        setPhotoUrls(urls)
-                    }}
-                />
-                <SortablePhotoArray photoUrls={photo_urls} setPhotoUrls={setPhotoUrls} />
-                <Button variant="outline" color="#6d543e"
-                    onClick={async () => {
-                        if (validateForm()) {
-                            await updatePetProfile();
-                            onClose(); // close modal upon update of pet details
-                            // reset fields
-                            setName(name);
-                            setType(type);
-                            setBreed(breed);
-                            setWeight(weight);
-                            setBirthday(birthday);
-                            setEnergy(energy_level);
-                            setDescription(description);
-                            setLikes(likes);
-                            setPhotoUrls(photo_urls);
-                        }
-                    }}
-                    disabled={loading} // button shows loading while data is uploaded
-                >
-                    {loading ? 'Loading...' : 'Update'}
-                </Button>
-            </div>
-        </Modal>
+            )}
+        </>
     );
 }
