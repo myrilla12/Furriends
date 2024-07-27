@@ -237,6 +237,16 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         };
     }, [user.id, chatIds, otherUsers, supabase, notifications])
 
+    useEffect(() => {
+        const closeDrawerOnIdChange = () => {
+            if (opened) {
+                close();
+            }
+        };
+
+        closeDrawerOnIdChange();
+    }, [id.id, close]);
+
     const renderMobileVersion = () => (
         <Box>
             <Flex direction="row" align="center" gap="md">
