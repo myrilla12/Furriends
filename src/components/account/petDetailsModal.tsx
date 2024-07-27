@@ -11,6 +11,7 @@ type PetDetailsModalProps = {
     opened: boolean;
     onClose: () => void;
     pet: Pet;
+    mine: boolean;
 }
 
 /**
@@ -20,9 +21,10 @@ type PetDetailsModalProps = {
  * @param {boolean} props.opened - Indicates whether the modal is open.
  * @param {function} props.onClose - Callback function to close the modal.
  * @param {Pet} props.pet - The pet object with detailed information.
+ * @param {boolean} props.mine - Whether the pet belongs to owner or not. 
  * @returns {JSX.Element} The pet details modal component.
  */
-export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModalProps) {
+export default function PetDetailsModal({ pet, opened, onClose, mine }: PetDetailsModalProps) {
     const supabase = createClient();
     const [owner, setOwner] = useState<Profile | null>(null);
 
@@ -72,15 +74,17 @@ export default function PetDetailsModal({ pet, opened, onClose }: PetDetailsModa
                 <Text><strong>Description:</strong> {pet.description}</Text>
                 <Text><strong>Likes:</strong> {pet.likes}</Text>
                 
-                <Flex direction="row" gap="xs" align="center">
-                    <Text c="dimmed" fs="italic" size="xs">Owned by:</Text>
-                    <Avatar
-                        src={owner?.avatar_url}
-                        size="sm"
-                        className="border-2"
-                    />
-                    <Text size="xs" c="dimmed" fs="italic">{owner?.username}</Text>
-                </Flex>
+                {mine &&
+                    <Flex direction="row" gap="xs" align="center">
+                        <Text c="dimmed" fs="italic" size="xs">Owned by:</Text>
+                        <Avatar
+                            src={owner?.avatar_url}
+                            size="sm"
+                            className="border-2"
+                        />
+                        <Text size="xs" c="dimmed" fs="italic">{owner?.username}</Text>
+                    </Flex>
+                }
 
             </div>
         </Modal>

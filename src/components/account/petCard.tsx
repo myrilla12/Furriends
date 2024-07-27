@@ -109,7 +109,7 @@ export default function PetCard({ pet, editable, chattable, distance, updatePetI
                 </div>
 
             </div>
-            <PetDetailsModal opened={detailsOpened} onClose={closeDetails} pet={pet} />
+            <PetDetailsModal opened={detailsOpened} onClose={closeDetails} pet={pet} mine={chattable}/>
 
             {editable && updatePetInState && (
                 <PetEditModal opened={editOpened} onClose={closeEdit} pet={pet} updatePetInState={updatePetInState} />
