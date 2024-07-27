@@ -20,6 +20,7 @@ type LocationModalProps = {
  * @param {boolean} props.opened - Indicates if the modal is open.
  * @param {() => void} props.onClose - Function to close the modal.
  * @param {User} props.user - The current user.
+ * @param {() => void} props.fetchNearbyUsers - To fetch nearby users. 
  * @returns {JSX.Element} The rendered LocationModal component.
  */
 export default function LocationModal({ opened, onClose, user, fetchNearbyUsers }: LocationModalProps) {

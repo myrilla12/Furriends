@@ -19,12 +19,12 @@ interface PetCarouselProps {
  * @param {PetCarouselProps} props - The component props.
  * @param {User} props.user - The authenticated user. 
  * @param {Pet[]} props.pets - The array of pets to display in the carousel.
+ * @param {boolean} props.fetch - Whether nearby users should be fetched or not. 
  * @returns {JSX.Element} The PetCarousel component.
  */
 export default function PetCarousel({ user, pets, fetch }: PetCarouselProps) {
     const theme = useMantineTheme();
     const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-    const [userLocation, setUserLocation] = useState<{ lat: number; lng: number }>({ lat: 1.3521, lng: 103.8198 });
     const [nearbyUsers, setNearbyUsers] = useState<{ dist_meters: number; id: string; lat: number; long: number; username: string;}[] | null>(null);
 
     useEffect(() => {
