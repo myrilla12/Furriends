@@ -180,7 +180,7 @@ export default function AccountForm({ user }: { user: User | null }) {
                                 onChange={(e) => setUsername(e.target.value)}
                             />
                             <div className="mt-[0.2rem] text-xs italic text-gray-500 leading-tight">
-                                *If you leave this field blank, your default username will show the first 5 letters of your email prefix, with the rest hidden for privacy.
+                                *If you leave this field blank, your default username will be the first 5 characters of your email prefix, with the rest censored for privacy.
                             </div>
                         </div>
 
