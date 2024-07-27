@@ -73,22 +73,32 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
         return (
             <Flex align="center" gap="md" wrap="wrap" style={{ width: '100%' }}>
                 <Avatar src={avatar_url} radius="xl" size="md" />
-                <Text 
-                    className="flex-grow" 
-                    c="#6d543e"
-                    fw={600} 
-                    size="md"
-                    onClick={async (e) => {
-                        e.stopPropagation();
-                        if (mine) {
+                {mine ?
+                    <Text 
+                        className="flex-grow text-[#6d543e] font-semibold text-base hover:text-amber-600" 
+                        fw={600} 
+                        size="md"
+                        onClick={async (e) => {
+                            e.stopPropagation();
+                          
                             setLoadingCommunity(id);
                             await fetchCommunityPosts(id);
                             setLoadingCommunity(null);
-                        }
-                    }}
-                >
-                    {name}
-                </Text>
+                            
+                        }}
+                    >
+                        {name}
+                    </Text> :
+                    <Text 
+                        className="flex-grow" 
+                        c="#6d543e"
+                        fw={600} 
+                        size="md"
+                    >
+                        {name}
+                    </Text> 
+                }
+
                 {loadingCommunity === id && <Loader size="xs" color="#6d543e"/>}
 
                 {mine ?
