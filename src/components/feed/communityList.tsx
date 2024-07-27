@@ -43,7 +43,8 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
             const { data, error } = await supabase
                 .from("community_posts")
                 .select("*")
-                .eq("community_id", id);
+                .eq("community_id", id)
+                .order('created_at', { ascending: false });
 
             if (error) {
                 console.error("Error fetching posts belonging to this community: ", error);
