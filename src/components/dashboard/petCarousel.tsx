@@ -62,7 +62,7 @@ export default function PetCarousel({ user, pets, fetch }: PetCarouselProps) {
     // sort pets by owners' distance & store distance in pet object
     const sortedPets = pets.map(pet => {
         const owner = nearbyUsers?.find(user => user.id === pet.owner_id);
-        const distance = owner?.dist_meters || Infinity;
+        const distance = owner ? owner.dist_meters : Infinity;
         return { ...pet, distance };
     }).sort((petA, petB) => petA.distance - petB.distance);
 
