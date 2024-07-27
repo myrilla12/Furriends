@@ -37,12 +37,17 @@ type DashboardProps = {
 export default function DashboardPage({ user, username, pets, children, showLocationModal }: DashboardProps) {
     const [isLocationModalOpen, setIsLocationModalOpen] = useState(showLocationModal);
     const [filteredPets, setFilteredPets] = useState<Pet[]>(pets);
+    const [fetch, setFetch] = useState(false);
 
     useEffect(() => {
         if (showLocationModal) {
             setIsLocationModalOpen(true);
         }
     }, [showLocationModal]);
+
+    const fetchNearbyUsers = async () => {
+        setFetch(true);
+    }
 
     return (
         <Layout user={user}>
@@ -56,7 +61,7 @@ export default function DashboardPage({ user, username, pets, children, showLoca
                 </h1>
 
                 <Filters pets={pets} setFilteredPets={setFilteredPets} />
-                {filteredPets.length > 0 ? (<PetCarousel user={user} pets={filteredPets} />) : (<NoPetsFound />)}
+                {filteredPets.length > 0 ? (<PetCarousel user={user} pets={filteredPets} fetch={fetch} />) : (<NoPetsFound />)}
                 {children}
             </div>
 
@@ -67,6 +72,7 @@ export default function DashboardPage({ user, username, pets, children, showLoca
                     destroyCookie(null, 'showLocationModal', { path: '/' });
                 }}
                 user={user}
+                fetchNearbyUsers={fetchNearbyUsers}
             />
         </Layout>
     );

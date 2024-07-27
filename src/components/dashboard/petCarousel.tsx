@@ -10,6 +10,7 @@ import { User } from '@supabase/supabase-js';
 interface PetCarouselProps {
     user: User;
     pets: Pet[];
+    fetch: boolean;
 }
 
 /**
@@ -18,15 +19,17 @@ interface PetCarouselProps {
  * @param {PetCarouselProps} props - The component props.
  * @param {User} props.user - The authenticated user. 
  * @param {Pet[]} props.pets - The array of pets to display in the carousel.
+ * @param {boolean} props.fetch - Whether nearby users should be fetched or not. 
  * @returns {JSX.Element} The PetCarousel component.
  */
-export default function PetCarousel({ user, pets }: PetCarouselProps) {
+export default function PetCarousel({ user, pets, fetch }: PetCarouselProps) {
     const theme = useMantineTheme();
     const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-    const [userLocation, setUserLocation] = useState<{ lat: number; lng: number }>({ lat: 1.3521, lng: 103.8198 });
     const [nearbyUsers, setNearbyUsers] = useState<{ dist_meters: number; id: string; lat: number; long: number; username: string;}[] | null>(null);
 
     useEffect(() => {
+        if (!fetch) return;
+
         const fetchLocations = async () => {
             const supabase = createClient();
 
@@ -41,30 +44,22 @@ export default function PetCarousel({ user, pets }: PetCarouselProps) {
                 return;
             }
 
-            setUserLocation({ lat: data[0].latitude, lng: data[0].longitude })
+            // get nearby users
+            let { data: NearbyUsersData, error: NearbyUsersError } = await supabase
+                .rpc('nearby_users', { 
+                    lat: data[0].latitude, 
+                    long: data[0].longitude 
+                })
+
+            if (NearbyUsersError) {
+                console.error('Error fetching nearby users:', NearbyUsersError);
+                return;
+            }
+            setNearbyUsers(NearbyUsersData);
         };
 
         fetchLocations();
-
-        const fetchNearbyUsers = async () => {
-            const supabase = createClient();
-
-            // get nearby users
-            let { data, error } = await supabase
-                .rpc('nearby_users', { 
-                    lat: userLocation.lat, 
-                    long: userLocation.lng 
-                })
-
-            if (error) {
-                console.error('Error fetching nearby users:', error);
-                return;
-            }
-            setNearbyUsers(data);
-        };
-
-        fetchNearbyUsers();
-    }, [user, userLocation]);
+    }, [user, fetch]);
 
     // sort pets by owners' distance & store distance in pet object
     const sortedPets = pets.map(pet => {
