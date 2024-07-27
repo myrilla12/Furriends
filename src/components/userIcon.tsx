@@ -89,8 +89,6 @@ export default function UserIcon({ user }: UserIconProps) {
                                 width={45}
                                 height={45}
                                 style={{
-                                    height: "45px",
-                                    width: "45px",
                                     borderRadius: "50%",
                                     objectFit: "cover"
                                 }}

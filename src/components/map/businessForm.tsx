@@ -91,7 +91,7 @@ export default function BusinessForm() {
     };
 
     return (
-        <footer className="flex mt-auto py-5 items-center justify-center">
+        <footer className="flex mt-auto pt-5 items-center justify-center">
             <p className="mx-3 text-center">Know a pet-friendly business or hangout spot? Apply to add it to our map{" "}
                 <button className="text-brown underline" onClick={open}>
                     here
