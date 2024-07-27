@@ -110,7 +110,7 @@ export default function BusinessForm() {
                     setCheckboxChecked(false);
                     setCheckboxError('');
                 }}
-                title="Submit business details for addition to map page"
+                title={<span className="font-bold text-lg text-brown">Submit business details for addition to map page</span>}
                 scrollAreaComponent={ScrollArea.Autosize}
             >
                 <div className="space-y-4">
