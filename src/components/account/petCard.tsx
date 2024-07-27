@@ -61,12 +61,16 @@ export default function PetCard({ pet, editable, chattable, distance, updatePetI
     return (
         <>
             <div
-                className="relative bg-cover bg-center h-64 w-full rounded-lg overflow-hidden shadow-lg cursor-pointer"
+                className="relative bg-cover bg-center h-64 w-full rounded-lg overflow-hidden shadow-lg cursor-pointer group"
                 style={{ backgroundImage: `url(${pet.photos && pet.photos[0]})` }}
                 onClick={openDetails}
             >
+                <div
+                    className={`absolute inset-0 ${textColor === 'black' ? 'bg-white group-hover:opacity-60' : 'bg-black group-hover:opacity-40'} opacity-0 transition-opacity duration-300`}
+                ></div>
+
                 <div className="absolute bottom-0 left-0 pl-5 pb-4" style={{ color: textColor }}>
-                    <h2 className="text-2xl font-bold">{pet.name}</h2>
+                    <p className="text-2xl font-bold">{pet.name}</p>
                     <p>{pet.type},{" "}{pet.breed}</p>
                     <p className="text-sm">{getAgeString(calculateAge(pet))}</p>
                     {chattable && distance !== "Infinity" && <p className="text-sm">{distance} km away</p>}
@@ -99,9 +103,9 @@ export default function PetCard({ pet, editable, chattable, distance, updatePetI
                 )}
 
                 <div className="absolute top-0 left-0 pl-2 pt-2">
-                {chattable && (
-                    <ChatButton owner_id={pet.owner_id} button_color={textColor} feed={false}/>
-                )}
+                    {chattable && (
+                        <ChatButton owner_id={pet.owner_id} button_color={textColor} feed={false} />
+                    )}
                 </div>
 
             </div>

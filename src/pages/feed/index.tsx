@@ -188,15 +188,15 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         <Layout user={user}>
             <Head>
                 <title>furriends | feed</title>
-                <meta name="Feed page" content="This is the feed page of furriends."></meta>
+                <meta name="Feed page" content="This is the feed page of furriends."/>
             </Head>
             {isMobile ?
                 renderMobileVersion() :
-                <div className='relative flex-grow p-6'>
+                <div className='relative flex-grow p-6 h-[85vh]'>
                     <FeedLinks />
                     <div className="absolute top-1 right-1">
                         <Button 
-                            leftSection={<PlusCircleIcon className='w-6'/>} 
+                            leftSection={<PlusCircleIcon className='w-6' />} 
                             m='md' 
                             size='md' 
                             variant='light' 
@@ -207,7 +207,9 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                             Create a post
                         </Button>
                     </div>
+                    
                     <PostCreationModal user={user} opened={opened} setOpened={setOpened} service={false} myCommunities={myCommunitiesState}/>
+
                     <Flex direction="row">
                         <div>
                             <h1 className="mt-7 text-2xl font-bold text-amber-950">Feed</h1>
@@ -219,7 +221,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                     </Flex>
                 </div>
             }
-        </Layout >
+        </Layout>
     )
 }
 

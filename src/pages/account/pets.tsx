@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import Layout from '@/components/layout';
 import { Button } from '@mantine/core';
 import type { User } from '@supabase/supabase-js'

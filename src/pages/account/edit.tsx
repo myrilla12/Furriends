@@ -22,7 +22,7 @@ export default function EditAccountPage({ user }: { user: User }) {
             <div className="flex-grow p-6">
                 <h1 className="mb-7 text-2xl font-bold text-amber-950">Edit Profile</h1>
             </div>
-            <div className="flex flex-grow items-center justify-center flex-col p-6">
+            <div className="flex flex-grow items-center justify-center flex-col px-6">
                 <AccountForm user={user} />
             </div>
         </Layout >

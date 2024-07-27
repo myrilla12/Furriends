@@ -1,6 +1,4 @@
-// adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
-
-import { Text, TextInput, PasswordInput, Button, Box, Group, Loader } from '@mantine/core';
+import { Text, TextInput, PasswordInput, Button, Box, Loader } from '@mantine/core';
 import router from 'next/router';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/component';
@@ -8,6 +6,7 @@ import { setCookie } from 'nookies';
 
 /**
  * Component for the login box.
+ * Adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
  *
  * @returns {JSX.Element} The LoginBox component.
  */
@@ -126,20 +125,19 @@ export default function LoginBox() {
 
             <hr />
 
-            <Group gap="lg" className="mt-3">
+            <div className="flex justify-between items-center mt-3">
                 <Text size="sm" c="dimmed">Don&apos;t have an account yet?</Text>
                 <Button variant="transparent" c="#6d543e" className="ml-2" onClick={() => router.push("/signup")}>
                     <u>Sign up</u>
                 </Button>
-            </Group>
+            </div>
 
-            <Group gap="xl">
+            <div className="flex justify-between items-center">
                 <Text size="sm" c="dimmed">Trouble signing in?</Text>
                 <Button variant="transparent" c="#6d543e" onClick={() => router.push("/login/forgot-password")}>
                     <u>Reset password</u>
                 </Button>
-            </Group>
-
+            </div>
         </Box>
 
     );

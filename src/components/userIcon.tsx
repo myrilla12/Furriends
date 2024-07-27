@@ -74,7 +74,7 @@ export default function UserIcon({ user }: UserIconProps) {
         }
     }, [user, supabase])
 
-    useEffect(() => { getAvatar() }, [getAvatar])
+    useEffect(() => { getAvatar() }, [getAvatar, user])
 
     return (
         <div className="relative">

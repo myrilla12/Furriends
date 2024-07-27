@@ -1,8 +1,7 @@
-// warning modal with button allowing users to delete pet from profile
 import { useState } from 'react';
 import { Modal, Button } from '@mantine/core';
 import { Pet } from '@/utils/definitions';
-import { createClient } from '../../utils/supabase/component';
+import { createClient } from '@/utils/supabase/component';
 
 type PetDeleteModalProps = {
     opened: boolean;
@@ -13,6 +12,7 @@ type PetDeleteModalProps = {
 
 /**
  * Modal component for deleting a pet from the profile.
+ * Displays a warning and a button to confirm pet deletion.
  *
  * @param {PetDeleteModalProps} props - The component props.
  * @param {boolean} props.opened - Indicates whether the modal is open.
