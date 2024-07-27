@@ -46,15 +46,20 @@ export default function Home() {
                         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
                             <Image
                                 src="/furriends-desktop.png"
-                                width={1600}
-                                height={900}
+                                priority
+                                width="0"
+                                height="0"
+                                sizes="100vw"
+                                style={{ width: '100%', height: 'auto' }}
                                 className="hidden md:block"
                                 alt="Screenshot of the dashboard and map - desktop version"
                             />
                             <Image
                                 src="/furriends-mobile.png"
-                                width={500}
-                                height={580}
+                                width="0"
+                                height="0"
+                                sizes="100vw"
+                                style={{ width: '70%', height: 'auto' }}
                                 className="block md:hidden"
                                 alt="Screenshot of the dashboard and map - mobile version"
                             />
