@@ -28,8 +28,6 @@ export default function PetCarousel({ user, pets, fetch }: PetCarouselProps) {
     const [nearbyUsers, setNearbyUsers] = useState<{ dist_meters: number; id: string; lat: number; long: number; username: string;}[] | null>(null);
 
     useEffect(() => {
-        if (!fetch) return;
-
         const fetchLocations = async () => {
             const supabase = createClient();
 
