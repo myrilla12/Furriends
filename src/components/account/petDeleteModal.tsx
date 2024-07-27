@@ -1,8 +1,7 @@
-// warning modal with button allowing users to delete pet from profile
-import { useState, useEffect } from 'react';
-import { Modal, Button, Notification } from '@mantine/core';
+import { useState } from 'react';
+import { Modal, Button } from '@mantine/core';
 import { Pet } from '@/utils/definitions';
-import { createClient } from '../../utils/supabase/component';
+import { createClient } from '@/utils/supabase/component';
 
 type PetDeleteModalProps = {
     opened: boolean;
@@ -13,6 +12,7 @@ type PetDeleteModalProps = {
 
 /**
  * Modal component for deleting a pet from the profile.
+ * Displays a warning and a button to confirm pet deletion.
  *
  * @param {PetDeleteModalProps} props - The component props.
  * @param {boolean} props.opened - Indicates whether the modal is open.
@@ -24,18 +24,6 @@ type PetDeleteModalProps = {
 export default function PetDeleteModal({ opened, onClose, pet, deletePetFromState }: PetDeleteModalProps) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
-    const [alertOpen, setAlertOpen] = useState(false);
-
-    useEffect(() => {
-        let timer: NodeJS.Timeout;
-        if (alertOpen) {
-            timer = setTimeout(() => {
-                setAlertOpen(false);
-            }, 3000); // closes alert after 3 seconds
-        }
-
-        return () => clearTimeout(timer); // clear timeout if component unmounts or alertOpen changes
-    }, [alertOpen]);
 
     /**
      * Deletes the pet from the database and updates the state.
@@ -49,7 +37,6 @@ export default function PetDeleteModal({ opened, onClose, pet, deletePetFromStat
             const { error } = await supabase.from('pets').delete().eq('id', pet.id);
             if (error) throw error;
             deletePetFromState(pet.id);
-            setAlertOpen(true);
             alert(`${pet.name} removed from profile!`);
         } catch (error) {
             alert('Error removing pet!');
@@ -60,19 +47,6 @@ export default function PetDeleteModal({ opened, onClose, pet, deletePetFromStat
 
     return (
         <>
-            {alertOpen && (
-                <Notification
-                    variant="light"
-                    color="red"
-                    withBorder
-                    onClose={() => setAlertOpen(false)}
-                    title="Pet deleted!"
-                    style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)' }}
-                >
-                    {pet.name} has been removed from your profile.
-                </Notification>
-            )}
-
             <Modal opened={opened} onClose={onClose} title={<span className="font-bold text-lg text-red-600">Warning!</span>} size="auto" centered>
                 <p className="font-bold text-red-600">
                     Are you sure you want to remove <span className="underline">{pet.name}</span> from your profile?</p>

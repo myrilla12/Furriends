@@ -285,8 +285,8 @@ export default function PetForm({ modalOpened, setModalOpened, user, addPetToSta
                     withBorder
                     onClose={() => setAlertOpen(false)}
                     title="Pet added!"
-                    style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)' }}>
-                </Notification>
+                    style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)' }}
+                />
             )}
         </>
     );
