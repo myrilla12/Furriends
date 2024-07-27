@@ -10,6 +10,7 @@ type LocationModalProps = {
     opened: boolean;
     onClose: () => void;
     user: User
+    fetchNearbyUsers: () => void;
 }
 
 /**
@@ -21,7 +22,7 @@ type LocationModalProps = {
  * @param {User} props.user - The current user.
  * @returns {JSX.Element} The rendered LocationModal component.
  */
-export default function LocationModal({ opened, onClose, user }: LocationModalProps) {
+export default function LocationModal({ opened, onClose, user, fetchNearbyUsers }: LocationModalProps) {
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState<string | null>(null);
@@ -116,6 +117,7 @@ export default function LocationModal({ opened, onClose, user }: LocationModalPr
                 if (address && latitude && longitude) { // only update if changes are made, ie. lat & long are present
                     await updateAddress();
                 }
+                fetchNearbyUsers();
                 onClose(); // close modal only if update is successful
             } catch (error) {
                 console.error(error);
