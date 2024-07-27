@@ -237,16 +237,26 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         };
     }, [user.id, chatIds, otherUsers, supabase, notifications])
 
+    useEffect(() => {
+        const closeDrawerOnIdChange = () => {
+            if (opened) {
+                close();
+            }
+        };
+
+        closeDrawerOnIdChange();
+    }, [id.id, close]);
+
     const renderMobileVersion = () => (
         <Box>
             <Flex direction="row" align="center" gap="md">
-                <p className='text-xl font-bold mb-1'>Open chat navigator</p>
+                <p className='text-xl font-bold mb-1'>All chats</p>
                 <Burger opened={opened} onClick={opened ? close : open} aria-label="Toggle navigation" />
 
                 <Drawer
                     opened={opened}
                     onClose={close}
-                    title={<p className='text-xl font-bold mb-1'>Chat navigator</p>}
+                    title={<p className='text-xl font-bold mx-4 mt-4'>All chats</p>}
                     size="100%"
                 >
                     <div style={{ width: '100%' }}>
