@@ -58,7 +58,9 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
                     // if new post is inserted, add it to feed
                     if (eventType === 'INSERT') {
                         const newPost = payload.new as Post;
+                        if (newPost.community_id === currentCommunity?.id) {
                         setFeed((prevPosts) => [newPost, ...prevPosts]);
+                        }
                     }
                 }
             )
