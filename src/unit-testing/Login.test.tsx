@@ -61,3 +61,23 @@ describe('LoginBox Component - Sign up Button', () => {
         expect(pushMock).toHaveBeenCalledWith('/signup');
     });
 });
+
+describe('LoginBox Component - Reset password Button', () => {
+    it('navigates to /login/forgot-password when clicked', () => {
+        // Mock push function 
+        const pushMock = jest.fn();
+        jest.spyOn(require('next/router'), 'useRouter').mockReturnValue({ push: pushMock });
+        
+        // Render the Login component
+        render(<Login/>);
+        
+        // Find the button
+        const resetButton = screen.getByRole('button', { name: /reset password/i });
+    
+        // Simulate a click event on the button
+        fireEvent.click(resetButton);
+        
+        // Assert that the push method was called with the expected URL
+        expect(pushMock).toHaveBeenCalledWith('/login/forgot-password');
+    });
+});
