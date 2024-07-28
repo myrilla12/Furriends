@@ -30,7 +30,7 @@ describe('Home Component', () => {
         render(<Home />);
 
         // All expected texts to be rendered
-        const texts = screen.queryAllByText(/Welcome to|furriends|!|A bespoke app for modern day pet owners./i)
+        const texts = screen.queryAllByText(/Welcome to|furriends|!|A bespoke app for modern day pet owners.|Know a pet-friendly business or hangout spot? Apply to add it to our map/i)
 
         // Check if each text is present
         texts.forEach(text => {
@@ -67,5 +67,27 @@ describe('Home Component - Sign in Button', () => {
         
         // Assert that the push method was called with the expected URL
         expect(pushMock).toHaveBeenCalledWith('/login');
+    });
+});
+
+describe('BusinessForm Component', () => {
+    it('opens the modal when the "here" button is clicked', () => {
+        // Render the component
+        render(<Home />);
+        
+        // Check button with text "here"
+        const openButton = screen.getByText(/here/i);
+        expect(openButton).toBeTruthy();
+        
+        // Click the button to open the modal
+        fireEvent.click(openButton);
+        
+        // All expected texts to be rendered
+        const texts = screen.queryAllByText(/Submit business details for addition to map page|Business Name/i)
+
+        // Check if each text is present
+        texts.forEach(text => {
+            expect(text).toBeTruthy();
+        })
     });
 });
