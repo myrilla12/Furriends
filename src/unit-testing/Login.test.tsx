@@ -1,6 +1,28 @@
 import LoginBox from "@/components/login/loginBox";
 import Login from "@/pages/login";
+import { ClassAttributes, ImgHTMLAttributes } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+
+type NextImageProps = JSX.IntrinsicAttributes & ClassAttributes<HTMLImageElement> & ImgHTMLAttributes<HTMLImageElement> & {
+    priority?: boolean;
+};
+
+// Mocking Image component
+jest.mock('next/image', () => (props: NextImageProps) => {
+    const { priority, ...imgProps } = props;
+    return <img {...imgProps} />;
+});
+
+// Testing for image in LogoHeader
+describe('LogoHeader Component', () => {
+    it('displays the logo', () => {
+        render(<Login />);
+        
+        // Check if the element rendered by LogoHeader is present
+        const logoElement = screen.getByAltText(/furriends logo/i);
+        expect(logoElement).not.toBeNull(); // Check if element is found
+    });
+});
 
 describe('LoginBox Component', () => {
     it('renders the LoginBox component correctly', () => {
@@ -9,11 +31,7 @@ describe('LoginBox Component', () => {
         // Check if the text "Email address" is present
         const emailAddressText = screen.getByText(/Email address/i);
         expect(emailAddressText).toBeTruthy();
-
-        // Check if the text "Password" is present
-        const passwordText = screen.getByText(/Email address/i);
-        expect(passwordText).toBeTruthy();
-
+        
         // Check if the text "Don't have an account yet?" is present
         const signUpText = screen.getByText(/Don't have an account yet?/i);
         expect(signUpText).toBeTruthy();
