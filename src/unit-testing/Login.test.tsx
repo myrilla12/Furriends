@@ -1,17 +1,5 @@
-import LoginBox from "@/components/login/loginBox";
 import Login from "@/pages/login";
-import { ClassAttributes, ImgHTMLAttributes } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-
-type NextImageProps = JSX.IntrinsicAttributes & ClassAttributes<HTMLImageElement> & ImgHTMLAttributes<HTMLImageElement> & {
-    priority?: boolean;
-};
-
-// Mocking Image component
-jest.mock('next/image', () => (props: NextImageProps) => {
-    const { priority, ...imgProps } = props;
-    return <img {...imgProps} />;
-});
 
 // Testing for image in LogoHeader
 describe('LogoHeader Component', () => {
