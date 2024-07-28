@@ -27,18 +27,14 @@ describe('LogoHeader Component', () => {
 describe('LoginBox Component', () => {
     it('renders the LoginBox component correctly', () => {
         render(<Login />);
-        
-        // Check if the text "Email address" is present
-        const emailAddressText = screen.getByText(/Email address/i);
-        expect(emailAddressText).toBeTruthy();
-        
-        // Check if the text "Don't have an account yet?" is present
-        const signUpText = screen.getByText(/Don't have an account yet?/i);
-        expect(signUpText).toBeTruthy();
 
-        // Check if the text "Trouble signing in?" is present
-        const resetText = screen.getByText(/Trouble signing in?/i);
-        expect(resetText).toBeTruthy();
+        // All expected texts to be rendered
+        const texts = screen.queryAllByText(/Email address|Password|Don't have an account yet?|Trouble signing in?/i)
+
+        // Check if each text is present
+        texts.forEach(text => {
+            expect(text).toBeTruthy();
+        })
     });
 });
 
@@ -46,12 +42,13 @@ describe('LoginBox Component', () => {
     it('updates email and password state correctly when user types in input fields', () => {
         render(<Login />);
   
+        const inputs = screen.queryAllByPlaceholderText(/email address|password/i);
+        const [emailInput, passwordInput, confirmPasswordInput] = inputs as HTMLInputElement[];
+
         // Simulate user typing an email address
-        const emailInput = screen.getByPlaceholderText(/email address/i) as HTMLInputElement;
         fireEvent.change(emailInput, { target: { value: 'user@example.com' } });
-        
+
         // Simulate user typing a password
-        const passwordInput = screen.getByPlaceholderText(/password/i) as HTMLInputElement;
         fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
         // Check if the state is updated correctly

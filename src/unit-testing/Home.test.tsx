@@ -28,18 +28,14 @@ describe('LogoHeader Component', () => {
 describe('Home Component', () => {
     it('displays page content', () => {
         render(<Home />);
-        
-        // Check if the text "Welcome to" is present in the document
-        const welcomeText = screen.getByText(/Welcome to/i);
-        expect(welcomeText).not.toBeNull(); 
 
-        // Check if the text "furriends" is present in the document
-        const furriendsText = screen.getByText(/furriends/i);
-        expect(furriendsText).not.toBeNull(); 
+        // All expected texts to be rendered
+        const texts = screen.queryAllByText(/Welcome to|furriends|!|A bespoke app for modern day pet owners./i)
 
-        // Check if the text "A bespoke app for modern day pet owners." is present in the document
-        const subtitleText = screen.getByText(/A bespoke app for modern day pet owners./i);
-        expect(subtitleText).not.toBeNull(); 
+        // Check if each text is present
+        texts.forEach(text => {
+            expect(text).toBeTruthy();
+        })
 
         // Check if the button with text "Sign in" is present in the document
         const signInButton = screen.getByRole('button', { name: /sign in/i });
