@@ -1,15 +1,6 @@
+import LoginBox from "@/components/login/loginBox";
 import Login from "@/pages/login";
 import { fireEvent, render, screen } from '@testing-library/react';
-import { createClient } from '@/utils/supabase/component';
-import { setCookie } from "nookies";
-import LoginBox from "@/components/login/loginBox";
-
-// Mock nookies
-jest.mock('nookies', () => ({
-    setCookie: jest.fn(),
-}));
-
-const mockCreateClient = createClient as jest.MockedFunction<typeof createClient>;
 
 describe('LoginBox Component', () => {
     it('renders the LoginBox component correctly', () => {
@@ -48,5 +39,25 @@ describe('LoginBox Component', () => {
         // Check if the state is updated correctly
         expect(emailInput.value).toBe('user@example.com');
         expect(passwordInput.value).toBe('password123');
+    });
+});
+
+describe('LoginBox Component - Sign up Button', () => {
+    it('navigates to /signup when the Sign up button is clicked', () => {
+        // Mock push function 
+        const pushMock = jest.fn();
+        jest.spyOn(require('next/router'), 'useRouter').mockReturnValue({ push: pushMock });
+        
+        // Render the Login component
+        render(<Login/>);
+        
+        // Find the Sign up button
+        const signUpButton = screen.getByRole('button', { name: /sign up/i });
+    
+        // Simulate a click event on the button
+        fireEvent.click(signUpButton);
+        
+        // Assert that the push method was called with the expected URL
+        expect(pushMock).toHaveBeenCalledWith('/signup');
     });
 });
