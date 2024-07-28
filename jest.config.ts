@@ -1,4 +1,3 @@
-// jest.config.ts
 import type { Config } from 'jest';
 
 const config: Config = {
@@ -29,7 +28,7 @@ const config: Config = {
     "/node_modules/",
   ],
   testEnvironment: "jsdom", // Use "node" if not testing in a browser-like environment
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"], 
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"], 
 };
 
 export default config;
