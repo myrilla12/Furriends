@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import Home from '@/pages';
 import { ClassAttributes, ImgHTMLAttributes } from 'react';
 import { JSX } from 'react/jsx-runtime';
@@ -51,5 +51,25 @@ describe('Home Component', () => {
 
         const mobileImage = screen.getByAltText(/screenshot of the dashboard and map - mobile version/i);
         expect(mobileImage).toBeTruthy();
+    });
+});
+
+describe('Home Component - Sign in Button', () => {
+    it('navigates to /login when the Sign in button is clicked', () => {
+        // Mock push function 
+        const pushMock = jest.fn();
+        jest.spyOn(require('next/router'), 'useRouter').mockReturnValue({ push: pushMock });
+        
+        // Render the Home component
+        render(<Home />);
+        
+        // Find the Sign in button
+        const signInButton = screen.getByRole('button', { name: /sign in/i });
+    
+        // Simulate a click event on the button
+        fireEvent.click(signInButton);
+        
+        // Assert that the push method was called with the expected URL
+        expect(pushMock).toHaveBeenCalledWith('/login');
     });
 });
