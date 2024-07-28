@@ -10,14 +10,12 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"],
     },
-    "typeRoots": ["../node_modules/@types", "./node_modules/@types"],
-    "types": ["jest"],
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.setup.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

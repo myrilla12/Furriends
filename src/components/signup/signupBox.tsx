@@ -1,7 +1,7 @@
 // adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
 import { Text, TextInput, PasswordInput, Button, Box, Group, Divider, Loader } from '@mantine/core';
-import { useRouter } from 'next/router';
+import router from 'next/router';
 import { useState, useEffect } from 'react';
 import { createClient } from '../../utils/supabase/component';
 
@@ -20,7 +20,6 @@ export default function SignupBox() {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const supabase = createClient();
-    const router = useRouter();
 
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {
