@@ -1,7 +1,7 @@
 import LogoHeader from '@/components/logoHeader';
 import { Button, MantineProvider, Text, Title } from '@mantine/core';
 import { IconArrowNarrowRight } from '@tabler/icons-react';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
 import BusinessForm from '@/components/map/businessForm';
@@ -12,6 +12,8 @@ import BusinessForm from '@/components/map/businessForm';
  * @returns {JSX.Element} The rendered Home component.
  */
 export default function Home() {
+    const router = useRouter();
+
     return (
         <>
             <MantineProvider>

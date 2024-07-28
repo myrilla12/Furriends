@@ -1,5 +1,5 @@
 import { Text, TextInput, PasswordInput, Button, Box, Loader } from '@mantine/core';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/component';
 import { setCookie } from 'nookies';
@@ -16,6 +16,7 @@ export default function LoginBox() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {

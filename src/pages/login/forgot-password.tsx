@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { createClient } from '@/utils/supabase/component';
 import { Text, TextInput, Button } from '@mantine/core';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import router from "next/router";
+import { useRouter } from "next/router";
 
 const supabase = createClient();
 
@@ -15,6 +15,7 @@ const supabase = createClient();
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const router = useRouter();
 
     /**
      * Handles password reset request.
