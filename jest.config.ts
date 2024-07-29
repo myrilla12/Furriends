@@ -1,6 +1,7 @@
 import type { Config } from 'jest';
 
 const config: Config = {
+  preset: "ts-jest",
   clearMocks: true,
   collectCoverage: true,
   coverageDirectory: "coverage",
@@ -21,11 +22,11 @@ const config: Config = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   transform: {
-    "^.+\\.(ts|tsx)$": "ts-jest",
-    "^.+\\.(js|jsx)$": "babel-jest",
+    "^.+\\.(ts|tsx)$": "ts-jest",  // Using ts-jest for TypeScript files
+    "^.+\\.(js|jsx)$": ["babel-jest", { configFile: './babel-jest.config.js' }],
   },
   transformIgnorePatterns: [
-    "/node_modules/",
+    "/node_modules/(?!(@mantine|@tabler|@hello-pangea)/)" // Transforming specific packages if needed
   ],
   testEnvironment: "jsdom", // Use "node" if not testing in a browser-like environment
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"], 
