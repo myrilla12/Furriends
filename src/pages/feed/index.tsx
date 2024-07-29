@@ -69,7 +69,7 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         return () => {
             supabase.removeChannel(communityPostsChannel);
         };
-    }, [supabase])
+    }, [supabase, currentCommunity?.id])
 
     /**
      * Adds user as member of the community.

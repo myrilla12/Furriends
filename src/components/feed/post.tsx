@@ -55,7 +55,7 @@ export default function PostCard({ user, post, service }: PostCardProps) {
             }
         }
         getProfileData()
-    }, [post.post_author]);
+    }, [post.post_author, supabase]);
 
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder w="auto" maw={600}>
