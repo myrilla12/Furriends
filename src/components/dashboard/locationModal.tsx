@@ -53,7 +53,7 @@ export default function LocationModal({ opened, onClose, user, fetchNearbyUsers 
                 throw error;
             }
 
-            setAddress(data.address);
+            setAddress(data?.address);
         } catch (error) {
             setMessage('Error loading user address!');
         } finally {
