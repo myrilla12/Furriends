@@ -376,17 +376,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
 
     // sort otherProfilesData based on the order of ids in otherUserIds
-    otherProfilesData.sort((a: Profile, b: Profile) => {
-        const indexA = userIdToIndexMap.get(a.id);
-        const indexB = userIdToIndexMap.get(b.id);
+    if (otherProfilesData) { // Modified line
+        otherProfilesData.sort((a: Profile, b: Profile) => {
+            const indexA = userIdToIndexMap.get(a.id);
+            const indexB = userIdToIndexMap.get(b.id);
 
-        if (indexA === undefined || indexB === undefined) {
-            // handle the case where the ID is not found in the map
-            return 0;
-        }
+            if (indexA === undefined || indexB === undefined) {
+                // handle the case where the ID is not found in the map
+                return 0;
+            }
 
-        return indexA - indexB;
-    });
+            return indexA - indexB;
+        });
+    }
 
     // get the number of unread messages for each chat
     const { data: notificationData, error: notificationError } = await supabase
