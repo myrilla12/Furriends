@@ -27,7 +27,7 @@ export default function ResetPassword() {
         supabase.auth.onAuthStateChange(async (event, session) => {
             console.log('Auth event:', event);
             console.log(session)
-            if (event == "SIGNED_IN") {
+            if (event == "PASSWORD_RECOVERY" || event == "SIGNED_IN") {
                 setIsSignedIn(true);
             }
         })

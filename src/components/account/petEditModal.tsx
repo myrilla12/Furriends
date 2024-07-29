@@ -1,4 +1,3 @@
-// pet edit form allowing users to edit their pet details; autofilled with exisitng profile data
 'use client'
 
 import dayjs from 'dayjs';

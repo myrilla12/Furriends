@@ -42,7 +42,7 @@ export default function PetDetailsModal({ pet, opened, onClose, mine }: PetDetai
         if (data) {
             setOwner(data);
         }
-    }, [pet.owner_id]);
+    }, [pet.owner_id, supabase]);
     
     useEffect(() => {
         fetchOwner();
