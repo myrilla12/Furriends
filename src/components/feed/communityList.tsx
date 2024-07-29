@@ -52,7 +52,7 @@ export default function CommunityList({ user, communities, mine, joinCommunity, 
 
             const currCommunity = communities.find(community => community.id === id)
 
-            if (currCommunity) {
+            if (currCommunity && data) {
                 handleCommunityPosts(data, currCommunity);
             }
         } catch (error) {
