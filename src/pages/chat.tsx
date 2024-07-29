@@ -123,7 +123,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
                 console.error('Error fetching messages: ', error);
                 return [];
             }
-            return data;
+            return data as Message[];
         };
 
         /**
