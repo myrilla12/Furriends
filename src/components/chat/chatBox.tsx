@@ -105,8 +105,6 @@ export default function ChatBox({ user, chatId, messages, chatPartner, loading, 
             return [newChat, ...prevChats];
         });
 
-
-        await new Promise((resolve) => setTimeout(resolve, 0));
         router.push(`/chat?id=${currChatId}`);
         }
 
