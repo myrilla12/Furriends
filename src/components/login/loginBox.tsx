@@ -30,7 +30,7 @@ export default function LoginBox() {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [email, password, login]);
+    }, [email, password]);
 
     /**
      * Handles the login process.

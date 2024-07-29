@@ -34,7 +34,7 @@ export default function SignupBox() {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [email, password, confirmPassword, signup]);
+    }, [email, password, confirmPassword]);
 
     /**
      * Handles the signup process.
