@@ -26,7 +26,7 @@ type PetDetailsModalProps = {
  */
 export default function PetDetailsModal({ pet, opened, onClose, mine }: PetDetailsModalProps) {
     const supabase = createClient();
-    const [owner, setOwner] = useState<Profile | null>(null);
+    const [owner, setOwner] = useState<{ avatar_url: string; username: string; } | null>(null);
 
     const fetchOwner = useCallback(async () => {
         const { data, error } = await supabase
