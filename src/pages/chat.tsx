@@ -245,7 +245,7 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         };
 
         closeDrawerOnIdChange();
-    }, [id.id, opened, close]);
+    }, [id.id, close]);
 
     const renderMobileVersion = () => (
         <Box>
