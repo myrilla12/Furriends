@@ -1,6 +1,4 @@
 import EditAccountPage from '@/pages/account/edit';
-import { ClassAttributes, ImgHTMLAttributes } from 'react';
-import { JSX } from 'react/jsx-runtime';
 import type { User } from '@supabase/supabase-js';
 import { fireEvent, render as rtlRender, screen } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';

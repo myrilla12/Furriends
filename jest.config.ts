@@ -28,7 +28,7 @@ const config: Config = {
   },
   transform: {
     "^.+\\.(ts|tsx)$": "ts-jest",
-    "^.+\\.(js|jsx)$": "babel-jest",
+    "^.+\\.(js|jsx)$": ["babel-jest", { configFile: './babel-jest.config.js' }],
   },
   transformIgnorePatterns: [
     "/node_modules/",
