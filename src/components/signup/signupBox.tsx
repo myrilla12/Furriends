@@ -44,6 +44,7 @@ export default function SignupBox() {
      */
     async function signup() {
         setLoading(true);
+        setMessage('');
         setEmailError('');
         setPasswordError('');
         setConfirmPasswordError('');
@@ -54,15 +55,18 @@ export default function SignupBox() {
             return;
         }
 
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({ email, password });
 
-        if (error) {
+        if (data.user?.identities?.length === 0) {
+            setMessage('User already exists.');
+            setLoading(false);
+        } else if (error) {
             if (error.message.includes('you can only request this once every 60 seconds')) {
                 setMessage('Please try again in 60 seconds.');
             } else if (error.message.includes('rate limit exceeded')) {
                 setMessage('Email rate limit exceeded. Try again in 1 hour.');
             } else if (error.message.includes('email')) {
-                setEmailError('Invalid email format');
+                setEmailError('Invalid email.');
             } else if (error.message.includes('password')) {
                 setPasswordError('Password must have at least 6 characters.');
             } else {
