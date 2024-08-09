@@ -10,7 +10,7 @@ type NextImageProps = JSX.IntrinsicAttributes & ClassAttributes<HTMLImageElement
 // Mocking Image component
 jest.mock('next/image', () => (props: NextImageProps) => {
     const { priority, ...imgProps } = props;
-    return <img {...imgProps} />;
+    return <img alt='image' {...imgProps} />;
 });
 
 // Testing for image in LogoHeader
