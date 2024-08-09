@@ -14,7 +14,7 @@ export type Pet = {
 }
 
 export type Profile = {
-    id: string;
+    id?: string;
     avatar_url: string;
     username: string;
     freelancer?: boolean;

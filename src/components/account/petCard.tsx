@@ -29,6 +29,7 @@ type PetCardProps = {
  * @param {Pet} props.pet - The pet object.
  * @param {boolean} props.editable - Indicates if the pet profile is editable.
  * @param {boolean} props.chattable - Indicates if the chat button should be displayed.
+ * @param {string} props.distance - The distance of pet owner from user.
  * @param {function} [props.updatePetInState] - Callback function to update the pet in the state.
  * @param {function} [props.deletePetFromState] - Callback function to delete the pet from the state.
  * @returns {JSX.Element} The pet card component.

@@ -1,8 +1,8 @@
 import { Modal, ScrollArea, Title, Flex, Textarea, RangeSlider, Box, TextInput, Button, Loader, Image, Select } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
-import { Group, Text, rem } from '@mantine/core';
+import { Group, Text } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon, FaceSmileIcon } from "@heroicons/react/24/outline";
+import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/component";
 import { Community } from "@/utils/definitions";

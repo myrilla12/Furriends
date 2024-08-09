@@ -63,6 +63,10 @@ export default function ServicesPage({ user, profile, posts }: ServicesPageProps
         };
     }, [supabase])
 
+    /**
+     * Renders mobile UI. 
+     * 
+     */
     const renderMobileVersion = () => (
         <div className='relative flex-grow p-6'>
             <FeedLinks />

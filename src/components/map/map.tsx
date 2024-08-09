@@ -33,6 +33,11 @@ export default function Map({ user }: MapComponentProps) {
     });
 
     useEffect(() => {
+        /**
+         * Fetches the user's location from the Supabase database and updates the state.
+         * 
+         * @async
+         */
         const fetchLocations = async () => {
             const supabase = createClient();
 
@@ -54,6 +59,12 @@ export default function Map({ user }: MapComponentProps) {
         fetchLocations();
     }, [user]);
 
+    /**
+     * Fetches nearby businesses based on the map's current bounds.
+     * 
+     * @async
+     * @param {google.maps.LatLngBounds} bounds - The bounds of the map to fetch businesses within.
+     */
     const fetchBusinesses = useCallback(async (bounds: google.maps.LatLngBounds) => {
         const supabase = createClient();
 
@@ -73,6 +84,9 @@ export default function Map({ user }: MapComponentProps) {
         setBusinesses(data);
     }, []);
 
+    /**
+     * Handles the map's bounds change event and fetches businesses within the new bounds.
+     */
     const handleBoundsChanged = useCallback(() => {
         if (mapRef.current) {
             const bounds = mapRef.current.getBounds();
@@ -82,6 +96,9 @@ export default function Map({ user }: MapComponentProps) {
         }
     }, [fetchBusinesses]);
 
+    /**
+     * Updates the map center when the map drag ends.
+     */
     const handleDragEnd = () => {
         const newCenter = mapRef.current?.getCenter()?.toJSON();
         if (newCenter) {

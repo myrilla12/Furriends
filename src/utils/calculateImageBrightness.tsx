@@ -1,11 +1,8 @@
-import { useEffect, useState } from 'react';
-
 /**
  * Calculate image brightness
  * @param {string} imageUrl - Url of the image for which brightness is calculated
  * @returns {Promise<number>} - perceived brightness of the image in rgb color
  */
-
 export const calculateImageBrightness = (imageUrl: string): Promise<number> => {
     return new Promise((resolve) => {
         const img = new Image();

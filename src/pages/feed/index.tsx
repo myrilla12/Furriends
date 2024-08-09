@@ -144,6 +144,10 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         setCurrentCommunity(null);
     }
 
+    /**
+     * Renders mobile UI. 
+     * 
+     */
     const renderMobileVersion = () => (
         <div className='relative flex-grow p-6'>
             <FeedLinks />
@@ -271,12 +275,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error("Error fetching my community ids: ", CommunityIdsError);
     }
 
-    const ids = CommunityIdsData.map((community : { community_id: string; }) => community.community_id);
+    const ids = CommunityIdsData?.map((community : { community_id: string; }) => community.community_id);
 
     const { data: CommunityData, error: CommunityError } = await supabase
         .from('communities')
         .select('*')
-        .in('id', ids)
+        .in('id', ids!)
         .order('updated_at', { ascending: false });
 
     if (CommunityError) {
@@ -292,13 +296,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         console.error("Error fetching all community ids: ", allCommunityIdsError);
     }
 
-    const allIds = allCommunityIdsData.map((community : { id: string; }) => community.id);
-    const otherIds = allIds.filter((id: string) => !ids.includes(id));
+    const allIds = allCommunityIdsData?.map((community : { id: string; }) => community.id);
+    const otherIds = allIds?.filter((id: string) => !ids?.includes(id));
 
     const { data: otherCommunityData, error: otherCommunityError } = await supabase
         .from('communities')
         .select('*')
-        .in('id', otherIds)
+        .in('id', otherIds!)
         .order('updated_at', { ascending: false });
 
     if (otherCommunityError) {

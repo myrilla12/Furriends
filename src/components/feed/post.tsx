@@ -26,7 +26,6 @@ export default function PostCard({ user, post, service }: PostCardProps) {
     const supabase = createClient();
     const [username, setUsername] = useState<string>('');
     const [avatar_url, setAvatarUrl] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
 
     /**
      * Fetches and profile data of the author of the post.
@@ -37,7 +36,6 @@ export default function PostCard({ user, post, service }: PostCardProps) {
     useEffect(() => {
         async function getProfileData() {
             try {
-                setLoading(true);
                 const { data: ProfileData, error: ProfileError } = await supabase
                     .from('profiles')
                     .select(`username, avatar_url`)
@@ -51,7 +49,6 @@ export default function PostCard({ user, post, service }: PostCardProps) {
             } catch (ProfileError) {
                 console.log("Error fetching profile data", ProfileError)
             } finally {
-                setLoading(false);
             }
         }
         getProfileData()

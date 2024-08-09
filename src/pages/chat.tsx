@@ -1,12 +1,12 @@
 "use client";
 import Layout from '@/components/layout';
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import type { User } from '@supabase/supabase-js'
 import { createClient } from '../utils/supabase/server-props'
 import { createClient as componentCreateClient } from '@/utils/supabase/component';
 import type { GetServerSidePropsContext } from 'next'
-import { Box, Burger, Drawer, em, Flex, Text } from '@mantine/core';
+import { Box, Burger, Drawer, em, Flex } from '@mantine/core';
 import ChatNav from '@/components/chat/chatNav';
 import { Chats, Message, Profile } from '@/utils/definitions';
 import { useRouter } from 'next/router';
@@ -26,6 +26,10 @@ type ChatProps = {
  * ChatPage component displays the chat interface.
  *
  * @param {ChatProps} props - The props for the ChatPage component.
+ * @param {User} props.user - The user object.
+ * @param {string[]} props.chatIds - The user's chat ids.
+ * @param {Profile[]} props.otherUsers - The profiles of user's chat partners.
+ * @param {number[]} props.notifications - The user's chat notifications (number of unread messages).
  * @returns {JSX.Element} The rendered ChatPage component.
  */
 export default function ChatPage({ user, chatIds, otherUsers, notifications }: ChatProps) {
@@ -238,15 +242,13 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
     }, [user.id, chatIds, otherUsers, supabase, notifications])
 
     useEffect(() => {
-        const closeDrawerOnIdChange = () => {
-            if (opened) {
-                close();
-            }
-        };
-
-        closeDrawerOnIdChange();
+        close();
     }, [id.id, close]);
 
+    /**
+     * Renders mobile UI. 
+     * 
+     */
     const renderMobileVersion = () => (
         <Box>
             <Flex direction="row" align="center" gap="md">
@@ -376,10 +378,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
 
     // sort otherProfilesData based on the order of ids in otherUserIds
-    if (otherProfilesData) { // Modified line
+    if (otherProfilesData) { 
         otherProfilesData.sort((a: Profile, b: Profile) => {
-            const indexA = userIdToIndexMap.get(a.id);
-            const indexB = userIdToIndexMap.get(b.id);
+            const indexA = userIdToIndexMap.get(a.id!);
+            const indexB = userIdToIndexMap.get(b.id!);
 
             if (indexA === undefined || indexB === undefined) {
                 // handle the case where the ID is not found in the map

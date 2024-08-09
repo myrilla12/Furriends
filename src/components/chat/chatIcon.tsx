@@ -1,8 +1,6 @@
 // chat icon will be the profile picture of the other user (not current) in the chat
 import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { type User } from '@supabase/supabase-js';
 import { createClient } from '../../utils/supabase/component';
 import { Profile } from '@/utils/definitions';
 

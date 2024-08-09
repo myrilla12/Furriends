@@ -1,6 +1,6 @@
 import { calculateAge } from "@/utils/calculateAge";
 import { Pet } from "@/utils/definitions";
-import { Text, Select, ComboboxItem, OptionsFilter, NumberInput, Button } from "@mantine/core";
+import { Text, Select, ComboboxItem, OptionsFilter, NumberInput } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 
@@ -43,7 +43,10 @@ export default function Filters({ pets, setFilteredPets }: FiltersProps) {
     const [filtersVisible, setFiltersVisible] = useState(false);
 
     useEffect(() => {
-        const filterPets = () => { // loop through pets & filter out those the user wants, then set the new pet list
+        const filterPets = () => { 
+            /**
+             * Loop through pets & filter out those the user wants.
+             */
             const filtered = () =>
 
                 pets.filter(pet => {
@@ -84,7 +87,9 @@ export default function Filters({ pets, setFilteredPets }: FiltersProps) {
         filterPets();
     }, [pets, type, fromAge, toAge, fromWeight, toWeight, energy_level, setFilteredPets]) // call filterPets if there are any changes to these states
 
-
+    /**
+     * Render filters.
+     */
     const renderFilters = () => (
 
         <div className='flex flex-wrap gap-1'>

@@ -5,7 +5,6 @@ import { Pet } from './definitions';
  * @param {Pet} pet - Pet object containing the birthday
  * @returns {number} - age of the pet in years
  */
-
 export function calculateAge(pet: Pet): number {
     const birthDate = new Date(pet.birthday);
     const today = new Date();
@@ -24,7 +23,6 @@ export function calculateAge(pet: Pet): number {
  * @param {number} age - number representing age in years
  * @returns {string} - "<age> month(s)/year(s) old"
  */
-
 export function getAgeString(age: number) {
     let ageString = age + (age == 1 ? " year old" : " years old")
     if (age < 1) {
