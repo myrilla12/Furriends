@@ -3,7 +3,7 @@ import { Avatar, Box, Button, Flex, Image, ScrollArea, Stack, Title } from "@man
 import PostCard from "./post";
 import { User } from "@supabase/supabase-js";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 type FeedProps = {
     user: User;
@@ -26,6 +26,10 @@ type FeedProps = {
  */
 export default function Feed({ user, posts, service, community, returnToGeneralFeed }: FeedProps) {
     const viewport = useRef<HTMLDivElement>(null);
+    /**
+     * Scrolls to the top of the component. 
+     * 
+     */
     const scrollToTop = () => viewport.current!.scrollTo({ top: 0, behavior: 'smooth' });
 
     useEffect(() => {

@@ -32,6 +32,11 @@ type DashboardProps = {
  * The DashboardPage component for displaying the user's dashboard with pet filters and carousel.
  *
  * @param {DashboardProps} props - The props for the component.
+ * @param {User} props.user - The user object.
+ * @param {string} props.username - The user's username.
+ * @param {React.ReactNode} props.children - The React children component.
+ * @param {Pet[]} props.pets - Pets that appear in dashboard pet carousel.
+ * @param {boolean} props.showLocationModal - Whether to show location modal or not. 
  * @returns {JSX.Element} The rendered DashboardPage component.
  */
 export default function DashboardPage({ user, username, pets, children, showLocationModal }: DashboardProps) {
@@ -45,6 +50,11 @@ export default function DashboardPage({ user, username, pets, children, showLoca
         }
     }, [showLocationModal]);
 
+    /**
+     * Fetches nearby users.
+     *
+     * @async
+     */
     const fetchNearbyUsers = async () => {
         setFetch(true);
     }

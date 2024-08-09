@@ -144,6 +144,10 @@ export default function FeedPage({ user, posts, myCommunities, otherCommunities 
         setCurrentCommunity(null);
     }
 
+    /**
+     * Renders mobile UI. 
+     * 
+     */
     const renderMobileVersion = () => (
         <div className='relative flex-grow p-6'>
             <FeedLinks />

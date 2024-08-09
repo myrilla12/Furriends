@@ -19,7 +19,6 @@ type UserIconProps = {
  */
 export default function UserIcon({ user }: UserIconProps) {
     const router = useRouter();
-    const [loading, setLoading] = useState(true)
     const [avatarUrl, setAvatarUrl] = useState<string>('/default-avatar.jpg')
     const [editProfileLoading, setEditProfileLoading] = useState(false);
     const [myPetsLoading, setMyPetsLoading] = useState(false);
@@ -51,8 +50,6 @@ export default function UserIcon({ user }: UserIconProps) {
      */
     const getAvatar = useCallback(async () => {
         try {
-            setLoading(true)
-
             const { data, error, status } = await supabase
                 .from('profiles')
                 .select('avatar_url')
@@ -70,7 +67,6 @@ export default function UserIcon({ user }: UserIconProps) {
         } catch (error) {
             alert('Error loading profile photo!')
         } finally {
-            setLoading(false)
         }
     }, [user, supabase])
 

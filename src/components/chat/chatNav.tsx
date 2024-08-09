@@ -2,9 +2,9 @@
 import Link from 'next/link';
 import clsx from 'clsx';
 import ChatIcon from './chatIcon';
-import { Chats, Profile } from '@/utils/definitions';
+import { Chats } from '@/utils/definitions';
 import { useRouter } from 'next/router';
-import { Badge, Button } from '@mantine/core';
+import { Badge } from '@mantine/core';
 
 type ChatNavProps = {
     chats: Chats,

@@ -2,11 +2,9 @@ import { Community, Post } from "@/utils/definitions";
 import { createClient } from "@/utils/supabase/component";
 import { Accordion, Avatar, Button, Flex, Loader, Text, em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { User } from "@supabase/supabase-js";
 import { SetStateAction, useState } from "react";
 
 type CommunityListProps = {
-    user: User;
     communities: Community[];
     mine: boolean;
     joinCommunity: (id: string) => void;
@@ -18,7 +16,6 @@ type CommunityListProps = {
  * CommunityList component for displaying accordion of communities.
  *
  * @param {CommunityListProps} props - The component props.
- * @param {User} props.user - The user object containing user information.
  * @param {Community[]} props.myCommunities - Communities that have been fetched from index.
  * @param {boolean} props.mine - True if user is a member of the communities. 
  * @param {function} props.joinCommunity - Function to join a community.
@@ -26,7 +23,7 @@ type CommunityListProps = {
  * @param {function} props.handleCommunityPosts - Updates feed upon selecting a community.
  * @returns {JSX.Element} The Communities component.
  */
-export default function CommunityList({ user, communities, mine, joinCommunity, leaveCommunity, handleCommunityPosts }: CommunityListProps) {
+export default function CommunityList({ communities, mine, joinCommunity, leaveCommunity, handleCommunityPosts }: CommunityListProps) {
     const supabase = createClient();
     const [loading, setLoading] = useState<string | null>(null);
     const [loadingCommunity, setLoadingCommunity] = useState<string | null>(null);

@@ -1,6 +1,6 @@
 import { Carousel } from '@mantine/carousel';
 import { useMediaQuery } from '@mantine/hooks';
-import { Button, Paper, Title, useMantineTheme, Text } from '@mantine/core';
+import { useMantineTheme } from '@mantine/core';
 import { Pet } from '@/utils/definitions';
 import PetCard from '../account/petCard';
 import { useEffect, useState } from 'react';
@@ -28,6 +28,11 @@ export default function PetCarousel({ user, pets, fetch }: PetCarouselProps) {
     const [nearbyUsers, setNearbyUsers] = useState<{ dist_meters: number; id: string; lat: number; long: number; username: string;}[] | null>(null);
 
     useEffect(() => {
+        /**
+         * Fetches nearby users.
+         *
+         * @async
+         */
         const fetchLocations = async () => {
             const supabase = createClient();
 
@@ -59,13 +64,20 @@ export default function PetCarousel({ user, pets, fetch }: PetCarouselProps) {
         fetchLocations();
     }, [user, fetch]);
 
-    // sort pets by owners' distance & store distance in pet object
+    /**
+     * Sort pets by owners' distance & store distance in pet object
+     * 
+     */
     const sortedPets = pets.map(pet => {
         const owner = nearbyUsers?.find(user => user.id === pet.owner_id);
         const distance = owner ? owner.dist_meters : Infinity;
         return { ...pet, distance };
     }).sort((petA, petB) => petA.distance - petB.distance);
 
+    /**
+     * Renders pet carousel slides. 
+     * 
+     */
     const slides = sortedPets.map((pet, index) => (
         <Carousel.Slide key={index}>
             {<PetCard pet={pet} editable={false} chattable={true} distance={(pet.distance / 1000).toFixed(1)}/>}

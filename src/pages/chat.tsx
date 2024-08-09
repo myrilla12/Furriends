@@ -245,6 +245,10 @@ export default function ChatPage({ user, chatIds, otherUsers, notifications }: C
         close();
     }, [id.id, close]);
 
+    /**
+     * Renders mobile UI. 
+     * 
+     */
     const renderMobileVersion = () => (
         <Box>
             <Flex direction="row" align="center" gap="md">

@@ -1,6 +1,6 @@
 import { Modal, ScrollArea, Title, Flex, Image, TextInput, Button, Loader, Textarea } from "@mantine/core";
 import { User } from "@supabase/supabase-js";
-import { Group, Text, rem } from '@mantine/core';
+import { Group, Text } from '@mantine/core';
 import { Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { ArrowUpTrayIcon, PhotoIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";

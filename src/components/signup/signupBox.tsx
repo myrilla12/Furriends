@@ -23,6 +23,11 @@ export default function SignupBox() {
     const router = useRouter();
 
     useEffect(() => {
+        /**
+         * Handles the 'Enter' key event to signup.
+         *
+         * @function handleKeyDown
+         */
         function handleKeyDown(e: KeyboardEvent) {
             if (e.key === 'Enter') {
                 signup();

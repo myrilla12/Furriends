@@ -25,6 +25,8 @@ export default function BusinessForm() {
 
     /**
      * Adds a new business application to the database.
+     * 
+     * @async
      */
     async function addBusiness() {
         try {
@@ -66,6 +68,8 @@ export default function BusinessForm() {
      * Handles the form submission.
      * Checks that user has checked the declaration checkbox.
      * Clears the form and closes the modal upon successful submission.
+     * 
+     * @async
      */
     const handleSubmit = async () => {
         setCheckboxError('');

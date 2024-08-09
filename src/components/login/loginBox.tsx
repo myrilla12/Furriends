@@ -19,6 +19,11 @@ export default function LoginBox() {
     const router = useRouter();
 
     useEffect(() => {
+        /**
+         * Handles the 'Enter' key event to login.
+         *
+         * @function handleKeyDown
+         */
         function handleKeyDown(e: KeyboardEvent) {
             if (e.key === 'Enter') {
                 login();

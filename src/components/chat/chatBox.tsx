@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Input, Loader, Menu, Stack, Text } from "@mantine/core";
+import { Box, Button, Container, Flex, Input, Loader, Menu, Text } from "@mantine/core";
 import { createClient } from "@/utils/supabase/component";
 import { useEffect, useRef, useState } from "react";
 import { User } from "@supabase/supabase-js";
