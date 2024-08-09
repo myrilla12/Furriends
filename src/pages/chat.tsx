@@ -376,10 +376,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
 
     // sort otherProfilesData based on the order of ids in otherUserIds
-    if (otherProfilesData) { // Modified line
+    if (otherProfilesData) { 
         otherProfilesData.sort((a: Profile, b: Profile) => {
-            const indexA = userIdToIndexMap.get(a.id);
-            const indexB = userIdToIndexMap.get(b.id);
+            const indexA = userIdToIndexMap.get(a.id!);
+            const indexB = userIdToIndexMap.get(b.id!);
 
             if (indexA === undefined || indexB === undefined) {
                 // handle the case where the ID is not found in the map

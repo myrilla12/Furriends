@@ -1,8 +1,8 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-      "jsx": "react-jsx", // Ensure JSX syntax is compatible with your tests
-      "noEmit": false // Allow emitting files (optional, depending on your setup)
+      "jsx": "react-jsx", 
+      "noEmit": false 
     },
     "include": [
       "src/**/*.test.ts",
