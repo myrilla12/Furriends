@@ -13,6 +13,7 @@ type FreelancerDetailsModalProps = {
 
 /**
  * Modal component that displays the freelancer profile terms and conditions and allows the user to toggle freelancer mode.
+ * Terms and conditions text adapted from ChatGPT at https://chat.openai.com/chat
  *
  * @param {FreelancerDetailsModalProps} props - The component props.
  * @param {User | null} props.user - The user object.
