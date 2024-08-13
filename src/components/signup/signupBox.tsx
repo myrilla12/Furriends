@@ -1,5 +1,3 @@
-// adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
-
 import { Text, TextInput, PasswordInput, Button, Box, Group, Divider, Loader } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -7,6 +5,7 @@ import { createClient } from '../../utils/supabase/component';
 
 /**
  * Component for the signup box.
+ * Adapted from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
  *
  * @returns {JSX.Element} The SignupBox component.
  */

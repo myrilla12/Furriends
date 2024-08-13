@@ -1,5 +1,3 @@
-// from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
-
 import { createServerClient, serialize } from '@supabase/ssr'
 
 /**
@@ -7,6 +5,9 @@ import { createServerClient, serialize } from '@supabase/ssr'
  * The client is initialized with the Supabase URL and anonymous key from environment variables,
  * and cookie handling functions based on the provided context.
  *
+ * @author kryst-ll-reused
+ * Reused from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+ * 
  * @param {Object} context - The server-side context object containing request and response information.
  * @returns {import('@supabase/supabase-js').SupabaseClient} The configured Supabase client instance.
  */
