@@ -1,5 +1,3 @@
-// from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
-
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 
@@ -7,6 +5,9 @@ import { NextResponse } from 'next/server'
  * Updates the Supabase session and manages cookies for authentication in server-side requests.
  * This function creates a Supabase client instance and refreshes the authentication token.
  *
+ * @author kryst-ll-reused
+ * Reused from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+ * 
  * @param {Request} request - The incoming request object from Next.js server-side functions.
  * @returns {Promise<NextResponse>} The updated Next.js response object with updated cookies.
  */

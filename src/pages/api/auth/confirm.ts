@@ -4,7 +4,9 @@ import createClient from '@/utils/supabase/api'
 
 /**
  * Returns the first string if the input is an array, otherwise returns the input.
- * From https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+ * 
+ * @author kryst-ll-reused
+ * Reused from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
  *
  * @param {string | string[] | undefined} item - The input string or array of strings.
  * @returns {string | undefined} The first string if the input is an array, otherwise the input.

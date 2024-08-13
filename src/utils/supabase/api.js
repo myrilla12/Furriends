@@ -1,12 +1,13 @@
-// from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
-
 import { createServerClient,  serialize } from '@supabase/ssr'
 
 /**
  * Creates and returns a Supabase client instance configured for server-side use.
  * The client is initialized with the Supabase URL and anonymous key from environment variables,
  * and cookie handling functions based on the incoming request and response.
- *
+ * 
+ * @author kryst-ll-reused
+ * Reused from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+ * 
  * @param {import('next').NextApiRequest} req - The Next.js API request object, used to access cookies.
  * @param {import('next').NextApiResponse} res - The Next.js API response object, used to set or remove cookies.
  * @returns {import('@supabase/supabase-js').SupabaseClient} The configured Supabase client instance.

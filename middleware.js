@@ -1,4 +1,5 @@
-// from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
+// @@author kryst-ll-reused
+// Reused from https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
 
 import { updateSession } from './utils/supabase/middleware'
 
