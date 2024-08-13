@@ -60,7 +60,7 @@ export default function Communities({ user, communities, mine, joinCommunity, le
             </Flex>
             
             <ScrollArea.Autosize mah="30vh" w={400} scrollbars="y">
-                <CommunityList user={user} communities={communities} mine={mine} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} handleCommunityPosts={handleCommunityPosts}/>
+                <CommunityList communities={communities} mine={mine} joinCommunity={joinCommunity} leaveCommunity={leaveCommunity} handleCommunityPosts={handleCommunityPosts}/>
             </ScrollArea.Autosize>
         </Flex>
     );
